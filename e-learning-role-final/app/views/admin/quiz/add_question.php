@@ -20,17 +20,19 @@
         
         <div id="options-container">
             <label>Options de réponse <span class="label-hint">(cochez les réponses correctes)</span></label>
-            <div class="option-row">
+            <div class="option-row" id="option-row-0">
                 <div class="option-correct">
                     <input type="radio" name="correctes[]" value="0" class="correct-radio" id="option0">
                 </div>
                 <input type="text" name="options[0]" placeholder="Option 1" required>
+                <button type="button" class="delete-option-btn" onclick="deleteOption(0)" style="visibility: hidden;" disabled>×</button>
             </div>
-            <div class="option-row">
+            <div class="option-row" id="option-row-1">
                 <div class="option-correct">
                     <input type="radio" name="correctes[]" value="1" class="correct-radio">
                 </div>
                 <input type="text" name="options[1]" placeholder="Option 2" required>
+                <button type="button" class="delete-option-btn" onclick="deleteOption(1)" style="visibility: hidden;" disabled>×</button>
             </div>
         </div>
         
@@ -80,6 +82,26 @@
         font-weight: normal;
         font-style: italic;
     }
+    /* Style spécifique pour le bouton de suppression avec !important pour éviter les conflits */
+    .delete-option-btn {
+        background-color: #f44336 !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 50% !important;
+        width: 25px !important;
+        height: 25px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 18px !important;
+        margin-left: 10px !important;
+        cursor: pointer !important;
+        padding: 0 !important;
+        line-height: 1 !important;
+    }
+    .delete-option-btn:hover {
+        background-color: #d32f2f !important;
+    }
 </style>
 
 <script>
@@ -91,6 +113,7 @@
         
         const div = document.createElement('div');
         div.className = 'option-row';
+        div.id = 'option-row-' + optionCount;
         
         const checkDiv = document.createElement('div');
         checkDiv.className = 'option-correct';
@@ -107,12 +130,49 @@
         input.placeholder = `Option ${optionCount + 1}`;
         input.required = true;
         
+        const deleteBtn = document.createElement('button');
+        deleteBtn.type = 'button';
+        deleteBtn.className = 'delete-option-btn';
+        deleteBtn.innerHTML = '×';
+        deleteBtn.style.backgroundColor = '#f44336';
+        deleteBtn.style.color = 'white';
+        deleteBtn.onclick = function() { deleteOption(optionCount); };
+        
         checkDiv.appendChild(checkbox);
         div.appendChild(checkDiv);
         div.appendChild(input);
+        div.appendChild(deleteBtn);
         
         container.appendChild(div);
         optionCount++;
+        
+        updateDeleteButtons();
+    }
+    
+    function deleteOption(index) {
+        const optionRow = document.getElementById('option-row-' + index);
+        if (optionRow) {
+            optionRow.remove();
+            updateDeleteButtons();
+        }
+    }
+    
+    function updateDeleteButtons() {
+        // Compter combien d'options sont actuellement affichées
+        const options = document.querySelectorAll('.option-row');
+        const count = options.length;
+        
+        // Si nous avons plus de 2 options, activer les boutons de suppression, sinon les désactiver
+        const deleteButtons = document.querySelectorAll('.delete-option-btn');
+        deleteButtons.forEach(btn => {
+            if (count > 2) {
+                btn.style.visibility = 'visible';
+                btn.disabled = false;
+            } else {
+                btn.style.visibility = 'hidden';
+                btn.disabled = true;
+            }
+        });
     }
     
     function updateQuestionType(type) {
@@ -137,5 +197,6 @@
     // S'assurer que le type correct est appliqué au chargement de la page
     window.onload = function() {
         updateQuestionType(document.getElementById('type').value);
+        updateDeleteButtons();
     };
 </script>
