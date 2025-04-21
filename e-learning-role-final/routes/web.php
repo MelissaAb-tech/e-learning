@@ -32,3 +32,19 @@ $router->get('admin/etudiant/supprimer/([0-9]+)', 'AdminController@etudiantSuppr
 $router->get('etudiant/mon-compte', 'EtudiantController@monCompte');
 $router->post('etudiant/mon-compte', 'EtudiantController@monComptePost');
 $router->post('etudiant/mon-compte/modifier', 'EtudiantController@monComptePost');
+
+// Nouvelles routes pour les quiz
+$router->get('quiz/index/([0-9]+)', 'QuizController@index');
+$router->get('quiz/create/([0-9]+)', 'QuizController@create');
+$router->post('quiz/create/([0-9]+)', 'QuizController@create');
+$router->get('quiz/edit/([0-9]+)', 'QuizController@edit');
+$router->post('quiz/edit/([0-9]+)', 'QuizController@edit');
+$router->get('quiz/delete/([0-9]+)', 'QuizController@delete');
+
+// Routes pour les questions des quiz
+$router->get('quiz/questions/([0-9]+)', 'QuizController@questions');
+$router->get('quiz/addQuestion/([0-9]+)', 'QuizController@addQuestion');
+$router->post('quiz/addQuestion/([0-9]+)', 'QuizController@addQuestion');
+$router->get('quiz/editQuestion/([0-9]+)', 'QuizController@editQuestion');
+$router->post('quiz/editQuestion/([0-9]+)', 'QuizController@editQuestion');
+$router->get('quiz/deleteQuestion/([0-9]+)', 'QuizController@deleteQuestion');

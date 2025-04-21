@@ -8,6 +8,16 @@
         <p><strong>Professeur :</strong> <?= $cours['professeur'] ?></p>
         <p><strong>Niveau :</strong> <?= $cours['niveau'] ?> • <strong>Durée :</strong> <?= $cours['duree'] ?></p>
         <p><?= nl2br($cours['contenu']) ?></p>
+        
+        <!-- Boutons d'action -->
+        <div style="margin-top: 20px; display: flex; gap: 10px;">
+            <a href="/e-learning-role-final/public/quiz/index/<?= $cours['id'] ?>" style="background-color: #3B82F6; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none;">
+                Gérer les quiz
+            </a>
+            <a href="/e-learning-role-final/public/admin/chapitre/ajouter/<?= $cours['id'] ?>" style="background-color: #4CAF50; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none;">
+                Ajouter un chapitre
+            </a>
+        </div>
     </div>
 
     <!-- infos des statistique -->

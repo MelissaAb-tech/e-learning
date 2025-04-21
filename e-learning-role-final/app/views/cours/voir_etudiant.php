@@ -46,7 +46,9 @@
 <?php if ($progression == 100): ?>
     <div style="max-width: 400px; margin: 20px auto; margin-top: 15px; padding: 15px; background-color: #e8f5e9; border-left: 6px solid #4CAF50; border-radius: 6px; text-align: center;">
         <strong>Bravo !</strong> Vous avez complété tous les chapitres.<br>
-        <a href="/e-learning-role-final/public/qcm/lancer/<?= $cours['id'] ?>" style="color: #2e7d32; font-weight: bold;">Cliquez ici pour passer au QCM !</a>
+        <a href="/e-learning-role-final/public/quiz/etudiant/tenter/<?= $cours['id'] ?>" style="display: inline-block; margin-top: 10px; padding: 8px 16px; background-color: #4CAF50; color: white; border-radius: 4px; text-decoration: none;">
+            Passer les quiz du cours
+        </a>
     </div>
 <?php else: ?>
     <div style="max-width: 400px; margin: 20px auto; margin-top: 15px; padding: 15px; background-color: #fff3cd; border-left: 6px solid #ffc107; border-radius: 6px; text-align: center;">

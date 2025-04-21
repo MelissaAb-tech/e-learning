@@ -46,6 +46,12 @@ class Database {
                 self::createTables();
                 self::insertDemoData();
             }
+            
+            // Vérifier si les tables de quiz existent
+            if (!in_array('quizzes', $tables)) {
+                self::createQuizTables();
+            }
+            
         } catch (PDOException $e) {
             die("Erreur lors de l'initialisation de la base de données: " . $e->getMessage());
         }
@@ -106,6 +112,47 @@ class Database {
         
         // Ajouter les contraintes de clé étrangère
         self::$pdo->exec("ALTER TABLE `chapitres` ADD CONSTRAINT `chapitres_ibfk_1` FOREIGN KEY (`cours_id`) REFERENCES `cours` (`id`) ON DELETE CASCADE");
+        
+        // Création des tables de quiz
+        self::createQuizTables();
+    }
+    
+    private static function createQuizTables() {
+        // Table des quizzes
+        self::$pdo->exec("CREATE TABLE IF NOT EXISTS `quizzes` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `cours_id` int(11) NOT NULL,
+            `titre` varchar(255) NOT NULL,
+            `description` text DEFAULT NULL,
+            `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+            PRIMARY KEY (`id`),
+            KEY `cours_id` (`cours_id`),
+            CONSTRAINT `quizzes_ibfk_1` FOREIGN KEY (`cours_id`) REFERENCES `cours` (`id`) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
+
+        // Table des questions
+        self::$pdo->exec("CREATE TABLE IF NOT EXISTS `questions` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `quiz_id` int(11) NOT NULL,
+            `texte` text NOT NULL,
+            `type` enum('unique','multiple') NOT NULL DEFAULT 'unique',
+            `ordre` int(11) NOT NULL DEFAULT 0,
+            PRIMARY KEY (`id`),
+            KEY `quiz_id` (`quiz_id`),
+            CONSTRAINT `questions_ibfk_1` FOREIGN KEY (`quiz_id`) REFERENCES `quizzes` (`id`) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
+
+        // Table des options de réponse
+        self::$pdo->exec("CREATE TABLE IF NOT EXISTS `options` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `question_id` int(11) NOT NULL,
+            `texte` text NOT NULL,
+            `est_correcte` tinyint(1) NOT NULL DEFAULT 0,
+            `ordre` int(11) NOT NULL DEFAULT 0,
+            PRIMARY KEY (`id`),
+            KEY `question_id` (`question_id`),
+            CONSTRAINT `options_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
     }
     
     private static function insertDemoData() {
@@ -171,6 +218,52 @@ class Database {
         $stmt = self::$pdo->prepare("INSERT INTO `chapitre_progression` (`id`, `user_id`, `chapitre_id`) VALUES (?, ?, ?)");
         foreach ($progression as $prog) {
             $stmt->execute($prog);
+        }
+        
+        // Ajouter des quiz de démonstration
+        self::insertDemoQuizzes();
+    }
+    
+    private static function insertDemoQuizzes() {
+        // Ajouter un quiz de demo pour le cours d'IA
+        $stmt = self::$pdo->prepare("INSERT INTO `quizzes` (`cours_id`, `titre`, `description`) VALUES (?, ?, ?)");
+        $stmt->execute([1, 'Quiz d\'introduction à l\'IA', 'Testez vos connaissances sur les bases de l\'intelligence artificielle']);
+        $quiz_id = self::$pdo->lastInsertId();
+        
+        // Ajouter des questions pour ce quiz
+        $stmt = self::$pdo->prepare("INSERT INTO `questions` (`quiz_id`, `texte`, `type`, `ordre`) VALUES (?, ?, ?, ?)");
+        
+        // Question 1 (choix unique)
+        $stmt->execute([$quiz_id, 'Qu\'est-ce que le Machine Learning ?', 'unique', 1]);
+        $question_id = self::$pdo->lastInsertId();
+        
+        // Options pour la question 1
+        $stmt = self::$pdo->prepare("INSERT INTO `options` (`question_id`, `texte`, `est_correcte`, `ordre`) VALUES (?, ?, ?, ?)");
+        $options = [
+            [$question_id, 'Un domaine de l\'IA qui permet aux machines d\'apprendre à partir des données', 1, 1],
+            [$question_id, 'Un langage de programmation spécifique pour l\'IA', 0, 2],
+            [$question_id, 'Un type de robot intelligent', 0, 3],
+            [$question_id, 'Un algorithme spécifique créé par Google', 0, 4]
+        ];
+        foreach ($options as $option) {
+            $stmt->execute($option);
+        }
+        
+        // Question 2 (choix multiple)
+        $stmt = self::$pdo->prepare("INSERT INTO `questions` (`quiz_id`, `texte`, `type`, `ordre`) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$quiz_id, 'Quels sont les types d\'apprentissage en Machine Learning ?', 'multiple', 2]);
+        $question_id = self::$pdo->lastInsertId();
+        
+        // Options pour la question 2
+        $stmt = self::$pdo->prepare("INSERT INTO `options` (`question_id`, `texte`, `est_correcte`, `ordre`) VALUES (?, ?, ?, ?)");
+        $options = [
+            [$question_id, 'Apprentissage supervisé', 1, 1],
+            [$question_id, 'Apprentissage non supervisé', 1, 2],
+            [$question_id, 'Apprentissage par renforcement', 1, 3],
+            [$question_id, 'Apprentissage automatisé', 0, 4]
+        ];
+        foreach ($options as $option) {
+            $stmt->execute($option);
         }
     }
 }
