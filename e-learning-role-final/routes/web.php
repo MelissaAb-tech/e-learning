@@ -1,5 +1,6 @@
 <?php
-$router->get('', 'AuthController@login');
+$router->get('', 'AuthController@home');
+$router->get('login', 'AuthController@login');
 $router->post('login', 'AuthController@loginPost');
 $router->get('register', 'AuthController@register');
 $router->post('register', 'AuthController@registerPost');

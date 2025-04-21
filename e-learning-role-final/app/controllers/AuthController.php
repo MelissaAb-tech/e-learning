@@ -1,6 +1,11 @@
 <?php
 class AuthController extends Controller
 {
+    public function home()
+    {
+    $this->view('home');
+    }
+    
     public function login()
     {
         $this->view('auth/login');
