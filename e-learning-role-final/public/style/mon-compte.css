@@ -1,0 +1,141 @@
+/* Style global */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #F9FAFB;
+    /* Gris très clair */
+    margin: 0;
+    padding: 0;
+}
+
+/* Container principal */
+.account-page-container {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* En-tête du profil avec la photo et les infos */
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    border-bottom: 2px solid #E5E7EB;
+    padding-bottom: 20px;
+}
+
+.profile-img-container {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid #10B981;
+    overflow: hidden;
+}
+
+.profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.default-img {
+    background-color: #D1D5DB;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    height: 100%;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-info h2 {
+    font-size: 26px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.profile-info p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.profile-info .btn-submit {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #3B82F6;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 16px;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+.profile-info .btn-submit:hover {
+    background-color: #2563EB;
+}
+
+/* Section des informations personnelles */
+.account-details {
+    margin-top: 30px;
+}
+
+/* Chaque ligne d'information (label et valeur) */
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 6px;
+    background-color: #fff;
+    box-shadow: 0 2px 1px rgba(81, 137, 209, 0.05);
+}
+
+.info-row label {
+    font-weight: bold;
+    color: #3B82F6;
+    /* Bleu */
+    font-size: 16px;
+    width: 35%;
+}
+
+.info-row input {
+    font-size: 16px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #E5E7EB;
+    width: 60%;
+    background-color: #F9FAFB;
+    box-sizing: border-box;
+}
+
+.info-row input[type="file"] {
+    border: none;
+    padding: 5px;
+}
+
+/* Bouton pour modifier les informations */
+.account-actions .btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #3B82F6;
+    /* Bleu */
+    color: white;
+    font-size: 16px;
+    text-decoration: none;
+    border-radius: 6px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.account-actions .btn:hover {
+    background-color: #2563EB;
+}
