@@ -35,8 +35,14 @@ $router->get('etudiant/mon-compte', 'EtudiantController@monCompte');
 $router->post('etudiant/mon-compte', 'EtudiantController@monComptePost');
 $router->post('etudiant/mon-compte/modifier', 'EtudiantController@monComptePost');
 
-// Routes pour le forum (à implémenter plus tard)
+// Routes pour le forum
 $router->get('forum/cours/([0-9]+)', 'ForumController@index');
+$router->get('forum/creer/([0-9]+)', 'ForumController@creer');
+$router->post('forum/creer/([0-9]+)', 'ForumController@creer');
+$router->get('forum/voir/([0-9]+)', 'ForumController@voir');
+$router->post('forum/repondre/([0-9]+)', 'ForumController@repondre');
+$router->get('forum/supprimer_topic/([0-9]+)', 'ForumController@supprimer_topic');
+$router->get('forum/supprimer_reponse/([0-9]+)', 'ForumController@supprimer_reponse');
 
 // Routes pour les quiz côté admin
 $router->get('quiz/index/([0-9]+)', 'QuizController@index');
@@ -67,4 +73,3 @@ $router->get('certificat/generer/([0-9]+)', 'CertificatController@generer');
 // Route pour la déconnexion
 $router->get('logout', 'EtudiantController@logout');
 $router->get('logout', 'AdminController@logout');
-

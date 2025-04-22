@@ -52,6 +52,11 @@ class Database {
                 self::createQuizTables();
             }
             
+            // Vérifier si les tables de forum existent
+            if (!in_array('topics', $tables)) {
+                self::createForumTables();
+            }
+            
         } catch (PDOException $e) {
             die("Erreur lors de l'initialisation de la base de données: " . $e->getMessage());
         }
@@ -152,6 +157,37 @@ class Database {
             PRIMARY KEY (`id`),
             KEY `question_id` (`question_id`),
             CONSTRAINT `options_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
+    }
+
+    private static function createForumTables() {
+        // Table des topics
+        self::$pdo->exec("CREATE TABLE IF NOT EXISTS `topics` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `cours_id` int(11) NOT NULL,
+            `user_id` int(11) NOT NULL,
+            `titre` varchar(255) NOT NULL,
+            `contenu` text NOT NULL,
+            `date_creation` datetime NOT NULL,
+            PRIMARY KEY (`id`),
+            KEY `cours_id` (`cours_id`),
+            KEY `user_id` (`user_id`),
+            CONSTRAINT `topics_ibfk_1` FOREIGN KEY (`cours_id`) REFERENCES `cours` (`id`) ON DELETE CASCADE,
+            CONSTRAINT `topics_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
+    
+        // Table des réponses
+        self::$pdo->exec("CREATE TABLE IF NOT EXISTS `reponses` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `topic_id` int(11) NOT NULL,
+            `user_id` int(11) NOT NULL,
+            `contenu` text NOT NULL,
+            `date_creation` datetime NOT NULL,
+            PRIMARY KEY (`id`),
+            KEY `topic_id` (`topic_id`),
+            KEY `user_id` (`user_id`),
+            CONSTRAINT `reponses_ibfk_1` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`id`) ON DELETE CASCADE,
+            CONSTRAINT `reponses_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
     }
     
