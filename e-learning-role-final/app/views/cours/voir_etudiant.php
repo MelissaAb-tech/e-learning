@@ -1,13 +1,5 @@
 <link rel="stylesheet" href="/e-learning-role-final/public/style/cours-card.css">
-<div class="course-box" style="margin:30px;">
-    <img src="/e-learning-role-final/public/images/<?= $cours['image'] ?>" class="course-img" alt="Cours">
-    <div class="course-info">
-        <span class="course-badge"><?= $cours['niveau'] ?> • <?= $cours['duree'] ?></span>
-        <h2><?= $cours['nom'] ?></h2>
-        <p class="prof">Professeur : <?= $cours['professeur'] ?></p>
-        <p><?= nl2br($cours['contenu']) ?></p>
-    </div>
-</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
     .accordion-item {
@@ -128,7 +120,169 @@
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     }
+    
+    /* Styles pour la barre de navigation */
+    .course-navbar {
+        background: linear-gradient(90deg, #2c3e50, #3B82F6);
+        color: white;
+        padding: 12px 30px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    
+    .course-navbar-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: white;
+        margin-right: 20px;
+    }
+    
+    .course-navbar-buttons {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .navbar-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .navbar-btn-primary {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+    
+    .navbar-btn-primary:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    .navbar-btn-warning {
+        background-color: #F97316;
+        color: white;
+    }
+    
+    .navbar-btn-warning:hover {
+        background-color: #EA580C;
+    }
+    
+    /* Style pour le modal de confirmation */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .modal-content {
+        background-color: white;
+        padding: 25px;
+        border-radius: 8px;
+        width: 100%;
+        max-width: 450px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .modal-title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: #333;
+    }
+    
+    .modal-text {
+        margin-bottom: 20px;
+        color: #555;
+        line-height: 1.5;
+    }
+    
+    .modal-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+    
+    .modal-btn {
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+    }
+    
+    .modal-btn-cancel {
+        background-color: #e2e8f0;
+        color: #4a5568;
+    }
+    
+    .modal-btn-confirm {
+        background-color: #ef4444;
+        color: white;
+    }
+    
+    @media (max-width: 768px) {
+        .course-navbar {
+            flex-direction: column;
+            padding: 10px 20px;
+        }
+        
+        .course-navbar-title {
+            margin-bottom: 10px;
+            margin-right: 0;
+        }
+        
+        .course-navbar-buttons {
+            width: 100%;
+            justify-content: center;
+        }
+    }
 </style>
+
+<!-- Barre de navigation du cours -->
+<div class="course-navbar">
+    <div class="course-navbar-title">
+        <?= htmlspecialchars($cours['nom']) ?>
+    </div>
+    
+    <div class="course-navbar-buttons">
+        <a href="/e-learning-role-final/public/etudiant/dashboard" class="navbar-btn navbar-btn-primary">
+            <i class="fas fa-home"></i> Mes cours
+        </a>
+        <a href="/e-learning-role-final/public/forum/cours/<?= $cours['id'] ?>" class="navbar-btn navbar-btn-primary">
+            <i class="fas fa-comments"></i> Forum
+        </a>
+        <a href="#" class="navbar-btn navbar-btn-warning" onclick="openResetModal()">
+            <i class="fas fa-sync-alt"></i> Réinitialiser
+        </a>
+    </div>
+</div>
+
+<div class="course-box" style="margin:30px;">
+    <img src="/e-learning-role-final/public/images/<?= $cours['image'] ?>" class="course-img" alt="Cours">
+    <div class="course-info">
+        <span class="course-badge"><?= $cours['niveau'] ?> • <?= $cours['duree'] ?></span>
+        <h2><?= $cours['nom'] ?></h2>
+        <p class="prof">Professeur : <?= $cours['professeur'] ?></p>
+        <p><?= nl2br($cours['contenu']) ?></p>
+    </div>
+</div>
 
 <?php 
 // Calculer la progression des chapitres
@@ -292,9 +446,49 @@ $cours_complet = $chapitres_complets && $quiz_complets;
     <?php endif; ?>
 </div>
 
+<!-- Modal de confirmation pour la réinitialisation -->
+<div id="resetModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-title">Réinitialiser le cours</div>
+        <div class="modal-text">
+            Êtes-vous sûr de vouloir réinitialiser votre progression sur ce cours ? 
+            <br><br>
+            <strong>Cette action supprimera :</strong>
+            <ul style="margin-top: 5px;">
+                <li>Votre progression dans les chapitres</li>
+                <li>Vos tentatives de quiz</li>
+                <li>Vos scores obtenus</li>
+            </ul>
+            <br>
+            Cette action est irréversible.
+        </div>
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-cancel" onclick="closeResetModal()">Annuler</button>
+            <a href="/e-learning-role-final/public/cours/reinitialiser/<?= $cours['id'] ?>" class="modal-btn modal-btn-confirm">Réinitialiser</a>
+        </div>
+    </div>
+</div>
+
 <script>
     function toggleChapitre(index) {
         const content = document.getElementById("chapitre-content-" + index);
         content.style.display = content.style.display === "block" ? "none" : "block";
+    }
+    
+    // Fonctions pour gérer le modal de réinitialisation
+    function openResetModal() {
+        document.getElementById('resetModal').style.display = 'flex';
+    }
+    
+    function closeResetModal() {
+        document.getElementById('resetModal').style.display = 'none';
+    }
+    
+    // Fermer le modal si l'utilisateur clique en dehors
+    window.onclick = function(event) {
+        const modal = document.getElementById('resetModal');
+        if (event.target === modal) {
+            closeResetModal();
+        }
     }
 </script>

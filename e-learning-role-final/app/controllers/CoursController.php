@@ -68,4 +68,41 @@ class CoursController extends Controller
             ]);
         }
     }
+    
+    public function reinitialiser($id)
+    {
+        // Vérifier que l'utilisateur est connecté
+        if (!isset($_SESSION['user'])) {
+            header('Location: /e-learning-role-final/public/login');
+            exit;
+        }
+
+        $user_id = $_SESSION['user']['id'];
+        
+        // Vérifier que le cours existe
+        $coursModel = $this->model('Cours');
+        $cours = $coursModel->getById($id);
+        
+        if (!$cours) {
+            echo "Cours introuvable.";
+            exit;
+        }
+        
+        // 1. Supprimer les chapitres marqués comme vus par l'utilisateur
+        $chapitreModel = $this->model('Chapitre');
+        $chapitreModel->resetProgressionUser($user_id, $id);
+        
+        // 2. Supprimer les tentatives de quiz de l'utilisateur pour ce cours
+        $quizModel = $this->model('Quiz');
+        $quizzes = $quizModel->getByCoursId($id);
+        
+        $tentativeModel = $this->model('QuizTentative');
+        foreach ($quizzes as $quiz) {
+            $tentativeModel->deleteTentativesByUserAndQuiz($user_id, $quiz['id']);
+        }
+        
+        // Rediriger vers la page du cours
+        header("Location: /e-learning-role-final/public/cours/voir/$id");
+        exit;
+    }
 }

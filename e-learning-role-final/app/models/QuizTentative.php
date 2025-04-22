@@ -120,8 +120,32 @@ class QuizTentative
         $stmt = $this->db->prepare("SELECT * FROM tentatives_quiz WHERE user_id = ? AND quiz_id = ? ORDER BY score DESC LIMIT 1");
         $stmt->execute([$user_id, $quiz_id]);
         $tentative = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+        
         // Si aucune tentative n'est trouvée, retourner null au lieu d'un tableau vide
         return $tentative ? $tentative : null;
+    }
+    
+    public function deleteTentativesByUserAndQuiz($user_id, $quiz_id)
+    {
+        // D'abord récupérer toutes les tentatives de l'utilisateur pour ce quiz
+        $stmt = $this->db->prepare("SELECT id FROM tentatives_quiz WHERE user_id = ? AND quiz_id = ?");
+        $stmt->execute([$user_id, $quiz_id]);
+        $tentatives = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        if (empty($tentatives)) {
+            return true; // Rien à supprimer
+        }
+        
+        // Pour chaque tentative, supprimer les réponses associées
+        $tentative_ids = array_column($tentatives, 'id');
+        
+        // Supprimer toutes les réponses en une seule requête
+        $placeholders = implode(',', array_fill(0, count($tentative_ids), '?'));
+        $stmt = $this->db->prepare("DELETE FROM reponses_etudiant WHERE tentative_id IN ($placeholders)");
+        $stmt->execute($tentative_ids);
+        
+        // Supprimer toutes les tentatives en une seule requête
+        $stmt = $this->db->prepare("DELETE FROM tentatives_quiz WHERE id IN ($placeholders)");
+        return $stmt->execute($tentative_ids);
     }
 }

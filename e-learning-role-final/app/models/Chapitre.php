@@ -14,22 +14,26 @@ class Chapitre
         $stmt = $this->db->prepare("INSERT INTO chapitres (cours_id, titre, description, pdf, video) VALUES (?, ?, ?, ?, ?)");
         return $stmt->execute([$cours_id, $titre, $description, $pdf, $video]);
     }
+    
     public function delete($id)
     {
         $stmt = $this->db->prepare("DELETE FROM chapitres WHERE id = ?");
         return $stmt->execute([$id]);
     }
+    
     public function marquerVu($user_id, $chapitre_id)
     {
         $stmt = $this->db->prepare("INSERT IGNORE INTO chapitre_progression (user_id, chapitre_id) VALUES (?, ?)");
         return $stmt->execute([$user_id, $chapitre_id]);
     }
+    
     public function getVusParUser($user_id)
     {
         $stmt = $this->db->prepare("SELECT chapitre_id FROM chapitre_progression WHERE user_id = ?");
         $stmt->execute([$user_id]);
         return array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'chapitre_id');
     }
+    
     public function progressionParCours($cours_id)
     {
         // Nombre total de chapitres pour ce cours
@@ -60,6 +64,7 @@ class Chapitre
 
         return $result;
     }
+    
     public function getTotalChapitres($cours_id)
     {
         $sql = "SELECT COUNT(*) FROM chapitres WHERE cours_id = ?";
@@ -75,10 +80,35 @@ class Chapitre
         $stmt->execute([$etudiant_id, $cours_id]);
         return $stmt->fetchColumn();
     }
+    
     public function getByCoursId($cours_id)
     {
         $stmt = $this->db->prepare("SELECT * FROM chapitres WHERE cours_id = ?");
         $stmt->execute([$cours_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);  // Retourner les chapitres pour ce cours
+    }
+    
+    public function resetProgressionUser($user_id, $cours_id)
+    {
+        // Récupérer tous les chapitres du cours
+        $chapitres = $this->getByCoursId($cours_id);
+        
+        if (empty($chapitres)) {
+            return true; // Rien à réinitialiser
+        }
+        
+        // Construire la liste des IDs de chapitres
+        $chapitre_ids = array_column($chapitres, 'id');
+        $placeholders = implode(',', array_fill(0, count($chapitre_ids), '?'));
+        
+        // Supprimer les entrées dans la table de progression
+        $sql = "DELETE FROM chapitre_progression WHERE user_id = ? AND chapitre_id IN ($placeholders)";
+        
+        // Préparer les paramètres pour la requête
+        $params = array_merge([$user_id], $chapitre_ids);
+        
+        // Exécuter la requête
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute($params);
     }
 }

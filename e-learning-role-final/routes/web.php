@@ -16,6 +16,8 @@ $router->get('admin/supprimer/([0-9]+)', 'AdminController@supprimer');
 
 $router->get('cours/voir/([0-9]+)', 'CoursController@voir');
 $router->post('cours/voir/([0-9]+)', 'CoursController@voir');
+// Nouvelle route pour réinitialiser un cours
+$router->get('cours/reinitialiser/([0-9]+)', 'CoursController@reinitialiser');
 
 $router->get('admin/chapitre/ajouter/([0-9]+)', 'ChapitreController@ajouter');
 $router->post('admin/chapitre/ajouter/([0-9]+)', 'ChapitreController@ajouter');
@@ -33,7 +35,10 @@ $router->get('etudiant/mon-compte', 'EtudiantController@monCompte');
 $router->post('etudiant/mon-compte', 'EtudiantController@monComptePost');
 $router->post('etudiant/mon-compte/modifier', 'EtudiantController@monComptePost');
 
-// Nouvelles routes pour les quiz
+// Routes pour le forum (à implémenter plus tard)
+$router->get('forum/cours/([0-9]+)', 'ForumController@index');
+
+// Routes pour les quiz côté admin
 $router->get('quiz/index/([0-9]+)', 'QuizController@index');
 $router->get('quiz/create/([0-9]+)', 'QuizController@create');
 $router->post('quiz/create/([0-9]+)', 'QuizController@create');
@@ -54,3 +59,6 @@ $router->get('quiz/etudiant/tenter/([0-9]+)', 'QuizController@tenter');
 $router->post('quiz/etudiant/soumettre/([0-9]+)', 'QuizController@soumettre');
 $router->get('quiz/etudiant/resultats/([0-9]+)', 'QuizController@resultats');
 $router->get('quiz/etudiant/liste/([0-9]+)', 'QuizController@listeQuiz');
+
+// Route pour le certificat (à implémenter plus tard)
+$router->get('certificat/generer/([0-9]+)', 'CertificatController@generer');
