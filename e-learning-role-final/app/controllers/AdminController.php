@@ -12,7 +12,6 @@ class AdminController extends Controller
                 $imageName = basename($_FILES['image']['name']);
                 $targetFile = $targetDir . $imageName;
 
-                // Upload réel
                 move_uploaded_file($_FILES['image']['tmp_name'], $targetFile);
             }
 
@@ -110,6 +109,15 @@ class AdminController extends Controller
     {
         $this->model('User')->delete($id);
         header('Location: /e-learning-role-final/public/admin/dashboard');
+        exit;
+    }
+    public function logout()
+    {
+        session_start();
+        session_unset();
+        session_destroy();
+
+        header('Location: /e-learning-role-final/public');  // Rediriger vers la page de d'acceuil
         exit;
     }
 }

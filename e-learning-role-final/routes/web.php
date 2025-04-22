@@ -60,5 +60,11 @@ $router->post('quiz/etudiant/soumettre/([0-9]+)', 'QuizController@soumettre');
 $router->get('quiz/etudiant/resultats/([0-9]+)', 'QuizController@resultats');
 $router->get('quiz/etudiant/liste/([0-9]+)', 'QuizController@listeQuiz');
 
+
 // Route pour le certificat (à implémenter plus tard)
 $router->get('certificat/generer/([0-9]+)', 'CertificatController@generer');
+
+// Route pour la déconnexion
+$router->get('logout', 'EtudiantController@logout');
+$router->get('logout', 'AdminController@logout');
+

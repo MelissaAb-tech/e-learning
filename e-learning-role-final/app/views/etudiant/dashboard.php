@@ -3,10 +3,12 @@
 
 <div class="student-header">
     <div class="header-top">
+        <a href="/e-learning-role-final/public/logout" class="logout-button">
+            <i class="fas fa-sign-out-alt"></i> Déconnexion
+        </a>
         <a href="/e-learning-role-final/public/etudiant/mon-compte" class="account-button">
             <i class="fas fa-user"></i> Mon compte
         </a>
-
     </div>
     <h1>Bienvenue sur votre espace étudiant</h1>
     <p>Accédez à vos cours disponibles et suivez votre progression</p>

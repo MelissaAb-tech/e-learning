@@ -1,8 +1,13 @@
 <link rel="stylesheet" href="/e-learning-role-final/public/style/admin-dashboard.css">
 
 <div class="admin-header">
+    <a href="/e-learning-role-final/public/logout" class="logout-button">
+        <i class="fas fa-sign-out-alt"></i> Déconnexion
+    </a>
     <h1>Panneau d'administration</h1>
 </div>
+
+
 
 <div class="admin-section">
     <div class="admin-section-header">
