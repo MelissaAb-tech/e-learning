@@ -42,12 +42,9 @@ class CoursController extends Controller
                 'stats' => $this->model('Chapitre')->progressionParCours($id)
             ]);
         } else {
-            // Récupérer TOUS les quiz pour ce cours - s'assurer qu'il n'y a pas de filtre supplémentaire
+            // Récupérer TOUS les quiz pour ce cours
             $quizModel = $this->model('Quiz');
             $quizzes = $quizModel->getByCoursId($id);
-            
-            // Déboguer le nombre de quiz trouvés
-            // error_log("Nombre de quiz trouvés pour le cours $id: " . count($quizzes));
             
             // Si l'utilisateur est connecté, récupérer ses tentatives pour chaque quiz
             if (isset($_SESSION['user'])) {

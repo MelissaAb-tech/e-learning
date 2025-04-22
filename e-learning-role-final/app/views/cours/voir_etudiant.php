@@ -77,30 +77,137 @@
         transform: translateY(-2px) !important;
         box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
     }
+    
+    .progress-container {
+        max-width: 800px;
+        margin: 30px auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .progress-header {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+    
+    .progress-section {
+        margin-bottom: 15px;
+    }
+    
+    .progress-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    
+    .certificat-btn {
+        display: inline-block;
+        background-color: #4CAF50;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        padding: 12px 24px;
+        border-radius: 6px;
+        text-decoration: none;
+        margin-top: 10px;
+        border: none;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .certificat-btn:hover {
+        background-color: #45a049;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
 </style>
 
-<h3 style="margin-left: 30px;">Chapitres :</h3>
-<!-- barre progression -->
-<!-- barre de progression du cours -->
-<div style="max-width: 400px; margin: 20px auto; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
-    <p style="margin-bottom: 10px; font-weight: bold; text-align: center;">
-        Progression du cours : <?= $chapitres_termine ?>/<?= $chapitres_total ?> chapitres (<?= $progression ?>%)
-    </p>
-    <div style="background: #e0e0e0; border-radius: 20px; height: 12px; overflow: hidden;">
-        <div style="height: 100%; background: linear-gradient(90deg, #4CAF50, #81C784); width: <?= $progression ?>%;"></div>
+<?php 
+// Calculer la progression des chapitres
+$chapitres_total = count($chapitres);
+$chapitres_termine = 0;
+foreach ($chapitres as $chap) {
+    if (in_array($chap['id'], $chapitres_vus ?? [])) {
+        $chapitres_termine++;
+    }
+}
+$progression = $chapitres_total > 0 ? round(($chapitres_termine / $chapitres_total) * 100) : 0;
+
+// Calculer la progression des quiz
+$quiz_total = count($quizzes);
+$quiz_parfait = 0;
+
+if ($quiz_total > 0) {
+    foreach ($quizzes as $quiz) {
+        if (isset($quiz['meilleure_tentative']) && 
+            $quiz['meilleure_tentative'] !== null && 
+            isset($quiz['meilleure_tentative']['score']) && 
+            isset($quiz['meilleure_tentative']['score_max']) && 
+            $quiz['meilleure_tentative']['score'] == $quiz['meilleure_tentative']['score_max']) {
+            $quiz_parfait++;
+        }
+    }
+    
+    $quiz_progression = $quiz_total > 0 ? round(($quiz_parfait / $quiz_total) * 100) : 0;
+} else {
+    $quiz_progression = 0;
+}
+
+// Déterminer si toutes les sections sont complétées à 100%
+$chapitres_complets = ($chapitres_total > 0) ? ($progression == 100) : true;
+$quiz_complets = ($quiz_total > 0) ? ($quiz_progression == 100) : true;
+$cours_complet = $chapitres_complets && $quiz_complets;
+?>
+
+<!-- Section de progression globale placée avant les chapitres -->
+<div class="progress-container">
+    <div class="progress-header">
+        <?php if ($cours_complet): ?>
+            <div style="color: #2e7d32; margin-bottom: 15px;">
+                <span style="font-size: 24px;">🎓</span> Félicitations ! Vous maîtrisez parfaitement ce cours.
+            </div>
+            <a href="/e-learning-role-final/public/certificat/generer/<?= $cours['id'] ?>" class="certificat-btn">
+                🏆 Obtenir mon certificat
+            </a>
+        <?php else: ?>
+            Obtenez 100% à toutes les sections du cours pour obtenir votre certificat !
+        <?php endif; ?>
     </div>
+    
+    <!-- Barre de progression des chapitres -->
+    <div class="progress-section">
+        <div class="progress-label">
+            <span>Progression des chapitres :</span>
+            <span><?= $chapitres_termine ?>/<?= $chapitres_total ?> chapitres (<?= $progression ?>%)</span>
+        </div>
+        <div style="background: #e0e0e0; border-radius: 20px; height: 12px; overflow: hidden;">
+            <div style="height: 100%; background: linear-gradient(90deg, #4CAF50, #81C784); width: <?= $progression ?>%;"></div>
+        </div>
+    </div>
+    
+    <!-- Barre de progression des quiz -->
+    <?php if ($quiz_total > 0): ?>
+    <div class="progress-section">
+        <div class="progress-label">
+            <span>Progression des quiz :</span>
+            <span><?= $quiz_parfait ?>/<?= $quiz_total ?> quiz parfaits (<?= $quiz_progression ?>%)</span>
+        </div>
+        <div style="background: #e0e0e0; border-radius: 20px; height: 12px; overflow: hidden;">
+            <div style="height: 100%; background: linear-gradient(90deg, #FF9800, #FFB74D); width: <?= $quiz_progression ?>%;"></div>
+        </div>
+    </div>
+    <?php endif; ?>
 </div>
 
-<?php if ($progression == 100): ?>
-    <div style="max-width: 400px; margin: 20px auto; margin-top: 15px; padding: 15px; background-color: #e8f5e9; border-left: 6px solid #4CAF50; border-radius: 6px; text-align: center;">
-        <strong>Bravo !</strong> Vous avez complété tous les chapitres.<br>
-    </div>
-<?php else: ?>
-    <div style="max-width: 400px; margin: 20px auto; margin-top: 15px; padding: 15px; background-color: #fff3cd; border-left: 6px solid #ffc107; border-radius: 6px; text-align: center;">
-        <strong>Vous n'êtes pas loin !</strong> Terminez tous les chapitres <br>
-        Progression actuelle : <?= $progression ?>%
-    </div>
-<?php endif; ?>
+<h3 style="margin-left: 30px;">Chapitres :</h3>
 
 <?php foreach ($chapitres as $chap): ?>
     <div class="accordion-item">
@@ -149,12 +256,20 @@
                 
                 <!-- Score précédent si disponible avec vérifications supplémentaires -->
                 <?php if (isset($quiz['meilleure_tentative']) && $quiz['meilleure_tentative'] !== null): ?>
+                    <?php 
+                    $scoreParfait = (isset($quiz['meilleure_tentative']['score']) && 
+                                    isset($quiz['meilleure_tentative']['score_max']) && 
+                                    $quiz['meilleure_tentative']['score'] == $quiz['meilleure_tentative']['score_max']);
+                    ?>
                     <?php if (isset($quiz['meilleure_tentative']['score']) && 
                               isset($quiz['meilleure_tentative']['score_max']) && 
                               $quiz['meilleure_tentative']['score_max'] > 0): ?>
-                        <div style="background-color: #e8f5e9 !important; padding: 8px !important; border-radius: 4px !important; margin-bottom: 15px !important;">
+                        <div style="background-color: <?= $scoreParfait ? '#e8f5e9' : '#fff3e0' ?> !important; padding: 8px !important; border-radius: 4px !important; margin-bottom: 15px !important;">
                             <strong>Score précédent:</strong> <?= $quiz['meilleure_tentative']['score'] ?>/<?= $quiz['meilleure_tentative']['score_max'] ?> 
                             (<?= round(($quiz['meilleure_tentative']['score'] / $quiz['meilleure_tentative']['score_max']) * 100) ?>%)
+                            <?php if ($scoreParfait): ?>
+                                <span style="color: #2e7d32; margin-left: 8px; font-weight: bold;">✅ Parfait !</span>
+                            <?php endif; ?>
                         </div>
                     <?php elseif (isset($quiz['meilleure_tentative']['score']) && isset($quiz['meilleure_tentative']['score_max'])): ?>
                         <div style="background-color: #fff3e0 !important; padding: 8px !important; border-radius: 4px !important; margin-bottom: 15px !important;">
