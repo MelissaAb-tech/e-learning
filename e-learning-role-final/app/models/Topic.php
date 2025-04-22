@@ -17,13 +17,15 @@ class Topic
     public function getByCoursId($cours_id)
     {
         $stmt = $this->db->prepare("
-            SELECT t.*, u.nom as auteur_nom, COUNT(r.id) as nb_reponses 
+            SELECT t.*, u.nom as auteur_nom, COUNT(r.id) as nb_reponses,
+                IFNULL(MAX(r.date_creation), t.date_creation) as derniere_activite,
+                MAX(r.date_creation) as date_derniere_reponse
             FROM topics t
             LEFT JOIN users u ON t.user_id = u.id
             LEFT JOIN reponses r ON r.topic_id = t.id
             WHERE t.cours_id = ?
             GROUP BY t.id
-            ORDER BY t.date_creation DESC
+            ORDER BY derniere_activite DESC
         ");
         $stmt->execute([$cours_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

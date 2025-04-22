@@ -39,6 +39,9 @@
                                 <span class="topic-author">Par <?= htmlspecialchars($topic['auteur_nom']) ?></span>
                                 <span class="topic-date">le <?= date('d/m/Y à H:i', strtotime($topic['date_creation'])) ?></span>
                                 <span class="topic-replies"><?= $topic['nb_reponses'] ?> réponse(s)</span>
+                                <?php if (!empty($topic['date_derniere_reponse'])): ?>
+                                    <span class="topic-last-reply">Dernière réponse le <?= date('d/m/Y à H:i', strtotime($topic['date_derniere_reponse'])) ?></span>
+                                <?php endif; ?>
                             </div>
                         </div>
                         <div class="topic-actions">

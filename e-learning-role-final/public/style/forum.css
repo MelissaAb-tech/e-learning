@@ -234,3 +234,39 @@ body {
     font-size: 20px;
     text-align: center;
 }
+
+.topic-last-reply {
+    color: #4a5568;
+    font-style: italic;
+    background-color: #f0f9ff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    margin-left: 5px;
+}
+
+.topic-last-reply::before {
+    content: '\f3e5';  /* Code pour une icône de réponse */
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    margin-right: 5px;
+    color: #3182ce;
+}
+
+@media (max-width: 768px) {
+    .topic-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .topic-meta span {
+        margin-right: 0;
+    }
+    
+    .topic-last-reply {
+        margin-left: 0;
+    }
+}
