@@ -48,3 +48,9 @@ $router->post('quiz/addQuestion/([0-9]+)', 'QuizController@addQuestion');
 $router->get('quiz/editQuestion/([0-9]+)', 'QuizController@editQuestion');
 $router->post('quiz/editQuestion/([0-9]+)', 'QuizController@editQuestion');
 $router->get('quiz/deleteQuestion/([0-9]+)', 'QuizController@deleteQuestion');
+
+// Routes pour les quiz côté étudiant
+$router->get('quiz/etudiant/tenter/([0-9]+)', 'QuizController@tenter');
+$router->post('quiz/etudiant/soumettre/([0-9]+)', 'QuizController@soumettre');
+$router->get('quiz/etudiant/resultats/([0-9]+)', 'QuizController@resultats');
+$router->get('quiz/etudiant/liste/([0-9]+)', 'QuizController@listeQuiz');

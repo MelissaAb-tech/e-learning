@@ -430,4 +430,236 @@ class QuizController extends Controller
             echo "Erreur lors de la suppression de la question.";
         }
     }
+
+    // NOUVELLES MÉTHODES POUR L'INTERFACE ÉTUDIANT
+
+    // Afficher la liste des quiz disponibles pour un cours
+    public function listeQuiz($cours_id)
+    {
+        // Vérifier que l'utilisateur est connecté
+        if (!isset($_SESSION['user'])) {
+            header('Location: /e-learning-role-final/public/login');
+            exit;
+        }
+
+        $coursModel = $this->model('Cours');
+        $cours = $coursModel->getById($cours_id);
+
+        if (!$cours) {
+            echo "Cours introuvable.";
+            exit;
+        }
+
+        $quizModel = $this->model('Quiz');
+        $quizzes = $quizModel->getByCoursId($cours_id);
+
+        // Récupérer les tentatives de l'étudiant pour chaque quiz
+        $tentativeModel = $this->model('QuizTentative');
+        $user_id = $_SESSION['user']['id'];
+
+        foreach ($quizzes as &$quiz) {
+            $meilleureTentative = $tentativeModel->getMeilleureTentative($user_id, $quiz['id']);
+            $quiz['meilleure_tentative'] = $meilleureTentative;
+        }
+
+        $this->view('etudiant/quiz/liste', [
+            'cours' => $cours,
+            'quizzes' => $quizzes
+        ]);
+    }
+
+    // Afficher le quiz pour que l'étudiant puisse le passer
+    public function tenter($quiz_id)
+    {
+        // Vérifier que l'utilisateur est connecté
+        if (!isset($_SESSION['user'])) {
+            header('Location: /e-learning-role-final/public/login');
+            exit;
+        }
+
+        // Vérifier que l'utilisateur est un étudiant
+        if ($_SESSION['user']['role'] !== 'etudiant') {
+            header('Location: /e-learning-role-final/public/admin/dashboard');
+            exit;
+        }
+
+        $quizModel = $this->model('Quiz');
+        $quiz = $quizModel->getById($quiz_id);
+
+        if (!$quiz) {
+            echo "Quiz introuvable.";
+            exit;
+        }
+
+        $coursModel = $this->model('Cours');
+        $cours = $coursModel->getById($quiz['cours_id']);
+
+        // Récupérer les questions du quiz
+        $questionModel = $this->model('Question');
+        $questions = $questionModel->getByQuizId($quiz_id);
+
+        // Pour chaque question, récupérer ses options
+        $optionModel = $this->model('Option');
+        foreach ($questions as &$question) {
+            $question['options'] = $optionModel->getByQuestionId($question['id']);
+        }
+
+        $this->view('etudiant/quiz/tenter', [
+            'quiz' => $quiz,
+            'cours' => $cours,
+            'questions' => $questions
+        ]);
+    }
+
+    // Traiter les réponses soumises par l'étudiant
+    public function soumettre($quiz_id)
+    {
+        // Vérifier que l'utilisateur est connecté
+        if (!isset($_SESSION['user'])) {
+            header('Location: /e-learning-role-final/public/login');
+            exit;
+        }
+
+        // Vérifier que l'utilisateur est un étudiant
+        if ($_SESSION['user']['role'] !== 'etudiant') {
+            header('Location: /e-learning-role-final/public/admin/dashboard');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /e-learning-role-final/public/quiz/etudiant/tenter/' . $quiz_id);
+            exit;
+        }
+
+        $quizModel = $this->model('Quiz');
+        $quiz = $quizModel->getById($quiz_id);
+
+        if (!$quiz) {
+            echo "Quiz introuvable.";
+            exit;
+        }
+
+        $user_id = $_SESSION['user']['id'];
+        $reponses = $_POST['reponses'] ?? [];
+
+        // Récupérer toutes les questions du quiz
+        $questionModel = $this->model('Question');
+        $questions = $questionModel->getByQuizId($quiz_id);
+
+        // Initialiser le score
+        $score = 0;
+        $score_max = count($questions);
+
+        // Vérifier les réponses pour chaque question
+        $optionModel = $this->model('Option');
+        foreach ($questions as $question) {
+            $question_id = $question['id'];
+            $options = $optionModel->getByQuestionId($question_id);
+            
+            // Les réponses sélectionnées par l'étudiant pour cette question
+            $reponses_etudiant = isset($reponses[$question_id]) ? (array)$reponses[$question_id] : [];
+            
+            // Les options correctes pour cette question
+            $options_correctes = array_filter($options, function($option) {
+                return $option['est_correcte'] == 1;
+            });
+            $ids_options_correctes = array_column($options_correctes, 'id');
+            
+            // Pour les questions à choix unique
+            if ($question['type'] === 'unique') {
+                // Si l'étudiant a sélectionné une option correcte
+                if (count($reponses_etudiant) === 1 && in_array($reponses_etudiant[0], $ids_options_correctes)) {
+                    $score++;
+                }
+            } 
+            // Pour les questions à choix multiple
+            else {
+                // Vérifier que toutes les bonnes réponses ont été sélectionnées et aucune mauvaise réponse
+                $correct = true;
+                
+                // Vérifier que l'étudiant a sélectionné toutes les options correctes
+                foreach ($ids_options_correctes as $option_id) {
+                    if (!in_array($option_id, $reponses_etudiant)) {
+                        $correct = false;
+                        break;
+                    }
+                }
+                
+                // Vérifier qu'il n'a pas sélectionné d'options incorrectes
+                foreach ($reponses_etudiant as $option_id) {
+                    if (!in_array($option_id, $ids_options_correctes)) {
+                        $correct = false;
+                        break;
+                    }
+                }
+                
+                if ($correct) {
+                    $score++;
+                }
+            }
+        }
+
+        // Enregistrer la tentative dans la base de données
+        $tentativeModel = $this->model('QuizTentative');
+        $tentative_id = $tentativeModel->creerTentative($user_id, $quiz_id, $score, $score_max);
+
+        // Enregistrer les réponses de l'étudiant
+        foreach ($reponses as $question_id => $options_selectionnees) {
+            foreach ((array)$options_selectionnees as $option_id) {
+                $tentativeModel->enregistrerReponse($tentative_id, $question_id, $option_id);
+            }
+        }
+
+        // Rediriger vers la page de résultats
+        header('Location: /e-learning-role-final/public/quiz/etudiant/resultats/' . $tentative_id);
+        exit;
+    }
+
+    // Afficher les résultats du quiz
+    public function resultats($tentative_id)
+    {
+        // Vérifier que l'utilisateur est connecté
+        if (!isset($_SESSION['user'])) {
+            header('Location: /e-learning-role-final/public/login');
+            exit;
+        }
+
+        $tentativeModel = $this->model('QuizTentative');
+        $tentative = $tentativeModel->getTentativeById($tentative_id);
+
+        if (!$tentative) {
+            echo "Tentative introuvable.";
+            exit;
+        }
+
+        // Vérifier que l'utilisateur est propriétaire de cette tentative ou un admin
+        if ($tentative['user_id'] != $_SESSION['user']['id'] && $_SESSION['user']['role'] !== 'admin') {
+            header('Location: /e-learning-role-final/public/etudiant/dashboard');
+            exit;
+        }
+
+        $quizModel = $this->model('Quiz');
+        $quiz = $quizModel->getById($tentative['quiz_id']);
+
+        $coursModel = $this->model('Cours');
+        $cours = $coursModel->getById($quiz['cours_id']);
+
+        // Récupérer les questions du quiz
+        $questionModel = $this->model('Question');
+        $questions = $questionModel->getByQuizId($tentative['quiz_id']);
+
+        // Pour chaque question, récupérer ses options et les réponses de l'étudiant
+        $optionModel = $this->model('Option');
+        foreach ($questions as &$question) {
+            $question['options'] = $optionModel->getByQuestionId($question['id']);
+            $question['reponses_etudiant'] = $tentativeModel->getUserReponsesByQuestionId($tentative_id, $question['id']);
+        }
+
+        $this->view('etudiant/quiz/resultats', [
+            'tentative' => $tentative,
+            'quiz' => $quiz,
+            'cours' => $cours,
+            'questions' => $questions
+        ]);
+    }
 }

@@ -28,9 +28,18 @@ class Quiz
 
     public function getByCoursId($cours_id)
     {
-        $stmt = $this->db->prepare("SELECT * FROM quizzes WHERE cours_id = ? ORDER BY id DESC");
+        // Modification de la requête pour s'assurer qu'elle récupère TOUS les quiz du cours
+        // en retirant toute condition de filtre potentielle
+        $stmt = $this->db->prepare("SELECT * FROM quizzes WHERE cours_id = ? ORDER BY id ASC");
         $stmt->execute([$cours_id]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Récupérer tous les quiz et vérifier le résultat
+        $quizzes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Ajoute un débogage si nécessaire
+        // error_log("Requête des quiz pour le cours $cours_id: " . count($quizzes) . " quiz trouvés");
+        
+        return $quizzes;
     }
 
     public function update($id, $titre, $description)

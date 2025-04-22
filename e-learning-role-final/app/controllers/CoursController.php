@@ -42,13 +42,32 @@ class CoursController extends Controller
                 'stats' => $this->model('Chapitre')->progressionParCours($id)
             ]);
         } else {
+            // Récupérer TOUS les quiz pour ce cours - s'assurer qu'il n'y a pas de filtre supplémentaire
+            $quizModel = $this->model('Quiz');
+            $quizzes = $quizModel->getByCoursId($id);
+            
+            // Déboguer le nombre de quiz trouvés
+            // error_log("Nombre de quiz trouvés pour le cours $id: " . count($quizzes));
+            
+            // Si l'utilisateur est connecté, récupérer ses tentatives pour chaque quiz
+            if (isset($_SESSION['user'])) {
+                $tentativeModel = $this->model('QuizTentative');
+                $user_id = $_SESSION['user']['id'];
+                
+                foreach ($quizzes as &$quiz) {
+                    $meilleureTentative = $tentativeModel->getMeilleureTentative($user_id, $quiz['id']);
+                    $quiz['meilleure_tentative'] = $meilleureTentative;
+                }
+            }
+            
             $this->view('cours/voir_etudiant', [
                 'cours' => $cours,
                 'chapitres' => $chapitres,
                 'chapitres_vus' => $chapitres_vus,
                 'chapitres_termine' => $chapitres_termine,
                 'chapitres_total' => $chapitres_total,
-                'progression' => $progression
+                'progression' => $progression,
+                'quizzes' => $quizzes
             ]);
         }
     }

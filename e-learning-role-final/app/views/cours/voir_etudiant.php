@@ -29,6 +29,54 @@
         padding: 15px;
         background-color: #fff;
     }
+    
+    /* Styles renforcés pour les quiz */
+    .quiz-card-fixed {
+        background-color: #f9f9f9 !important;
+        border: 2px solid #ddd !important;
+        border-radius: 8px !important;
+        padding: 15px !important;
+        margin: 15px 30px !important;
+        position: relative !important;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1) !important;
+        min-height: 120px !important;
+    }
+    
+    .quiz-title-fixed {
+        margin-top: 0 !important;
+        font-size: 18px !important;
+        color: #333 !important;
+        font-weight: bold !important;
+    }
+    
+    .quiz-description-fixed {
+        color: #666 !important;
+        margin-bottom: 15px !important;
+    }
+    
+    .btn-quiz-fixed {
+        display: inline-block !important;
+        background-color: #ff5722 !important; /* Orange vif pour être bien visible */
+        color: white !important;
+        font-size: 16px !important;
+        font-weight: bold !important;
+        text-align: center !important;
+        padding: 10px 20px !important;
+        border-radius: 5px !important;
+        text-decoration: none !important;
+        margin-top: 10px !important;
+        border: none !important;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.2) !important;
+        cursor: pointer !important;
+        position: relative !important;
+        z-index: 10 !important;
+    }
+    
+    .btn-quiz-fixed:hover {
+        background-color: #e64a19 !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
+    }
 </style>
 
 <h3 style="margin-left: 30px;">Chapitres :</h3>
@@ -46,19 +94,13 @@
 <?php if ($progression == 100): ?>
     <div style="max-width: 400px; margin: 20px auto; margin-top: 15px; padding: 15px; background-color: #e8f5e9; border-left: 6px solid #4CAF50; border-radius: 6px; text-align: center;">
         <strong>Bravo !</strong> Vous avez complété tous les chapitres.<br>
-        <a href="/e-learning-role-final/public/quiz/etudiant/tenter/<?= $cours['id'] ?>" style="display: inline-block; margin-top: 10px; padding: 8px 16px; background-color: #4CAF50; color: white; border-radius: 4px; text-decoration: none;">
-            Passer les quiz du cours
-        </a>
     </div>
 <?php else: ?>
     <div style="max-width: 400px; margin: 20px auto; margin-top: 15px; padding: 15px; background-color: #fff3cd; border-left: 6px solid #ffc107; border-radius: 6px; text-align: center;">
-        <strong>Vous êtes pas loin !</strong> Terminez tous les chapitres <br>
+        <strong>Vous n'êtes pas loin !</strong> Terminez tous les chapitres <br>
         Progression actuelle : <?= $progression ?>%
     </div>
 <?php endif; ?>
-
-
-
 
 <?php foreach ($chapitres as $chap): ?>
     <div class="accordion-item">
@@ -92,6 +134,48 @@
     </div>
 <?php endforeach; ?>
 
+<!-- Section des quiz avec style renforcé -->
+<h3 style="margin-left: 30px;">Quiz du cours :</h3>
+
+<div>
+    <?php if (empty($quizzes)): ?>
+        <p style="margin-left: 30px;">Aucun quiz n'est disponible pour ce cours pour le moment.</p>
+    <?php else: ?>
+        <?php foreach ($quizzes as $quiz): ?>
+            <div class="quiz-card-fixed">
+                <!-- Titre et description -->
+                <h4 class="quiz-title-fixed"><?= htmlspecialchars($quiz['titre']) ?></h4>
+                <p class="quiz-description-fixed"><?= nl2br(htmlspecialchars($quiz['description'])) ?></p>
+                
+                <!-- Score précédent si disponible avec vérifications supplémentaires -->
+                <?php if (isset($quiz['meilleure_tentative']) && $quiz['meilleure_tentative'] !== null): ?>
+                    <?php if (isset($quiz['meilleure_tentative']['score']) && 
+                              isset($quiz['meilleure_tentative']['score_max']) && 
+                              $quiz['meilleure_tentative']['score_max'] > 0): ?>
+                        <div style="background-color: #e8f5e9 !important; padding: 8px !important; border-radius: 4px !important; margin-bottom: 15px !important;">
+                            <strong>Score précédent:</strong> <?= $quiz['meilleure_tentative']['score'] ?>/<?= $quiz['meilleure_tentative']['score_max'] ?> 
+                            (<?= round(($quiz['meilleure_tentative']['score'] / $quiz['meilleure_tentative']['score_max']) * 100) ?>%)
+                        </div>
+                    <?php elseif (isset($quiz['meilleure_tentative']['score']) && isset($quiz['meilleure_tentative']['score_max'])): ?>
+                        <div style="background-color: #fff3e0 !important; padding: 8px !important; border-radius: 4px !important; margin-bottom: 15px !important;">
+                            <strong>Score précédent:</strong> <?= $quiz['meilleure_tentative']['score'] ?? 0 ?>/<?= $quiz['meilleure_tentative']['score_max'] ?? 0 ?>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <!-- Bouton "Refaire le quiz" quand il y a eu une tentative -->
+                    <a href="/e-learning-role-final/public/quiz/etudiant/tenter/<?= $quiz['id'] ?>" class="btn-quiz-fixed">
+                        🔄 Refaire le quiz
+                    </a>
+                <?php else: ?>
+                    <!-- Bouton "Commencer le quiz" quand il n'y a jamais eu de tentative -->
+                    <a href="/e-learning-role-final/public/quiz/etudiant/tenter/<?= $quiz['id'] ?>" class="btn-quiz-fixed">
+                        ▶️ Commencer le quiz
+                    </a>
+                <?php endif; ?>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</div>
 
 <script>
     function toggleChapitre(index) {
