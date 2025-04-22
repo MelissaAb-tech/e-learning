@@ -1,4 +1,87 @@
 <link rel="stylesheet" href="/e-learning-role-final/public/style/admin-form.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+    /* Styles pour la barre de navigation */
+    .course-navbar {
+        background: linear-gradient(90deg, #2c3e50, #3B82F6);
+        color: white;
+        padding: 12px 30px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    
+    .course-navbar-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: white;
+        margin-right: 20px;
+    }
+    
+    .course-navbar-buttons {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .navbar-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .navbar-btn-primary {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+    
+    .navbar-btn-primary:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    @media (max-width: 768px) {
+        .course-navbar {
+            flex-direction: column;
+            padding: 10px 20px;
+        }
+        
+        .course-navbar-title {
+            margin-bottom: 10px;
+            margin-right: 0;
+        }
+        
+        .course-navbar-buttons {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<!-- Barre de navigation du cours -->
+<div class="course-navbar">
+    <div class="course-navbar-title">
+        <?= htmlspecialchars($cours['nom']) ?>
+    </div>
+    
+    <div class="course-navbar-buttons">
+        <a href="/e-learning-role-final/public/admin/dashboard" class="navbar-btn navbar-btn-primary">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+        <a href="/e-learning-role-final/public/forum/cours/<?= $cours['id'] ?>" class="navbar-btn navbar-btn-primary">
+            <i class="fas fa-comments"></i> Forum
+        </a>
+    </div>
+</div>
 
 <div style="display: flex; gap: 40px; align-items: flex-start; justify-content: space-between;">
 
