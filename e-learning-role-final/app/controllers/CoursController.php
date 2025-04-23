@@ -12,23 +12,8 @@ class CoursController extends Controller
         }
 
         // Récupérer les chapitres du cours
-        $chapitres = $this->model('Chapitre')->getByCoursId($id);
-
-        // Récupérer les chapitres vus par l'utilisateur
-        $chapitres_vus = [];
-        if (isset($_SESSION['user'])) {
-            $chapitres_vus = $this->model('Chapitre')->getVusParUser($_SESSION['user']['id']);
-        }
-
-        // Calculer la progression
-        $chapitres_total = count($chapitres);
-        $chapitres_termine = 0;
-        foreach ($chapitres as $chap) {
-            if (in_array($chap['id'], $chapitres_vus)) {
-                $chapitres_termine++;
-            }
-        }
-        $progression = $chapitres_total > 0 ? round(($chapitres_termine / $chapitres_total) * 100) : 0;
+        $chapitreModel = $this->model('Chapitre');
+        $chapitres = $chapitreModel->getByCoursId($id);
 
         // Vérifier le rôle de l'utilisateur
         $user = $_SESSION['user'] ?? null;
@@ -36,25 +21,53 @@ class CoursController extends Controller
 
         // Afficher la vue en fonction du rôle (admin ou étudiant)
         if ($isAdmin) {
+            // Récupération directe des statistiques pour l'admin
+            // La vue calculera elle-même les statistiques correctes
             $this->view('cours/voir_admin', [
                 'cours' => $cours,
-                'chapitres' => $chapitres,
-                'stats' => $this->model('Chapitre')->progressionParCours($id)
+                'chapitres' => $chapitres
             ]);
         } else {
+            // Vérifier si l'utilisateur est connecté
+            if (!isset($_SESSION['user'])) {
+                header('Location: /e-learning-role-final/public/login');
+                exit;
+            }
+            
+            // Vérifier si l'utilisateur est inscrit au cours
+            $inscriptionModel = $this->model('CoursInscription');
+            $estInscrit = $inscriptionModel->estInscrit($_SESSION['user']['id'], $id);
+            
+            // Si l'utilisateur n'est pas inscrit, le rediriger vers le dashboard
+            if (!$estInscrit) {
+                header('Location: /e-learning-role-final/public/etudiant/dashboard');
+                exit;
+            }
+            
+            // Récupérer les chapitres vus par l'utilisateur
+            $chapitres_vus = $chapitreModel->getVusParUser($_SESSION['user']['id']);
+
+            // Calculer la progression
+            $chapitres_total = count($chapitres);
+            $chapitres_termine = 0;
+            foreach ($chapitres as $chap) {
+                if (in_array($chap['id'], $chapitres_vus)) {
+                    $chapitres_termine++;
+                }
+            }
+            $progression = $chapitres_total > 0 ? round(($chapitres_termine / $chapitres_total) * 100) : 0;
+
             // Récupérer TOUS les quiz pour ce cours
             $quizModel = $this->model('Quiz');
             $quizzes = $quizModel->getByCoursId($id);
             
-            // Si l'utilisateur est connecté, récupérer ses tentatives pour chaque quiz
-            if (isset($_SESSION['user'])) {
-                $tentativeModel = $this->model('QuizTentative');
-                $user_id = $_SESSION['user']['id'];
-                
-                foreach ($quizzes as &$quiz) {
-                    $meilleureTentative = $tentativeModel->getMeilleureTentative($user_id, $quiz['id']);
-                    $quiz['meilleure_tentative'] = $meilleureTentative;
-                }
+            // Récupérer les tentatives de l'étudiant pour chaque quiz
+            $tentativeModel = $this->model('QuizTentative');
+            $user_id = $_SESSION['user']['id'];
+            
+            foreach ($quizzes as &$quiz) {
+                $meilleureTentative = $tentativeModel->getMeilleureTentative($user_id, $quiz['id']);
+                $quiz['meilleure_tentative'] = $meilleureTentative;
             }
             
             $this->view('cours/voir_etudiant', [
@@ -100,6 +113,8 @@ class CoursController extends Controller
         foreach ($quizzes as $quiz) {
             $tentativeModel->deleteTentativesByUserAndQuiz($user_id, $quiz['id']);
         }
+        
+        // Note: l'inscription au cours est maintenue même après réinitialisation
         
         // Rediriger vers la page du cours
         header("Location: /e-learning-role-final/public/cours/voir/$id");
