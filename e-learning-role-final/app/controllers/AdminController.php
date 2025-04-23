@@ -148,4 +148,47 @@ class AdminController extends Controller
         header('Location: /e-learning-role-final/public');  // Rediriger vers la page de d'acceuil
         exit;
     }
+    public function etudiantModifier($id)
+    {
+        $userModel = $this->model('User');
+        $etudiant = $userModel->getById($id);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Récupérer les données du formulaire
+            $prenom = $_POST['prenom'];
+            $nom = $_POST['nom'];
+            $email = $_POST['email'];
+            $age = $_POST['age'];
+            $adresse = $_POST['adresse'];
+            $fonction = $_POST['fonction'];
+            $telephone = $_POST['telephone'];
+            $photo_profil = $etudiant['photo_profil'];  // Garder l'ancienne photo 
+
+            // Gérer la photo de profil
+            if (isset($_FILES['photo_profil']) && $_FILES['photo_profil']['error'] == 0) {
+                // Nouveau nom pour l'image pour éviter les conflits
+                $photo_profil = time() . '_' . $_FILES['photo_profil']['name'];
+                $uploadDir = 'public/images/';
+                $uploadPath = $_SERVER['DOCUMENT_ROOT'] . '/' . $uploadDir . $photo_profil;
+
+                // Déplacer l'image téléchargée dans le répertoire approprié
+                move_uploaded_file($_FILES['photo_profil']['tmp_name'], $uploadPath);
+            }
+
+            // Vérifier si un mot de passe est fourni et le hacher 
+            if (!empty($_POST['password'])) {
+                $password = password_hash($_POST['password'], PASSWORD_DEFAULT);  // Hacher le mot de passe
+            } else {
+                $password = $etudiant['password'];  // Garder l'ancien mot de passe si aucun nouveau 
+            }
+
+            // Mettre à jour les informations de l'étudiant dans la bd
+            $userModel->updateInfo($id, $nom, $prenom, $age, $fonction, $email, $adresse, $telephone, $photo_profil, $password);
+
+            header('Location: /e-learning-role-final/public/admin/dashboard');
+            exit;
+        }
+
+        $this->view('admin/etudiant_modifier', ['etudiant' => $etudiant]);
+    }
 }

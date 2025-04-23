@@ -75,7 +75,7 @@ input[type="password"]:focus,
 input[type="number"]:focus,
 input[type="tel"]:focus,
 input[type="file"]:focus {
-    border-color: #667eea;
+    border-color: #007BFF;
     background-color: #fff;
     outline: none;
 }
@@ -84,7 +84,7 @@ button {
     width: 100%;
     padding: 14px;
     font-size: 16px;
-    background: linear-gradient(to right, #667eea, #764ba2);
+    background: linear-gradient(to right, #007BFF, #1269b1);
     color: white;
     border: none;
     border-radius: 10px;
@@ -94,5 +94,5 @@ button {
 }
 
 button:hover {
-    background: linear-gradient(to right, #5a67d8, #6b46c1);
+    background: linear-gradient(to right, #007BFF, #1269b1);
 }

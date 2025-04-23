@@ -70,6 +70,10 @@ $router->get('quiz/etudiant/liste/([0-9]+)', 'QuizController@listeQuiz');
 // Route pour le certificat (à implémenter plus tard)
 $router->get('certificat/generer/([0-9]+)', 'CertificatController@generer');
 
-// Route pour la déconnexion
+// Routes pour la déconnexion
 $router->get('logout', 'EtudiantController@logout');
 $router->get('logout', 'AdminController@logout');
+
+// Routes pour la modif des infos etudiant par l'admin
+$router->get('admin/etudiant/modifier/([0-9]+)', 'AdminController@etudiantModifier');
+$router->post('admin/etudiant/modifier/([0-9]+)', 'AdminController@etudiantModifier');

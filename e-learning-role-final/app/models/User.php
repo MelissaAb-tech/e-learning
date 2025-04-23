@@ -58,9 +58,14 @@ class User
     }
 
     // Méthode pour mettre à jour les informations de l'utilisateur
-    public function updateInfo($id, $nom, $prenom, $age, $fonction, $email, $adresse, $telephone, $photo_profil)
+
+    public function updateInfo($id, $nom, $prenom, $age, $fonction, $email, $adresse, $telephone, $photo_profil, $password)
     {
-        $stmt = $this->db->prepare("UPDATE users SET nom = ?, prenom = ?, age = ?, fonction = ?, email = ?, adresse = ?, telephone = ?, photo_profil = ? WHERE id = ?");
-        return $stmt->execute([$nom, $prenom, $age, $fonction, $email, $adresse, $telephone, $photo_profil, $id]);
+        $stmt = $this->db->prepare("
+            UPDATE users 
+            SET nom = ?, prenom = ?, age = ?, fonction = ?, email = ?, adresse = ?, telephone = ?, photo_profil = ?, password = ? 
+            WHERE id = ?
+        ");
+        return $stmt->execute([$nom, $prenom, $age, $fonction, $email, $adresse, $telephone, $photo_profil, $password, $id]);
     }
 }
