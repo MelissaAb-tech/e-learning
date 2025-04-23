@@ -32,4 +32,8 @@
 
         <button type="submit">Créer le compte</button>
     </form>
+    
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="/e-learning-role-final/public/admin/dashboard" style="display: inline-block; background-color: #6c757d; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; font-weight: 500;">Retour au tableau de bord</a>
+    </div>
 </div>
