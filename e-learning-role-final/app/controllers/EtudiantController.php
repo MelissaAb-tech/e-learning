@@ -4,8 +4,22 @@ class EtudiantController extends Controller
     public function dashboard()
     {
         $cours = $this->model('Cours')->getAll();
-        $this->view('etudiant/dashboard', ['cours' => $cours]);
+        
+        // Si l'utilisateur est connecté, vérifier les inscriptions
+        $coursInscrits = [];
+        if (isset($_SESSION['user'])) {
+            $inscriptionModel = $this->model('CoursInscription');
+            foreach ($cours as $c) {
+                $coursInscrits[$c['id']] = $inscriptionModel->estInscrit($_SESSION['user']['id'], $c['id']);
+            }
+        }
+        
+        $this->view('etudiant/dashboard', [
+            'cours' => $cours,
+            'coursInscrits' => $coursInscrits
+        ]);
     }
+
     public function monCompte()
     {
         if (!isset($_SESSION['user'])) {
@@ -69,6 +83,7 @@ class EtudiantController extends Controller
         header('Location: /e-learning-role-final/public/etudiant/mon-compte');
         exit;
     }
+    
     public function logout()
     {
         session_start();
@@ -78,6 +93,58 @@ class EtudiantController extends Controller
         session_destroy();
         // Rediriger l'utilisateur vers la page d'accueil
         header('Location: /e-learning-role-final/public');
+        exit;
+    }
+    
+    // Nouvelle méthode pour s'inscrire à un cours
+    public function inscrire($cours_id)
+    {
+        // Vérifier que l'utilisateur est connecté
+        if (!isset($_SESSION['user'])) {
+            header('Location: /e-learning-role-final/public/login');
+            exit;
+        }
+        
+        // Vérifier que le cours existe
+        $coursModel = $this->model('Cours');
+        $cours = $coursModel->getById($cours_id);
+        
+        if (!$cours) {
+            echo "Cours introuvable.";
+            exit;
+        }
+        
+        // Inscrire l'étudiant
+        $this->model('CoursInscription')->inscrire($_SESSION['user']['id'], $cours_id);
+        
+        // Rediriger vers la page du cours
+        header("Location: /e-learning-role-final/public/cours/voir/$cours_id");
+        exit;
+    }
+    
+    // Nouvelle méthode pour se désinscrire d'un cours
+    public function desinscrire($cours_id)
+    {
+        // Vérifier que l'utilisateur est connecté
+        if (!isset($_SESSION['user'])) {
+            header('Location: /e-learning-role-final/public/login');
+            exit;
+        }
+        
+        // Vérifier que le cours existe
+        $coursModel = $this->model('Cours');
+        $cours = $coursModel->getById($cours_id);
+        
+        if (!$cours) {
+            echo "Cours introuvable.";
+            exit;
+        }
+        
+        // Désinscrire l'étudiant
+        $this->model('CoursInscription')->desinscrire($_SESSION['user']['id'], $cours_id);
+        
+        // Rediriger vers le dashboard
+        header("Location: /e-learning-role-final/public/etudiant/dashboard");
         exit;
     }
 }

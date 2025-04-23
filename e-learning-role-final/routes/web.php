@@ -34,6 +34,8 @@ $router->get('admin/etudiant/supprimer/([0-9]+)', 'AdminController@etudiantSuppr
 $router->get('etudiant/mon-compte', 'EtudiantController@monCompte');
 $router->post('etudiant/mon-compte', 'EtudiantController@monComptePost');
 $router->post('etudiant/mon-compte/modifier', 'EtudiantController@monComptePost');
+$router->get('etudiant/inscrire/([0-9]+)', 'EtudiantController@inscrire');
+$router->get('etudiant/desinscrire/([0-9]+)', 'EtudiantController@desinscrire');
 
 // Routes pour le forum
 $router->get('forum/cours/([0-9]+)', 'ForumController@index');

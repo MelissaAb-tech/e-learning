@@ -80,6 +80,7 @@
                             <h3><?= htmlspecialchars($etudiant['nom']) ?></h3>
                             <p><?= htmlspecialchars($etudiant['email']) ?></p>
                             <div class="card-actions">
+                                <a href="/e-learning-role-final/public/admin/etudiant/modifier/<?= $etudiant['id'] ?>">Modifier</a>
                                 <a href="/e-learning-role-final/public/admin/etudiant/supprimer/<?= $etudiant['id'] ?>" onclick="return confirm('Supprimer cet étudiant ?')">Supprimer</a>
                             </div>
                         </div>
