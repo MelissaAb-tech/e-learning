@@ -1,6 +1,35 @@
 <link rel="stylesheet" href="/e-learning-role-final/public/style/admin-dashboard.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
+<style>
+    .stat-icon.orange {
+        background-color: #F97316;
+    }
+    
+    .btn-feedbacks {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background-color: #3B82F6;
+        color: white;
+        padding: 12px 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        margin: 15px 0 5px 0;
+        transition: background-color 0.3s;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-feedbacks:hover {
+        background-color: #2563EB;
+    }
+    
+    .btn-feedbacks i {
+        font-size: 16px;
+    }
+</style>
 
 <div class="admin-header">
     <a href="/e-learning-role-final/public/logout" class="logout-button">
@@ -34,6 +63,22 @@
                 <p>Étudiants inscrits</p>
             </div>
         </div>
+        
+        <!-- Widget pour la moyenne des notes -->
+        <div class="stat-widget">
+            <div class="stat-icon orange">
+                <i class="fas fa-star"></i>
+            </div>
+            <div class="stat-info">
+                <h3><?= number_format($moyenneNotes, 1) ?>/5</h3>
+                <p>Note moyenne (<?= $nombreFeedbacks ?> avis)</p>
+            </div>
+        </div>
+        
+        <!-- Bouton pour lire les feedbacks, aligné sous les statistiques -->
+        <a href="/e-learning-role-final/public/admin/feedbacks" class="btn-feedbacks">
+            <i class="fas fa-comments"></i> Lire les feedbacks
+        </a>
     </div>
 
     <div class="admin-content">

@@ -165,7 +165,12 @@ class EtudiantController extends Controller
 
             // Ajouter le feedback dans la base de données via le modèle
             $feedbackModel = $this->model('FeedbackModel');
-            $feedbackModel->create($etudiant_id, $rating, $commentaire);
+            $result = $feedbackModel->create($etudiant_id, $rating, $commentaire);
+            
+            if ($result) {
+                // Ajouter un message de succès dans la session
+                $_SESSION['feedback_success'] = "Votre feedback a bien été envoyé. Merci pour votre contribution !";
+            }
 
             // Rediriger l'utilisateur vers le tableau de bord après l'envoi du feedback
             header("Location: /e-learning-role-final/public/etudiant/dashboard");

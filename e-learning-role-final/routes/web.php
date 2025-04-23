@@ -14,6 +14,9 @@ $router->get('admin/modifier/([0-9]+)', 'AdminController@modifier');
 $router->post('admin/modifier/([0-9]+)', 'AdminController@modifier');
 $router->get('admin/supprimer/([0-9]+)', 'AdminController@supprimer');
 
+// Nouvelle route pour la liste des feedbacks
+$router->get('admin/feedbacks', 'AdminController@feedbacks');
+
 $router->get('cours/voir/([0-9]+)', 'CoursController@voir');
 $router->post('cours/voir/([0-9]+)', 'CoursController@voir');
 // Nouvelle route pour réinitialiser un cours
@@ -85,7 +88,7 @@ $router->get('admin/etudiant/modifier/([0-9]+)', 'AdminController@etudiantModifi
 
 $router->post('admin/etudiant/modifier/([0-9]+)', 'AdminController@etudiantModifier');
 
-$router->post('/etudiant/feedback', 'EtudiantController@feedback');
+// Route de feedback 
+$router->post('etudiant/feedback', 'EtudiantController@feedback');
 
 $router->post('admin/etudiant/modifier/([0-9]+)', 'AdminController@etudiantModifier');
-

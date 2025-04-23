@@ -85,11 +85,23 @@ class AdminController extends Controller
 
         $this->view('admin/voir', ['cours' => $cours]);
     }
+
     public function dashboard()
     {
         $cours = $this->model('Cours')->getAll();
         $etudiants = $this->model('User')->getAllEtudiants();
-        $this->view('admin/dashboard', ['cours' => $cours, 'etudiants' => $etudiants]);
+        
+        // Récupérer la moyenne des notes et le nombre de feedbacks
+        $feedbackModel = $this->model('FeedbackModel');
+        $moyenneNotes = $feedbackModel->getMoyenneNotes();
+        $nombreFeedbacks = $feedbackModel->getNombreFeedbacks();
+        
+        $this->view('admin/dashboard', [
+            'cours' => $cours, 
+            'etudiants' => $etudiants,
+            'moyenneNotes' => $moyenneNotes,
+            'nombreFeedbacks' => $nombreFeedbacks
+        ]);
     }
 
     public function etudiantAjouter()
@@ -191,4 +203,23 @@ class AdminController extends Controller
 
         $this->view('admin/etudiant_modifier', ['etudiant' => $etudiant]);
     }
+    
+    public function feedbacks()
+    {
+        // Vérifier que l'utilisateur est administrateur
+        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
+            header('Location: /e-learning-role-final/public/login');
+            exit;
+        }
+        
+        // Récupérer tous les feedbacks
+        $feedbackModel = $this->model('FeedbackModel');
+        $feedbacks = $feedbackModel->getAllFeedbacks();
+        
+        // Afficher la vue avec les feedbacks
+        $this->view('admin/feedbacks', [
+            'feedbacks' => $feedbacks
+        ]);
+    }
+
 }

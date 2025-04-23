@@ -53,6 +53,33 @@
     .btn-unsubscribe:hover {
         background-color: #EF4444;
     }
+    
+    /* Style pour le message de succès */
+    .feedback-success {
+        background-color: #D1FAE5;
+        color: #065F46;
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin: 20px 60px 0;
+        text-align: center;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        animation: fadeIn 0.5s ease-in, fadeOut 0.5s 5s ease-in forwards;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fadeOut {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(-10px); }
+    }
 </style>
 
 <div class="student-header">
@@ -68,6 +95,17 @@
     <p>Accédez à vos cours disponibles et suivez votre progression</p>
 </div>
 
+<!-- Affichage du message de succès s'il existe -->
+<?php if (isset($_SESSION['feedback_success'])): ?>
+    <div class="feedback-success">
+        <i class="fas fa-check-circle"></i>
+        <?= $_SESSION['feedback_success'] ?>
+    </div>
+    <?php 
+    // Suppression du message après affichage pour qu'il ne s'affiche qu'une fois
+    unset($_SESSION['feedback_success']); 
+    ?>
+<?php endif; ?>
 
 <div class="course-grid">
     <?php foreach ($cours as $c): ?>
