@@ -162,3 +162,124 @@ body {
     color: #F97316;
     align-self: flex-start;
 }
+
+.student-feedback-box {
+    max-width: 600px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.student-feedback-box h2 {
+    text-align: center;
+    font-size: 22px;
+    margin-bottom: 20px;
+    color: #2563EB;
+}
+
+.feedback-form .form-group {
+    margin-bottom: 20px;
+}
+
+.feedback-form label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.feedback-form .star-rating {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    font-size: 28px;
+}
+
+.feedback-form input[type="radio"] {
+    display: none;
+}
+
+.feedback-form .star {
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+
+
+.feedback-form textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #f9f9f9;
+    transition: border-color 0.3s;
+}
+
+.feedback-form textarea:focus {
+    border-color: #2563EB;
+    background: white;
+    outline: none;
+}
+
+.feedback-form button {
+    width: 100%;
+    padding: 12px;
+    background-color: #2563EB;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.feedback-form button:hover {
+    background-color: #1e40af;
+}
+
+
+.section-divider {
+    text-align: center;
+    margin: 60px auto 30px;
+}
+
+.section-divider h2 {
+    font-size: 34px;
+    color: #2563EB;
+    margin-bottom: 6px;
+}
+
+.section-divider p {
+    font-size: 16px;
+    color: #6B7280;
+}
+
+.star-rating {
+    direction: rtl;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    font-size: 28px;
+}
+
+.star-rating input[type="radio"] {
+    display: none;
+}
+
+
+.star-rating label {
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.star-rating input[type="radio"]:checked~label,
+.star-rating label:hover,
+.star-rating label:hover~label {
+    color: #FFB400;
+}
