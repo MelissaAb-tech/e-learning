@@ -79,3 +79,5 @@ $router->get('logout', 'AdminController@logout');
 // Routes pour la modif des infos etudiant par l'admin
 $router->get('admin/etudiant/modifier/([0-9]+)', 'AdminController@etudiantModifier');
 $router->post('admin/etudiant/modifier/([0-9]+)', 'AdminController@etudiantModifier');
+
+$router->post('/etudiant/feedback', 'EtudiantController@feedback');

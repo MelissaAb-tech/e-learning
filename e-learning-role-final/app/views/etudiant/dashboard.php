@@ -8,7 +8,7 @@
         display: flex;
         gap: 10px;
     }
-    
+
     .btn-access {
         display: inline-block;
         background-color: #3B82F6;
@@ -19,11 +19,11 @@
         font-weight: 500;
         transition: background 0.3s;
     }
-    
+
     .btn-access:hover {
         background-color: #2563EB;
     }
-    
+
     .btn-subscribe {
         display: inline-block;
         background-color: #10B981;
@@ -34,11 +34,11 @@
         font-weight: 500;
         transition: background 0.3s;
     }
-    
+
     .btn-subscribe:hover {
         background-color: #059669;
     }
-    
+
     .btn-unsubscribe {
         display: inline-block;
         background-color: #F87171;
@@ -49,7 +49,7 @@
         font-weight: 500;
         transition: background 0.3s;
     }
-    
+
     .btn-unsubscribe:hover {
         background-color: #EF4444;
     }
@@ -78,7 +78,7 @@
                 <h3><?= $c['nom'] ?></h3>
                 <p class="prof">Par <?= $c['professeur'] ?></p>
                 <p class="desc"><?= nl2br($c['contenu']) ?></p>
-                
+
                 <?php if (isset($coursInscrits) && isset($coursInscrits[$c['id']]) && $coursInscrits[$c['id']]): ?>
                     <!-- L'étudiant est inscrit -->
                     <div class="course-actions">
@@ -107,7 +107,7 @@
     <p>Vos retours sont précieux pour améliorer la plateforme</p>
 </div>
 
-<!-- Feedback  -->
+<!-- Feedback -->
 <div class="student-feedback-box">
     <form method="POST" action="/e-learning-role-final/public/etudiant/feedback" class="feedback-form">
         <div class="form-group">

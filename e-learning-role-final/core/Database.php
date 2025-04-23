@@ -122,6 +122,15 @@ class Database
 
         // Création des tables de quiz
         self::createQuizTables();
+
+        self::$pdo->exec("CREATE TABLE IF NOT EXISTS `feedbacks_generaux` (
+                `id` INT AUTO_INCREMENT PRIMARY KEY,
+                `etudiant_id` INT NOT NULL,
+                `note` INT NOT NULL CHECK (note BETWEEN 1 AND 5),
+                `commentaire` TEXT NOT NULL,
+                `date_feedback` DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (`etudiant_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
     }
 
     private static function createQuizTables()
@@ -160,15 +169,6 @@ class Database
             PRIMARY KEY (`id`),
             KEY `question_id` (`question_id`),
             CONSTRAINT `options_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE CASCADE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
-        // Ajoute ça dans createTables()
-        self::$pdo->exec("CREATE TABLE IF NOT EXISTS `feedbacks_generaux` (
-        `id` INT AUTO_INCREMENT PRIMARY KEY,
-        `etudiant_id` INT NOT NULL,
-        `note` INT NOT NULL CHECK (note BETWEEN 1 AND 5),
-        `commentaire` TEXT NOT NULL,
-        `date_feedback` DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (`etudiant_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
     }
 
