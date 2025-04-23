@@ -26,11 +26,24 @@ class User
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function createEtudiant($nom, $email, $password)
+    public function createEtudiant($prenom, $nom, $email, $password, $age, $adresse, $fonction, $telephone, $photo_profil)
     {
-        $stmt = $this->db->prepare("INSERT INTO users (nom, email, password, role) VALUES (?, ?, ?, 'etudiant')");
-        return $stmt->execute([$nom, $email, $password]);
+        // Vérifier si l'email existe 
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM users WHERE email = ?");
+        $stmt->execute([$email]);
+        $existingEmail = $stmt->fetchColumn();
+
+        if ($existingEmail > 0) {
+            // si l'email est déjà pris
+            return false; // retourner false si l'email existe 
+        }
+
+        // insérer l'étudiant dans la bd
+        $stmt = $this->db->prepare("INSERT INTO users (prenom, nom, email, password, age, adresse, fonction, telephone, photo_profil, role) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'etudiant')");
+        return $stmt->execute([$prenom, $nom, $email, $password, $age, $adresse, $fonction, $telephone, $photo_profil]);
     }
+
 
     public function delete($id)
     {
@@ -41,7 +54,7 @@ class User
     {
         $stmt = $this->db->prepare("SELECT * FROM users WHERE id = ?");
         $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);  // Retourner les données sous forme de tableau associatif
+        return $stmt->fetch(PDO::FETCH_ASSOC);  // Retourner les données sous forme de tableau 
     }
 
     // Méthode pour mettre à jour les informations de l'utilisateur

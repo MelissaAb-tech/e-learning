@@ -95,15 +95,43 @@ class AdminController extends Controller
     public function etudiantAjouter()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Récupérer les données du formulaire
             $nom = $_POST['nom'];
+            $prenom = $_POST['prenom'];
             $email = $_POST['email'];
             $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-            $this->model('User')->createEtudiant($nom, $email, $password);
+            $age = $_POST['age'];
+            $adresse = $_POST['adresse'];
+            $fonction = $_POST['fonction'];
+            $telephone = $_POST['telephone'];
+
+            $photo_profil = null;
+            if (!empty($_FILES['photo_profil']['name'])) {
+                // Définir le répertoire de destination
+                $targetDir = "../../public/images/";
+                $photo_profil = time() . '_' . $_FILES['photo_profil']['name'];  // Nouveau nom unique 
+                $targetFile = $targetDir . $photo_profil;
+
+                // Vérifier si le répertoire existe sinon le créer
+                if (!file_exists($targetDir)) {
+                    mkdir($targetDir, 0777, true);  // Créer le répertoire
+                }
+
+                // Déplacer l'image téléchargée dans le répertoire de destination
+                move_uploaded_file($_FILES['photo_profil']['tmp_name'], $targetFile);
+            }
+
+            // Appeler la méthode pour créer l'étudiant dans la bd
+            $this->model('User')->createEtudiant($prenom, $nom, $email, $password, $age, $adresse, $fonction, $telephone, $photo_profil);
+
+            // Rediriger l'admin vers le tableau de bord après ajout de l'étudiant
             header('Location: /e-learning-role-final/public/admin/dashboard');
             exit;
         }
+
         $this->view('admin/etudiant_ajouter');
     }
+
 
     public function etudiantSupprimer($id)
     {
