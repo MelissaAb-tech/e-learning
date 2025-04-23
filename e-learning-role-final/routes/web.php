@@ -22,6 +22,10 @@ $router->get('cours/reinitialiser/([0-9]+)', 'CoursController@reinitialiser');
 $router->get('admin/chapitre/ajouter/([0-9]+)', 'ChapitreController@ajouter');
 $router->post('admin/chapitre/ajouter/([0-9]+)', 'ChapitreController@ajouter');
 
+// Nouvelles routes pour modifier un chapitre
+$router->get('admin/chapitre/modifier/([0-9]+)/([0-9]+)', 'ChapitreController@modifier');
+$router->post('admin/chapitre/modifier/([0-9]+)/([0-9]+)', 'ChapitreController@modifier');
+
 $router->get('admin/chapitre/supprimer/([0-9]+)/([0-9]+)', 'ChapitreController@supprimer');
 $router->post('chapitre/valider', 'ChapitreController@valider');
 
@@ -78,6 +82,10 @@ $router->get('logout', 'AdminController@logout');
 
 // Routes pour la modif des infos etudiant par l'admin
 $router->get('admin/etudiant/modifier/([0-9]+)', 'AdminController@etudiantModifier');
+
 $router->post('admin/etudiant/modifier/([0-9]+)', 'AdminController@etudiantModifier');
 
 $router->post('/etudiant/feedback', 'EtudiantController@feedback');
+
+$router->post('admin/etudiant/modifier/([0-9]+)', 'AdminController@etudiantModifier');
+

@@ -235,6 +235,7 @@
         <?php endif; ?>
 
         <p>
+            <a href="/e-learning-role-final/public/admin/chapitre/modifier/<?= $chap['id'] ?>/<?= $cours['id'] ?>">✏️ Modifier le chapitre</a> | 
             <a href="/e-learning-role-final/public/admin/chapitre/supprimer/<?= $chap['id'] ?>/<?= $cours['id'] ?>" onclick="return confirm('Supprimer ce chapitre ?')">🗑️ Supprimer le chapitre</a>
         </p>
     </div>
