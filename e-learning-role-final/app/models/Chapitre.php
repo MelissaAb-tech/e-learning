@@ -111,4 +111,19 @@ class Chapitre
         $stmt = $this->db->prepare($sql);
         return $stmt->execute($params);
     }
+    
+    // Ajout de la méthode pour récupérer un chapitre par son ID
+    public function getById($id)
+    {
+        $stmt = $this->db->prepare("SELECT * FROM chapitres WHERE id = ?");
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
+    // Ajout de la méthode pour mettre à jour un chapitre
+    public function update($id, $titre, $description, $pdf, $video)
+    {
+        $stmt = $this->db->prepare("UPDATE chapitres SET titre = ?, description = ?, pdf = ?, video = ? WHERE id = ?");
+        return $stmt->execute([$titre, $description, $pdf, $video, $id]);
+    }
 }
