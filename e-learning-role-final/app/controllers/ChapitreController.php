@@ -15,12 +15,12 @@ class ChapitreController extends Controller
             // Traitement des PDFs
             if (isset($_FILES['pdfs'])) {
                 $pdf_count = count($_FILES['pdfs']['name']);
-                
+
                 for ($i = 0; $i < $pdf_count; $i++) {
                     if (!empty($_FILES['pdfs']['name'][$i])) {
                         $pdf_name = basename($_FILES['pdfs']['name'][$i]);
                         $target_file = "../public/pdfs/" . $pdf_name;
-                        
+
                         if (move_uploaded_file($_FILES['pdfs']['tmp_name'][$i], $target_file)) {
                             $pdfs[] = $pdf_name;
                         }
@@ -31,12 +31,12 @@ class ChapitreController extends Controller
             // Traitement des fichiers vidéo MP4
             if (isset($_FILES['videos'])) {
                 $video_count = count($_FILES['videos']['name']);
-                
+
                 for ($i = 0; $i < $video_count; $i++) {
                     if (!empty($_FILES['videos']['name'][$i])) {
                         $video_name = basename($_FILES['videos']['name'][$i]);
                         $target_file = "../public/videos/" . $video_name;
-                        
+
                         if (move_uploaded_file($_FILES['videos']['tmp_name'][$i], $target_file)) {
                             $videos[] = $video_name;
                         }
@@ -61,14 +61,14 @@ class ChapitreController extends Controller
 
         $this->view('admin/ajouter_chapitre', ['cours_id' => $cours_id]);
     }
-    
+
     public function supprimer($id, $cours_id)
     {
         $this->model('Chapitre')->delete($id);
         header("Location: /e-learning-role-final/public/cours/voir/$cours_id");
         exit;
     }
-    
+
     public function valider()
     {
         session_start();
@@ -80,24 +80,30 @@ class ChapitreController extends Controller
         $user_id = $_SESSION['user']['id'];
         $chapitre_id = $_POST['chapitre_id'];
 
-        $this->model('Chapitre')->marquerVu($user_id, $chapitre_id);
+        $chapitreModel = $this->model('Chapitre');
 
-        // Rediriger vers la page précédente
+        if ($chapitreModel->estDejaVu($user_id, $chapitre_id)) {
+            $chapitreModel->supprimerVu($user_id, $chapitre_id);
+        } else {
+            $chapitreModel->marquerVu($user_id, $chapitre_id);
+        }
+
         header('Location: ' . $_SERVER['HTTP_REFERER']);
         exit;
     }
-    
+
+
     public function modifier($id, $cours_id)
     {
         // Récupération du chapitre existant
         $chapitreModel = $this->model('Chapitre');
         $chapitre = $chapitreModel->getById($id);
-        
+
         if (!$chapitre) {
             echo "Chapitre introuvable.";
             exit;
         }
-        
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $titre = $_POST['titre'];
             $description = $_POST['description'];
@@ -122,12 +128,12 @@ class ChapitreController extends Controller
             // Traitement des nouveaux PDFs
             if (isset($_FILES['pdfs'])) {
                 $pdf_count = count($_FILES['pdfs']['name']);
-                
+
                 for ($i = 0; $i < $pdf_count; $i++) {
                     if (!empty($_FILES['pdfs']['name'][$i])) {
                         $pdf_name = basename($_FILES['pdfs']['name'][$i]);
                         $target_file = "../public/pdfs/" . $pdf_name;
-                        
+
                         if (move_uploaded_file($_FILES['pdfs']['tmp_name'][$i], $target_file)) {
                             $pdfs[] = $pdf_name;
                         }
@@ -154,12 +160,12 @@ class ChapitreController extends Controller
             // Traitement des nouveaux fichiers vidéo MP4
             if (isset($_FILES['videos'])) {
                 $video_count = count($_FILES['videos']['name']);
-                
+
                 for ($i = 0; $i < $video_count; $i++) {
                     if (!empty($_FILES['videos']['name'][$i])) {
                         $video_name = basename($_FILES['videos']['name'][$i]);
                         $target_file = "../public/videos/" . $video_name;
-                        
+
                         if (move_uploaded_file($_FILES['videos']['tmp_name'][$i], $target_file)) {
                             $videos[] = $video_name;
                         }
