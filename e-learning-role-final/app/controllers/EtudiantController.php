@@ -3,9 +3,16 @@ class EtudiantController extends Controller
 {
     public function dashboard()
     {
-        $cours = $this->model('Cours')->getAll();
+        $recherche = $_GET['recherche'] ?? null;
 
-        // Si l'utilisateur est connecté, vérifier les inscriptions
+        // Si une recherche filtre les cours
+        if ($recherche) {
+            $cours = $this->model('Cours')->rechercherCoursPourEtudiant($recherche);
+        } else {
+            $cours = $this->model('Cours')->getAll();
+        }
+
+        // vérifier les inscriptions
         $coursInscrits = [];
         if (isset($_SESSION['user'])) {
             $inscriptionModel = $this->model('CoursInscription');

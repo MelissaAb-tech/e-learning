@@ -53,7 +53,7 @@
     .btn-unsubscribe:hover {
         background-color: #EF4444;
     }
-    
+
     /* Style pour le message de succès */
     .feedback-success {
         background-color: #D1FAE5;
@@ -70,15 +70,29 @@
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         animation: fadeIn 0.5s ease-in, fadeOut 0.5s 5s ease-in forwards;
     }
-    
+
     @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
-    
+
     @keyframes fadeOut {
-        from { opacity: 1; transform: translateY(0); }
-        to { opacity: 0; transform: translateY(-10px); }
+        from {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        to {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
     }
 </style>
 
@@ -92,7 +106,14 @@
         </a>
     </div>
     <h1>Bienvenue sur votre espace étudiant</h1>
-    <p>Accédez à vos cours disponibles et suivez votre progression</p>
+    <div class="search-and-description" style="display: flex; align-items: center; gap: 20px; margin-top: 15px;">
+        <form method="GET" action="/e-learning-role-final/public/etudiant/dashboard" class="search-wrapper search-fixed-left">
+            <input type="text" name="recherche" placeholder="Rechercher un cours..." class="search-field">
+            <button type="submit" class="search-icon"><i class="fas fa-search"></i></button>
+        </form>
+
+        <p>Accédez à vos cours disponibles et suivez votre progression</p>
+    </div>
 </div>
 
 <!-- Affichage du message de succès s'il existe -->
@@ -101,9 +122,9 @@
         <i class="fas fa-check-circle"></i>
         <?= $_SESSION['feedback_success'] ?>
     </div>
-    <?php 
+    <?php
     // Suppression du message après affichage pour qu'il ne s'affiche qu'une fois
-    unset($_SESSION['feedback_success']); 
+    unset($_SESSION['feedback_success']);
     ?>
 <?php endif; ?>
 
