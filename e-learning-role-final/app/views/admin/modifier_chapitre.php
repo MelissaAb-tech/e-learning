@@ -325,9 +325,7 @@
     }
     
     .remove-file-btn {
-        position: absolute;
-        right: -12px;
-        top: -12px;
+        margin-left: 5px;
         width: 28px;
         height: 28px;
         border-radius: 50%;
