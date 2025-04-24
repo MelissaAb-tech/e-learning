@@ -7,20 +7,54 @@ class ChapitreController extends Controller
             $titre = $_POST['titre'];
             $description = $_POST['description'];
 
-            $pdf = null;
-            $video = null;
+            // Tableaux pour stocker les fichiers PDF, MP4 et liens YouTube
+            $pdfs = [];
+            $videos = [];
+            $youtube_links = [];
 
-            if (!empty($_FILES['pdf']['name'])) {
-                $pdf = basename($_FILES['pdf']['name']);
-                move_uploaded_file($_FILES['pdf']['tmp_name'], "../public/pdfs/" . $pdf);
+            // Traitement des PDFs
+            if (isset($_FILES['pdfs'])) {
+                $pdf_count = count($_FILES['pdfs']['name']);
+                
+                for ($i = 0; $i < $pdf_count; $i++) {
+                    if (!empty($_FILES['pdfs']['name'][$i])) {
+                        $pdf_name = basename($_FILES['pdfs']['name'][$i]);
+                        $target_file = "../public/pdfs/" . $pdf_name;
+                        
+                        if (move_uploaded_file($_FILES['pdfs']['tmp_name'][$i], $target_file)) {
+                            $pdfs[] = $pdf_name;
+                        }
+                    }
+                }
             }
 
-            if (!empty($_FILES['video']['name'])) {
-                $video = basename($_FILES['video']['name']);
-                move_uploaded_file($_FILES['video']['tmp_name'], "../public/videos/" . $video);
+            // Traitement des fichiers vidéo MP4
+            if (isset($_FILES['videos'])) {
+                $video_count = count($_FILES['videos']['name']);
+                
+                for ($i = 0; $i < $video_count; $i++) {
+                    if (!empty($_FILES['videos']['name'][$i])) {
+                        $video_name = basename($_FILES['videos']['name'][$i]);
+                        $target_file = "../public/videos/" . $video_name;
+                        
+                        if (move_uploaded_file($_FILES['videos']['tmp_name'][$i], $target_file)) {
+                            $videos[] = $video_name;
+                        }
+                    }
+                }
             }
 
-            $this->model('Chapitre')->create($cours_id, $titre, $description, $pdf, $video);
+            // Traitement des liens YouTube
+            if (isset($_POST['youtube_links'])) {
+                foreach ($_POST['youtube_links'] as $link) {
+                    if (!empty($link)) {
+                        $youtube_links[] = $link;
+                    }
+                }
+            }
+
+            // Créer le chapitre avec tous les fichiers
+            $this->model('Chapitre')->create($cours_id, $titre, $description, $pdfs, $videos, $youtube_links);
             header("Location: /e-learning-role-final/public/cours/voir/$cours_id");
             exit;
         }
@@ -53,7 +87,6 @@ class ChapitreController extends Controller
         exit;
     }
     
-    // Nouvelle méthode pour modifier un chapitre
     public function modifier($id, $cours_id)
     {
         // Récupération du chapitre existant
@@ -69,25 +102,82 @@ class ChapitreController extends Controller
             $titre = $_POST['titre'];
             $description = $_POST['description'];
 
-            // Conserver les fichiers existants par défaut
-            $pdf = $chapitre['pdf'];
-            $video = $chapitre['video'];
+            // Tableaux pour stocker les fichiers
+            $pdfs = [];
+            $videos = [];
+            $youtube_links = [];
 
-            // Traitement du nouveau PDF s'il est fourni
-            if (!empty($_FILES['pdf']['name'])) {
-                $pdf = basename($_FILES['pdf']['name']);
-                move_uploaded_file($_FILES['pdf']['tmp_name'], "../public/pdfs/" . $pdf);
+            // Conserver les PDFs existants si demandé
+            if (isset($_POST['keep_pdfs'])) {
+                foreach ($_POST['keep_pdfs'] as $pdf_id) {
+                    foreach ($chapitre['pdfs'] as $pdf) {
+                        if ($pdf['id'] == $pdf_id) {
+                            $pdfs[] = $pdf['pdf'];
+                            break;
+                        }
+                    }
+                }
             }
 
-            // Traitement de la vidéo - soit par fichier soit par URL
-            if (!empty($_FILES['video_file']['name'])) {
-                $video = basename($_FILES['video_file']['name']);
-                move_uploaded_file($_FILES['video_file']['tmp_name'], "../public/videos/" . $video);
-            } elseif (!empty($_POST['video'])) {
-                $video = $_POST['video'];
+            // Traitement des nouveaux PDFs
+            if (isset($_FILES['pdfs'])) {
+                $pdf_count = count($_FILES['pdfs']['name']);
+                
+                for ($i = 0; $i < $pdf_count; $i++) {
+                    if (!empty($_FILES['pdfs']['name'][$i])) {
+                        $pdf_name = basename($_FILES['pdfs']['name'][$i]);
+                        $target_file = "../public/pdfs/" . $pdf_name;
+                        
+                        if (move_uploaded_file($_FILES['pdfs']['tmp_name'][$i], $target_file)) {
+                            $pdfs[] = $pdf_name;
+                        }
+                    }
+                }
             }
 
-            $chapitreModel->update($id, $titre, $description, $pdf, $video);
+            // Conserver les vidéos existantes si demandé
+            if (isset($_POST['keep_videos'])) {
+                foreach ($_POST['keep_videos'] as $video_id) {
+                    foreach ($chapitre['videos'] as $video) {
+                        if ($video['id'] == $video_id) {
+                            if ($video['est_youtube'] == 1) {
+                                $youtube_links[] = $video['video'];
+                            } else {
+                                $videos[] = $video['video'];
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Traitement des nouveaux fichiers vidéo MP4
+            if (isset($_FILES['videos'])) {
+                $video_count = count($_FILES['videos']['name']);
+                
+                for ($i = 0; $i < $video_count; $i++) {
+                    if (!empty($_FILES['videos']['name'][$i])) {
+                        $video_name = basename($_FILES['videos']['name'][$i]);
+                        $target_file = "../public/videos/" . $video_name;
+                        
+                        if (move_uploaded_file($_FILES['videos']['tmp_name'][$i], $target_file)) {
+                            $videos[] = $video_name;
+                        }
+                    }
+                }
+            }
+
+            // Traitement des nouveaux liens YouTube
+            if (isset($_POST['youtube_links'])) {
+                foreach ($_POST['youtube_links'] as $link) {
+                    if (!empty($link)) {
+                        $youtube_links[] = $link;
+                    }
+                }
+            }
+
+            // Mettre à jour le chapitre avec tous les fichiers
+            $chapitreModel->update($id, $titre, $description, $pdfs, $videos, $youtube_links);
             header("Location: /e-learning-role-final/public/cours/voir/$cours_id");
             exit;
         }

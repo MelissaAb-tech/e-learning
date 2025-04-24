@@ -253,6 +253,76 @@
             justify-content: center;
         }
     }
+    
+    .documents-section, .videos-section {
+        margin: 20px 0;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+    }
+    
+    .documents-section h4, .videos-section h4 {
+        margin-top: 0;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 8px;
+        color: #2c3e50;
+    }
+    
+    .document-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .document-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        background-color: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 4px;
+    }
+    
+    .document-item i {
+        color: #e53e3e;
+        margin-right: 10px;
+        font-size: 18px;
+    }
+    
+    .document-item a {
+        color: #3182ce;
+        text-decoration: none;
+    }
+    
+    .document-item a:hover {
+        text-decoration: underline;
+    }
+    
+    .video-item {
+        margin-bottom: 25px;
+        background-color: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    
+    .video-item h5 {
+        background-color: #f1f5f9;
+        margin: 0;
+        padding: 10px 15px;
+        border-bottom: 1px solid #e5e7eb;
+        color: #4b5563;
+    }
+    
+    .video-container {
+        padding: 15px;
+    }
+    
+    iframe, video {
+        border-radius: 4px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        max-width: 100%;
+    }
 </style>
 
 <!-- Barre de navigation du cours -->
@@ -375,15 +445,61 @@ $cours_complet = $chapitres_complets && $quiz_complets;
         <div class="accordion-content" id="chapitre-content-<?= $chap['id'] ?>">
             <p><?= nl2br(htmlspecialchars($chap['description'])) ?></p>
 
-            <?php if (!empty($chap['pdf'])): ?>
-                <p>📄 <a href="/e-learning-role-final/public/pdfs/<?= $chap['pdf'] ?>" target="_blank">Télécharger le PDF</a></p>
+            <!-- Affichage des fichiers PDF -->
+            <?php if (!empty($chap['pdfs'])): ?>
+                <div class="documents-section">
+                    <h4>Documents PDF</h4>
+                    <div class="document-list">
+                        <?php foreach ($chap['pdfs'] as $pdf): ?>
+                            <div class="document-item">
+                                <i class="fas fa-file-pdf"></i>
+                                <a href="/e-learning-role-final/public/pdfs/<?= $pdf['pdf'] ?>" target="_blank">
+                                    <?= htmlspecialchars($pdf['pdf']) ?>
+                                </a>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
             <?php endif; ?>
 
-            <?php if (!empty($chap['video'])): ?>
-                <div style="max-width: 640px; margin: 10px auto;">
-                    <video controls width="100%">
-                        <source src="/e-learning-role-final/public/videos/<?= $chap['video'] ?>" type="video/mp4">
-                    </video>
+            <!-- Affichage des vidéos (YouTube et MP4) -->
+            <?php if (!empty($chap['videos'])): ?>
+                <div class="videos-section">
+                    <h4>Vidéos</h4>
+                    <?php foreach ($chap['videos'] as $video): ?>
+                        <?php if ($video['est_youtube'] == 1): ?>
+                            <div class="video-item youtube-video">
+                                <h5>Vidéo YouTube</h5>
+                                <?php
+                                // Extraire l'ID de la vidéo YouTube
+                                $video_id = "";
+                                if (preg_match('/youtube\.com\/watch\?v=([^&]+)/', $video['video'], $matches)) {
+                                    $video_id = $matches[1];
+                                } elseif (preg_match('/youtu\.be\/([^?]+)/', $video['video'], $matches)) {
+                                    $video_id = $matches[1];
+                                }
+                                ?>
+                                <?php if (!empty($video_id)): ?>
+                                    <div class="video-container">
+                                        <iframe width="100%" height="360" src="https://www.youtube.com/embed/<?= $video_id ?>" 
+                                            frameborder="0" allowfullscreen></iframe>
+                                    </div>
+                                <?php else: ?>
+                                    <a href="<?= $video['video'] ?>" target="_blank">Voir la vidéo YouTube</a>
+                                <?php endif; ?>
+                            </div>
+                        <?php else: ?>
+                            <div class="video-item mp4-video">
+                                <h5>Fichier vidéo MP4</h5>
+                                <div class="video-container">
+                                    <video controls width="100%">
+                                        <source src="/e-learning-role-final/public/videos/<?= $video['video'] ?>" type="video/mp4">
+                                        Votre navigateur ne supporte pas la lecture de vidéos.
+                                    </video>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
                 </div>
             <?php endif; ?>
 

@@ -30,11 +30,62 @@ class Database
                 if ($needInit) {
                     self::initDatabase();
                 }
+                
+                // Vérifier si les tables pour fichiers multiples existent déjà
+                self::createMultiFilesTables();
+                
             } catch (PDOException $e) {
                 die("Erreur de connexion à la base de données: " . $e->getMessage());
             }
         }
         return self::$pdo;
+    }
+    
+    private static function createMultiFilesTables()
+    {
+        try {
+            // Vérifier si la table chapitre_pdfs existe déjà
+            $result = self::$pdo->query("SHOW TABLES LIKE 'chapitre_pdfs'");
+            if ($result->rowCount() === 0) {
+                // Créer la table pour les PDFs
+                self::$pdo->exec("CREATE TABLE IF NOT EXISTS chapitre_pdfs (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    chapitre_id INT NOT NULL,
+                    pdf VARCHAR(255) NOT NULL,
+                    FOREIGN KEY (chapitre_id) REFERENCES chapitres(id) ON DELETE CASCADE
+                )");
+                
+                // Migrer les données existantes
+                self::$pdo->exec("INSERT INTO chapitre_pdfs (chapitre_id, pdf)
+                    SELECT id, pdf FROM chapitres 
+                    WHERE pdf IS NOT NULL AND pdf != ''");
+            }
+            
+            // Vérifier si la table chapitre_videos existe déjà
+            $result = self::$pdo->query("SHOW TABLES LIKE 'chapitre_videos'");
+            if ($result->rowCount() === 0) {
+                // Créer la table pour les vidéos
+                self::$pdo->exec("CREATE TABLE IF NOT EXISTS chapitre_videos (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    chapitre_id INT NOT NULL,
+                    video VARCHAR(255) NOT NULL,
+                    est_youtube TINYINT(1) DEFAULT 0,
+                    FOREIGN KEY (chapitre_id) REFERENCES chapitres(id) ON DELETE CASCADE
+                )");
+                
+                // Migrer les données existantes
+                self::$pdo->exec("INSERT INTO chapitre_videos (chapitre_id, video, est_youtube)
+                    SELECT id, video, 
+                    CASE 
+                        WHEN video LIKE '%youtu.be%' OR video LIKE '%youtube.com%' THEN 1 
+                        ELSE 0 
+                    END 
+                    FROM chapitres 
+                    WHERE video IS NOT NULL AND video != ''");
+            }
+        } catch (PDOException $e) {
+            echo "Erreur lors de la création des tables de fichiers multiples: " . $e->getMessage();
+        }
     }
 
     private static function initDatabase()

@@ -9,14 +9,43 @@ class Chapitre
     }
 
 
-    public function create($cours_id, $titre, $description, $pdf, $video)
+    public function create($cours_id, $titre, $description, $pdfs = [], $videos = [], $youtube_links = [])
     {
-        $stmt = $this->db->prepare("INSERT INTO chapitres (cours_id, titre, description, pdf, video) VALUES (?, ?, ?, ?, ?)");
-        return $stmt->execute([$cours_id, $titre, $description, $pdf, $video]);
+        // Créer le chapitre principal
+        $stmt = $this->db->prepare("INSERT INTO chapitres (cours_id, titre, description) VALUES (?, ?, ?)");
+        $stmt->execute([$cours_id, $titre, $description]);
+        $chapitre_id = $this->db->lastInsertId();
+        
+        // Ajouter les PDFs
+        if (!empty($pdfs)) {
+            $pdfStmt = $this->db->prepare("INSERT INTO chapitre_pdfs (chapitre_id, pdf) VALUES (?, ?)");
+            foreach ($pdfs as $pdf) {
+                $pdfStmt->execute([$chapitre_id, $pdf]);
+            }
+        }
+        
+        // Ajouter les vidéos MP4
+        if (!empty($videos)) {
+            $videoStmt = $this->db->prepare("INSERT INTO chapitre_videos (chapitre_id, video, est_youtube) VALUES (?, ?, 0)");
+            foreach ($videos as $video) {
+                $videoStmt->execute([$chapitre_id, $video]);
+            }
+        }
+        
+        // Ajouter les liens YouTube
+        if (!empty($youtube_links)) {
+            $youtubeStmt = $this->db->prepare("INSERT INTO chapitre_videos (chapitre_id, video, est_youtube) VALUES (?, ?, 1)");
+            foreach ($youtube_links as $link) {
+                $youtubeStmt->execute([$chapitre_id, $link]);
+            }
+        }
+        
+        return $chapitre_id;
     }
     
     public function delete($id)
     {
+        // Les tables associées seront automatiquement nettoyées grâce à ON DELETE CASCADE
         $stmt = $this->db->prepare("DELETE FROM chapitres WHERE id = ?");
         return $stmt->execute([$id]);
     }
@@ -85,7 +114,29 @@ class Chapitre
     {
         $stmt = $this->db->prepare("SELECT * FROM chapitres WHERE cours_id = ?");
         $stmt->execute([$cours_id]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);  // Retourner les chapitres pour ce cours
+        $chapitres = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Pour chaque chapitre, récupérer ses PDFs et vidéos
+        foreach ($chapitres as &$chapitre) {
+            $chapitre['pdfs'] = $this->getPdfsByChapitre($chapitre['id']);
+            $chapitre['videos'] = $this->getVideosByChapitre($chapitre['id']);
+        }
+        
+        return $chapitres;
+    }
+    
+    public function getPdfsByChapitre($chapitre_id)
+    {
+        $stmt = $this->db->prepare("SELECT * FROM chapitre_pdfs WHERE chapitre_id = ?");
+        $stmt->execute([$chapitre_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    public function getVideosByChapitre($chapitre_id)
+    {
+        $stmt = $this->db->prepare("SELECT * FROM chapitre_videos WHERE chapitre_id = ?");
+        $stmt->execute([$chapitre_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
     public function resetProgressionUser($user_id, $cours_id)
@@ -117,13 +168,55 @@ class Chapitre
     {
         $stmt = $this->db->prepare("SELECT * FROM chapitres WHERE id = ?");
         $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $chapitre = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($chapitre) {
+            $chapitre['pdfs'] = $this->getPdfsByChapitre($id);
+            $chapitre['videos'] = $this->getVideosByChapitre($id);
+        }
+        
+        return $chapitre;
     }
     
     // Ajout de la méthode pour mettre à jour un chapitre
-    public function update($id, $titre, $description, $pdf, $video)
+    public function update($id, $titre, $description, $pdfs = [], $videos = [], $youtube_links = [])
     {
-        $stmt = $this->db->prepare("UPDATE chapitres SET titre = ?, description = ?, pdf = ?, video = ? WHERE id = ?");
-        return $stmt->execute([$titre, $description, $pdf, $video, $id]);
+        // Mettre à jour le chapitre principal
+        $stmt = $this->db->prepare("UPDATE chapitres SET titre = ?, description = ? WHERE id = ?");
+        $success = $stmt->execute([$titre, $description, $id]);
+        
+        if (!$success) {
+            return false;
+        }
+        
+        // Supprimer les PDFs et vidéos existants
+        $this->db->prepare("DELETE FROM chapitre_pdfs WHERE chapitre_id = ?")->execute([$id]);
+        $this->db->prepare("DELETE FROM chapitre_videos WHERE chapitre_id = ?")->execute([$id]);
+        
+        // Ajouter les nouveaux PDFs
+        if (!empty($pdfs)) {
+            $pdfStmt = $this->db->prepare("INSERT INTO chapitre_pdfs (chapitre_id, pdf) VALUES (?, ?)");
+            foreach ($pdfs as $pdf) {
+                $pdfStmt->execute([$id, $pdf]);
+            }
+        }
+        
+        // Ajouter les nouvelles vidéos MP4
+        if (!empty($videos)) {
+            $videoStmt = $this->db->prepare("INSERT INTO chapitre_videos (chapitre_id, video, est_youtube) VALUES (?, ?, 0)");
+            foreach ($videos as $video) {
+                $videoStmt->execute([$id, $video]);
+            }
+        }
+        
+        // Ajouter les nouveaux liens YouTube
+        if (!empty($youtube_links)) {
+            $youtubeStmt = $this->db->prepare("INSERT INTO chapitre_videos (chapitre_id, video, est_youtube) VALUES (?, ?, 1)");
+            foreach ($youtube_links as $link) {
+                $youtubeStmt->execute([$id, $link]);
+            }
+        }
+        
+        return true;
     }
 }

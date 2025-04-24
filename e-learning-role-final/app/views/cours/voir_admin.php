@@ -65,6 +65,89 @@
             justify-content: center;
         }
     }
+    
+    .admin-files-section {
+        margin: 15px 0;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+    }
+    
+    .admin-files-section h5 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 16px;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 8px;
+        color: #2c3e50;
+    }
+    
+    .admin-file-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .admin-file-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        background-color: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 4px;
+    }
+    
+    .admin-file-item i {
+        color: #e53e3e;
+        margin-right: 10px;
+        font-size: 18px;
+    }
+    
+    .admin-file-item a {
+        color: #3182ce;
+        text-decoration: none;
+    }
+    
+    .admin-file-item a:hover {
+        text-decoration: underline;
+    }
+    
+    .admin-video-item {
+        margin-bottom: 20px;
+        background-color: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    
+    .admin-video-header {
+        background-color: #f1f5f9;
+        padding: 10px 15px;
+        border-bottom: 1px solid #e5e7eb;
+        color: #4b5563;
+        display: flex;
+        align-items: center;
+    }
+    
+    .admin-video-header i {
+        margin-right: 8px;
+        font-size: 18px;
+        color: #e53e3e;
+    }
+    
+    .admin-video-container {
+        padding: 15px;
+    }
+    
+    .admin-chapter-actions {
+        margin-top: 15px;
+        border-top: 1px solid #e5e7eb;
+        padding-top: 15px;
+    }
+    
+    .admin-chapter-actions a {
+        text-decoration: none;
+    }
 </style>
 
 <!-- Barre de navigation du cours -->
@@ -220,21 +303,71 @@
         <h4><?= htmlspecialchars($chap['titre']) ?></h4>
         <p><?= nl2br(htmlspecialchars($chap['description'])) ?></p>
 
-        <?php if (!empty($chap['pdf'])): ?>
-            <p>📄 <a href="/e-learning-role-final/public/pdfs/<?= $chap['pdf'] ?>" target="_blank">Voir le PDF</a></p>
+        <!-- Affichage des fichiers PDF -->
+        <?php if (!empty($chap['pdfs'])): ?>
+            <div class="admin-files-section">
+                <h5>Documents PDF</h5>
+                <div class="admin-file-list">
+                    <?php foreach ($chap['pdfs'] as $pdf): ?>
+                        <div class="admin-file-item">
+                            <i class="fas fa-file-pdf"></i>
+                            <a href="/e-learning-role-final/public/pdfs/<?= $pdf['pdf'] ?>" target="_blank">
+                                <?= htmlspecialchars($pdf['pdf']) ?>
+                            </a>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
         <?php endif; ?>
 
-        <?php if (!empty($chap['video'])): ?>
-            <?php if (str_contains($chap['video'], 'youtube.com')): ?>
-                <p>🎥 <a href="<?= $chap['video'] ?>" target="_blank">Voir la vidéo YouTube</a></p>
-            <?php else: ?>
-                <video controls width="100%" style="max-width: 500px;">
-                    <source src="/e-learning-role-final/public/videos/<?= $chap['video'] ?>" type="video/mp4">
-                </video>
-            <?php endif; ?>
+        <!-- Affichage des vidéos (YouTube et MP4) -->
+        <?php if (!empty($chap['videos'])): ?>
+            <div class="admin-files-section">
+                <h5>Vidéos</h5>
+                <?php foreach ($chap['videos'] as $video): ?>
+                    <?php if ($video['est_youtube'] == 1): ?>
+                        <div class="admin-video-item">
+                            <div class="admin-video-header">
+                                <i class="fab fa-youtube"></i>
+                                <span>Vidéo YouTube: <?= htmlspecialchars($video['video']) ?></span>
+                            </div>
+                            <?php
+                            // Extraire l'ID de la vidéo YouTube
+                            $video_id = "";
+                            if (preg_match('/youtube\.com\/watch\?v=([^&]+)/', $video['video'], $matches)) {
+                                $video_id = $matches[1];
+                            } elseif (preg_match('/youtu\.be\/([^?]+)/', $video['video'], $matches)) {
+                                $video_id = $matches[1];
+                            }
+                            ?>
+                            <?php if (!empty($video_id)): ?>
+                                <div class="admin-video-container">
+                                    <iframe width="100%" height="360" src="https://www.youtube.com/embed/<?= $video_id ?>" 
+                                        frameborder="0" allowfullscreen></iframe>
+                                </div>
+                            <?php else: ?>
+                                <a href="<?= $video['video'] ?>" target="_blank">Voir la vidéo YouTube</a>
+                            <?php endif; ?>
+                        </div>
+                    <?php else: ?>
+                        <div class="admin-video-item">
+                            <div class="admin-video-header">
+                                <i class="fas fa-file-video"></i>
+                                <span>Fichier vidéo MP4: <?= htmlspecialchars($video['video']) ?></span>
+                            </div>
+                            <div class="admin-video-container">
+                                <video controls width="100%" style="max-width: 500px;">
+                                    <source src="/e-learning-role-final/public/videos/<?= $video['video'] ?>" type="video/mp4">
+                                    Votre navigateur ne supporte pas la lecture de vidéos.
+                                </video>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </div>
         <?php endif; ?>
 
-        <p>
+        <p class="admin-chapter-actions">
             <a href="/e-learning-role-final/public/admin/chapitre/modifier/<?= $chap['id'] ?>/<?= $cours['id'] ?>">✏️ Modifier le chapitre</a> | 
             <a href="/e-learning-role-final/public/admin/chapitre/supprimer/<?= $chap['id'] ?>/<?= $cours['id'] ?>" onclick="return confirm('Supprimer ce chapitre ?')">🗑️ Supprimer le chapitre</a>
         </p>
