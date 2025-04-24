@@ -43,4 +43,11 @@ class Cours
         $stmt = $this->db->prepare("UPDATE cours SET pdf = ?, video = ? WHERE id = ?");
         return $stmt->execute([$pdf, $video, $id]);
     }
+    public function rechercherCoursPourEtudiant($motCle)
+    {
+        $motCle = '%' . $motCle . '%';
+        $stmt = $this->db->prepare("SELECT * FROM cours WHERE nom LIKE ? OR contenu LIKE ? OR professeur LIKE ?");
+        $stmt->execute([$motCle, $motCle, $motCle]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

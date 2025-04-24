@@ -3,9 +3,16 @@ class EtudiantController extends Controller
 {
     public function dashboard()
     {
-        $cours = $this->model('Cours')->getAll();
+        $recherche = $_GET['recherche'] ?? null;
 
-        // Si l'utilisateur est connecté, vérifier les inscriptions
+        // Si une recherche filtre les cours
+        if ($recherche) {
+            $cours = $this->model('Cours')->rechercherCoursPourEtudiant($recherche);
+        } else {
+            $cours = $this->model('Cours')->getAll();
+        }
+
+        // vérifier les inscriptions
         $coursInscrits = [];
         if (isset($_SESSION['user'])) {
             $inscriptionModel = $this->model('CoursInscription');
@@ -166,7 +173,7 @@ class EtudiantController extends Controller
             // Ajouter le feedback dans la base de données via le modèle
             $feedbackModel = $this->model('FeedbackModel');
             $result = $feedbackModel->create($etudiant_id, $rating, $commentaire);
-            
+
             if ($result) {
                 // Ajouter un message de succès dans la session
                 $_SESSION['feedback_success'] = "Votre feedback a bien été envoyé. Merci pour votre contribution !";
