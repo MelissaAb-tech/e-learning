@@ -81,7 +81,6 @@ button:hover {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 6px;
-    margin-bottom: 20px;
     font-size: 14px;
     box-sizing: border-box;
 }
@@ -91,7 +90,7 @@ button:hover {
     min-height: 100px;
 }
 
-.admin-form-container button {
+.submit-btn {
     background-color: #4CAF50;
     color: white;
     padding: 10px 18px;
@@ -102,6 +101,6 @@ button:hover {
     transition: background-color 0.3s;
 }
 
-.admin-form-container button:hover {
+.submit-btn :hover {
     background-color: #3e8e41;
 }

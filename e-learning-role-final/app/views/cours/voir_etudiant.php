@@ -318,6 +318,8 @@
     }
 
     .video-container {
+        max-height: 500px;
+        max-width: 700;
         padding: 15px;
     }
 

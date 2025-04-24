@@ -34,6 +34,18 @@ class AdminController extends Controller
     {
         $coursModel = $this->model('Cours');
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Récupérer l'image existante
+            $image = $_POST['image'] ?? '';
+            
+            // Si une nouvelle image est uploadée
+            if (!empty($_FILES['nouvelle_image']['name'])) {
+                $targetDir = "../public/images/";
+                $image = basename($_FILES['nouvelle_image']['name']);
+                $targetFile = $targetDir . $image;
+                
+                move_uploaded_file($_FILES['nouvelle_image']['tmp_name'], $targetFile);
+            }
+            
             $coursModel->update(
                 $id,
                 $_POST['nom'],
@@ -41,8 +53,9 @@ class AdminController extends Controller
                 $_POST['contenu'],
                 $_POST['niveau'],
                 $_POST['duree'],
-                $_POST['image']
+                $image
             );
+            
             header('Location: /e-learning-role-final/public/admin/dashboard');
         } else {
             $cours = $coursModel->getById($id);
