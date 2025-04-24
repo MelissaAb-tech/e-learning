@@ -27,7 +27,16 @@
         <label>Téléphone :</label>
         <input type="tel" name="telephone" value="<?= htmlspecialchars($etudiant['telephone'] ?? '') ?>" required>
 
-        <label>Photo de profil :</label>
+        <label>Photo de profil actuelle :</label>
+        <?php if (!empty($etudiant['photo_profil'])): ?>
+            <div style="margin-bottom: 10px;">
+                <img src="/e-learning-role-final/public/images/<?= htmlspecialchars($etudiant['photo_profil']) ?>" alt="Photo de profil" style="max-width: 100px; max-height: 100px;">
+            </div>
+        <?php else: ?>
+            <p>Aucune photo de profil</p>
+        <?php endif; ?>
+
+        <label>Nouvelle photo de profil (optionnel) :</label>
         <input type="file" name="photo_profil" accept="image/*">
 
         <button type="submit">Mettre à jour</button>

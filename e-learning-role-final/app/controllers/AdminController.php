@@ -190,14 +190,17 @@ class AdminController extends Controller
             $photo_profil = $etudiant['photo_profil'];  // Garder l'ancienne photo 
 
             // Gérer la photo de profil
-            if (isset($_FILES['photo_profil']) && $_FILES['photo_profil']['error'] == 0) {
+            if (isset($_FILES['photo_profil']) && $_FILES['photo_profil']['error'] === UPLOAD_ERR_OK) {
                 // Nouveau nom pour l'image pour éviter les conflits
-                $photo_profil = time() . '_' . $_FILES['photo_profil']['name'];
-                $uploadDir = 'public/images/';
-                $uploadPath = $_SERVER['DOCUMENT_ROOT'] . '/' . $uploadDir . $photo_profil;
-
-                // Déplacer l'image téléchargée dans le répertoire approprié
-                move_uploaded_file($_FILES['photo_profil']['tmp_name'], $uploadPath);
+                $photo_profil = time() . '_' . basename($_FILES['photo_profil']['name']);
+                $uploadDir = __DIR__ . '/../../public/images/';
+                
+                // Vérifier si le dossier existe, sinon le créer
+                if (!file_exists($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+                
+                move_uploaded_file($_FILES['photo_profil']['tmp_name'], $uploadDir . $photo_profil);
             }
 
             // Vérifier si un mot de passe est fourni et le hacher 

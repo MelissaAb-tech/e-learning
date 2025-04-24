@@ -56,10 +56,17 @@ class AuthController extends Controller
         $photo_profil = null;
         if (isset($_FILES['photo_profil']) && $_FILES['photo_profil']['error'] === UPLOAD_ERR_OK) {
             $imageTmpPath = $_FILES['photo_profil']['tmp_name'];
-            $imageName = uniqid() . '-' . basename($_FILES['photo_profil']['name']);
-            $uploadDir = __DIR__ . '/../public/images/';
-            move_uploaded_file($imageTmpPath, $uploadDir . $imageName);
-            $photo_profil = $imageName;
+            $imageName = time() . '_' . basename($_FILES['photo_profil']['name']);
+            $uploadDir = __DIR__ . '/../../public/images/';
+            
+            // Vérifier si le dossier existe, sinon le créer
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+            
+            if (move_uploaded_file($imageTmpPath, $uploadDir . $imageName)) {
+                $photo_profil = $imageName;
+            }
         }
 
         // créer l'utilisateur 
