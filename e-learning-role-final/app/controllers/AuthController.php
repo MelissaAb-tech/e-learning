@@ -3,9 +3,9 @@ class AuthController extends Controller
 {
     public function home()
     {
-    $this->view('home');
+        $this->view('home');
     }
-    
+
     public function login()
     {
         $this->view('auth/login');
@@ -43,10 +43,38 @@ class AuthController extends Controller
 
     public function registerPost()
     {
+        $prenom = $_POST['prenom'];
         $nom = $_POST['nom'];
+        $age = $_POST['age'];
+        $fonction = $_POST['fonction'];
+        $adresse = $_POST['adresse'];
+        $telephone = $_POST['telephone'];
         $email = $_POST['email'];
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-        $this->model('User')->create($nom, $email, $password);
+
+        // Gestion de l'image de profil
+        $photo_profil = null;
+        if (isset($_FILES['photo_profil']) && $_FILES['photo_profil']['error'] === UPLOAD_ERR_OK) {
+            $imageTmpPath = $_FILES['photo_profil']['tmp_name'];
+            $imageName = uniqid() . '-' . basename($_FILES['photo_profil']['name']);
+            $uploadDir = __DIR__ . '/../public/images/';
+            move_uploaded_file($imageTmpPath, $uploadDir . $imageName);
+            $photo_profil = $imageName;
+        }
+
+        // créer l'utilisateur 
+        $this->model('User')->create([
+            'prenom' => $prenom,
+            'nom' => $nom,
+            'age' => $age,
+            'fonction' => $fonction,
+            'adresse' => $adresse,
+            'telephone' => $telephone,
+            'email' => $email,
+            'password' => $password,
+            'photo_profil' => $photo_profil
+        ]);
+
         header("Location: /e-learning-role-final/public/");
     }
 }

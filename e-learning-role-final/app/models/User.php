@@ -14,11 +14,23 @@ class User
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function create($nom, $email, $password)
+    public function create($data)
     {
-        $stmt = $this->db->prepare("INSERT INTO users (nom, email, password, role) VALUES (?, ?, ?, 'etudiant')");
-        return $stmt->execute([$nom, $email, $password]);
+        $stmt = $this->db->prepare("INSERT INTO users (prenom, nom, age, fonction, adresse, telephone, email, password, photo_profil, role)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'etudiant')");
+        return $stmt->execute([
+            $data['prenom'],
+            $data['nom'],
+            $data['age'],
+            $data['fonction'],
+            $data['adresse'],
+            $data['telephone'],
+            $data['email'],
+            $data['password'],
+            $data['photo_profil']
+        ]);
     }
+
     public function getAllEtudiants()
     {
         $stmt = $this->db->prepare("SELECT * FROM users WHERE role = 'etudiant'");
