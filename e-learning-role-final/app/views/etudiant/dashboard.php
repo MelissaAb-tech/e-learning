@@ -107,10 +107,10 @@
     </div>
     <h1>Bienvenue sur votre espace étudiant</h1>
     <div class="search-and-description" style="display: flex; align-items: center; gap: 20px; margin-top: 15px;">
-        <form method="GET" action="/e-learning-role-final/public/etudiant/dashboard" class="search-wrapper search-fixed-left">
-            <input type="text" name="recherche" placeholder="Rechercher un cours..." class="search-field">
-            <button type="submit" class="search-icon"><i class="fas fa-search"></i></button>
-        </form>
+        <div class="search-wrapper search-fixed-left">
+            <input type="text" id="recherche-input" name="recherche" placeholder="Rechercher un cours..." class="search-field">
+            <span class="search-icon"><i class="fas fa-search"></i></span>
+        </div>
 
         <p>Accédez à vos cours disponibles et suivez votre progression</p>
     </div>
@@ -189,3 +189,64 @@
         <button type="submit" class="btn">Envoyer mon avis</button>
     </form>
 </div>
+
+<!-- Ajoutez ce script à la fin du fichier pour la recherche en temps réel -->
+<!-- La partie HTML et PHP reste identique -->
+
+<!-- Remplacez uniquement le script JavaScript à la fin du fichier par celui-ci -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Sélectionner tous les cours et l'input de recherche
+    const coursCards = document.querySelectorAll('.course-card');
+    const searchInput = document.getElementById('recherche-input');
+    
+    // Ajouter un événement sur l'input pour détecter chaque frappe
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase().trim();
+        
+        // Parcourir chaque carte de cours et vérifier si elle correspond à la recherche
+        coursCards.forEach(function(card) {
+            const title = card.querySelector('h3').textContent.toLowerCase();
+            const professor = card.querySelector('.prof').textContent.toLowerCase();
+            
+            // Si le terme de recherche est présent dans le titre OU le nom du professeur UNIQUEMENT
+            if (title.includes(searchTerm) || professor.includes(searchTerm)) {
+                card.style.display = ''; // Afficher la carte
+            } else {
+                card.style.display = 'none'; // Cacher la carte
+            }
+        });
+        
+        // Vérifier s'il n'y a aucun résultat pour afficher un message
+        const visibleCards = document.querySelectorAll('.course-card[style="display: ;"], .course-card:not([style])');
+        const noResultsElement = document.getElementById('no-results-message');
+        
+        if (visibleCards.length === 0 && searchTerm !== '') {
+            // Créer le message s'il n'existe pas
+            if (!noResultsElement) {
+                const noResults = document.createElement('div');
+                noResults.id = 'no-results-message';
+                noResults.style.textAlign = 'center';
+                noResults.style.padding = '40px';
+                noResults.style.color = '#666';
+                noResults.style.fontSize = '18px';
+                noResults.style.width = '100%';
+                noResults.innerHTML = '<i class="fas fa-search" style="font-size: 32px; margin-bottom: 10px; color: #ccc;"></i><br>Aucun cours ne correspond à votre recherche.';
+                
+                document.querySelector('.course-grid').appendChild(noResults);
+            } else {
+                noResultsElement.style.display = '';
+            }
+        } else if (noResultsElement) {
+            noResultsElement.style.display = 'none';
+        }
+    });
+    
+    // Empêcher la soumission du formulaire si l'utilisateur appuie sur Entrée
+    searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+        }
+    });
+});
+</script>
