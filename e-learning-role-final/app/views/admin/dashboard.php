@@ -229,7 +229,7 @@
                             <p><?= nl2br($c['contenu']) ?></p>
                             <div class="card-actions">
                                 <a href="/e-learning-role-final/public/admin/modifier/<?= $c['id'] ?>">Modifier</a>
-                                <a href="/e-learning-role-final/public/admin/supprimer/<?= $c['id'] ?>" onclick="return confirm('Supprimer ce cours ?')">Supprimer</a>
+                                <a href="#" class="btn-supprimer-cours" data-id="<?= $c['id'] ?>">Supprimer</a>
                                 <a href="/e-learning-role-final/public/admin/chapitre/ajouter/<?= $c['id'] ?>">Ajouter un chapitre</a>
                             </div>
                         </div>
@@ -288,6 +288,22 @@
         </div>
     </div>
 </div>
+<!-- Modal de confirmation pour suppression de cours -->
+<div id="confirmDeleteCourseModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-title">Supprimer le cours</div>
+        <div class="modal-text">Êtes-vous sûr de vouloir supprimer ce cours ?</div>
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-cancel" onclick="closeDeleteCourseModal()">
+                <i class="fas fa-times"></i> Annuler
+            </button>
+            <a id="confirmDeleteCourseBtn" href="#" class="modal-btn modal-btn-danger">
+                <i class="fas fa-trash"></i> Supprimer
+            </a>
+        </div>
+    </div>
+</div>
+
 
 <!-- Script pour la recherche en temps réel -->
 <script>
@@ -477,5 +493,32 @@
                 closeDeleteModal();
             }
         }
+    });
+
+    function openDeleteCourseModal(courseId) {
+        const modal = document.getElementById('confirmDeleteCourseModal');
+        const confirmBtn = document.getElementById('confirmDeleteCourseBtn');
+        confirmBtn.href = `/e-learning-role-final/public/admin/supprimer/${courseId}`;
+        modal.style.display = 'flex';
+    }
+
+    function closeDeleteCourseModal() {
+        document.getElementById('confirmDeleteCourseModal').style.display = 'none';
+    }
+
+    // Ferme si on clique en dehors
+    window.onclick = function(event) {
+        const modal = document.getElementById('confirmDeleteCourseModal');
+        if (event.target === modal) {
+            closeDeleteCourseModal();
+        }
+    }
+
+    document.querySelectorAll('.btn-supprimer-cours').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const courseId = this.getAttribute('data-id');
+            openDeleteCourseModal(courseId);
+        });
     });
 </script>
