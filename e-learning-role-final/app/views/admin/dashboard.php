@@ -86,6 +86,62 @@
         justify-content: center;
         pointer-events: none;
     }
+
+    .modal {
+        position: fixed;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+        background-color: white;
+        padding: 20px 30px;
+        border-radius: 8px;
+        max-width: 400px;
+        text-align: center;
+    }
+
+    .modal-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .modal-text {
+        margin-bottom: 20px;
+        font-size: 16px;
+    }
+
+    .modal-buttons {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .modal-btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .modal-btn-cancel {
+        background-color: #ccc;
+        color: black;
+    }
+
+    .modal-btn-danger {
+        background-color: #EF4444;
+        color: white;
+    }
 </style>
 
 <div class="admin-header">
@@ -197,7 +253,7 @@
                             <p><?= htmlspecialchars($etudiant['email']) ?></p>
                             <div class="card-actions">
                                 <a href="/e-learning-role-final/public/admin/etudiant/modifier/<?= $etudiant['id'] ?>">Modifier</a>
-                                <a href="/e-learning-role-final/public/admin/etudiant/supprimer/<?= $etudiant['id'] ?>" onclick="return confirm('Supprimer cet étudiant ?')">Supprimer</a>
+                                <a href="#" class="btn-supprimer-etudiant" data-id="<?= $etudiant['id'] ?>">Supprimer</a>
                             </div>
                         </div>
                     </div>
@@ -215,6 +271,21 @@
         <p style="margin-bottom: 20px;">Êtes-vous sûr de vouloir vous déconnecter ?</p>
         <button onclick="closeLogoutModal()" style="margin-right: 10px; padding: 8px 16px; background-color: #aaa; border: none; border-radius: 5px; color: white;">Annuler</button>
         <a href="/e-learning-role-final/public/logout" style="padding: 8px 16px; background-color: #EF4444; color: white; text-decoration: none; border-radius: 5px;">Se déconnecter</a>
+    </div>
+</div>
+<!-- Modal de confirmation suppression étudiant -->
+<div id="confirmDeleteModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-title">Supprimer l'étudiant</div>
+        <div class="modal-text">Êtes-vous sûr de vouloir supprimer cet étudiant ?</div>
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-cancel" onclick="closeDeleteModal()">
+                <i class="fas fa-times"></i> Annuler
+            </button>
+            <a id="confirmDeleteLink" href="#" class="modal-btn modal-btn-danger">
+                <i class="fas fa-trash"></i> Supprimer
+            </a>
+        </div>
     </div>
 </div>
 
@@ -376,4 +447,35 @@
             closeLogoutModal();
         }
     }
+    let deleteLink = null;
+
+    function openDeleteModal(id) {
+        deleteLink = document.getElementById('confirmDeleteLink');
+        deleteLink.href = `/e-learning-role-final/public/admin/etudiant/supprimer/${id}`;
+        document.getElementById('confirmDeleteModal').style.display = 'flex';
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('confirmDeleteModal').style.display = 'none';
+        deleteLink = null;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ajouter l'événement à tous les boutons "Supprimer"
+        document.querySelectorAll('.btn-supprimer-etudiant').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const etudiantId = this.getAttribute('data-id');
+                openDeleteModal(etudiantId);
+            });
+        });
+
+        // Ferme le modal si on clique en dehors
+        window.onclick = function(event) {
+            const modal = document.getElementById('confirmDeleteModal');
+            if (event.target === modal) {
+                closeDeleteModal();
+            }
+        }
+    });
 </script>
