@@ -53,23 +53,23 @@
     </div>
 
     <div class="admin-content">
+        <!-- Barre de recherche avec onglets -->
+        <div class="search-container">
+            <div class="search-tabs">
+                <div class="search-tab active" id="search-tab-all">Tout</div>
+                <div class="search-tab" id="search-tab-courses">Cours</div>
+                <div class="search-tab" id="search-tab-students">Étudiants</div>
+            </div>
+            <div class="search-input-container">
+                <input type="text" id="admin-search" class="search-field" placeholder="Rechercher...">
+                <div class="search-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+        </div>
 
         <!-- Gestion des cours -->
         <div class="admin-section" id="courses-section">
-            <!-- Barre de recherche avec onglets -->
-            <div class="search-container">
-                <div class="search-tabs">
-                    <div class="search-tab active" id="search-tab-all">Tout</div>
-                    <div class="search-tab" id="search-tab-courses">Cours</div>
-                    <div class="search-tab" id="search-tab-students">Étudiants</div>
-                </div>
-                <div class="search-input-container">
-                    <input type="text" id="admin-search" class="search-field" placeholder="Rechercher...">
-                    <div class="search-icon">
-                        <i class="fas fa-search"></i>
-                    </div>
-                </div>
-            </div>
             <div class="admin-section-header">
                 <h2>Gestion des cours</h2>
                 <a href="/e-learning-role-final/public/admin/ajouter" class="btn">Ajouter un cours</a>
@@ -111,8 +111,7 @@
                             <p><?= htmlspecialchars($etudiant['email']) ?></p>
                             <div class="card-actions">
                                 <a href="/e-learning-role-final/public/admin/etudiant/modifier/<?= $etudiant['id'] ?>">Modifier</a>
-                                <a href="#" class="btn-supprimer-etudiant" data-id="<?= $etudiant['id'] ?>">Supprimer</a>
-                            </div>
+                                <a href="/e-learning-role-final/public/admin/etudiant/supprimer/<?= $etudiant['id'] ?>" onclick="return confirm('Supprimer cet étudiant ?')">Supprimer</a>                            </div>
                         </div>
                     </div>
                 <?php endforeach; ?>

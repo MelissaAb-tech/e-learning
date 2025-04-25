@@ -32,6 +32,7 @@
     border-radius: 4px;
     cursor: pointer;
     margin-top: 10px;
+    width: 100%;
 }
 
 .label-hint {
@@ -61,4 +62,8 @@
 
 .delete-option-btn:hover {
     background-color: #d32f2f !important;
+}
+
+#options-container {
+    margin-top: 20px;
 }

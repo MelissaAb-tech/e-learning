@@ -30,6 +30,8 @@
 .search-container {
     margin-bottom: 40px;
     max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .search-tabs {
