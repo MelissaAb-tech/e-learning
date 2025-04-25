@@ -34,12 +34,4 @@
     </form>
 </div>
 
-<style>
-    .youtube-input {
-        background-image: url('https://www.youtube.com/favicon.ico');
-        background-repeat: no-repeat;
-        background-position: 10px center;
-        background-size: 20px;
-        padding-left: 40px !important;
-    }
-</style>
+<link rel="stylesheet" href="/e-learning-role-final/public/style/modifier.css">

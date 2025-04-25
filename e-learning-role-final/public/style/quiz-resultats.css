@@ -1,0 +1,107 @@
+.results-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 30px;
+}
+
+.results-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.results-header h2 {
+    margin-bottom: 5px;
+    color: #2c3e50;
+}
+
+.results-score {
+    text-align: center;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+}
+
+.results-score.pass {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.results-score.fail {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.results-score h3 {
+    margin-top: 0;
+}
+
+.results-question {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.results-question h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #2c3e50;
+}
+
+.results-options {
+    margin-left: 15px;
+}
+
+.results-option {
+    margin-bottom: 10px;
+    padding: 12px 15px;
+    border-radius: 4px;
+    position: relative;
+}
+
+.results-option.correct {
+    background-color: #d4edda;
+    border-left: 4px solid #28a745;
+}
+
+.results-option.incorrect {
+    background-color: #f8d7da;
+    border-left: 4px solid #dc3545;
+}
+
+.results-option.neutral {
+    background-color: #f2f2f2;
+    border-left: 4px solid #6c757d;
+}
+
+.results-option-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: bold;
+}
+
+.results-actions {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.results-button {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #3B82F6;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    margin: 0 10px;
+}
+
+.results-button:hover {
+    background-color: #2563EB;
+}

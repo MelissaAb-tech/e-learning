@@ -1,0 +1,64 @@
+/* Styles pour la page d'ajout de question */
+.option-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.option-row input[type="text"] {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.option-correct {
+    display: flex;
+    align-items: center;
+    width: 40px;
+    justify-content: center;
+}
+
+.option-correct input {
+    margin: 0;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+#add-option {
+    background-color: #f0f0f0;
+    color: #333;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.label-hint {
+    font-size: 13px;
+    color: #666;
+    font-weight: normal;
+    font-style: italic;
+}
+
+/* Style spécifique pour le bouton de suppression avec !important pour éviter les conflits */
+.delete-option-btn {
+    background-color: #f44336 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 50% !important;
+    width: 25px !important;
+    height: 25px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 18px !important;
+    margin-left: 10px !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+}
+
+.delete-option-btn:hover {
+    background-color: #d32f2f !important;
+}

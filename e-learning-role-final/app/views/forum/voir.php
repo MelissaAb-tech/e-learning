@@ -6,6 +6,7 @@
     <title><?= htmlspecialchars($topic['titre']) ?> - Forum</title>
     <link rel="stylesheet" href="/e-learning-role-final/public/style/forum.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/e-learning-role-final/public/style/forum-extra.css">
 </head>
 <body>
     <div class="forum-header">

@@ -1,0 +1,85 @@
+/* Styles supplémentaires pour le dashboard admin */
+.stat-icon.orange {
+    background-color: #F97316;
+}
+
+.btn-feedbacks {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background-color: #3B82F6;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    margin: 15px 0 5px 0;
+    transition: background-color 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-feedbacks:hover {
+    background-color: #2563EB;
+}
+
+.btn-feedbacks i {
+    font-size: 16px;
+}
+
+.search-container {
+    margin-bottom: 40px;
+    max-width: 400px;
+}
+
+.search-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.search-tab {
+    padding: 8px 16px;
+    background-color: #f0f0f0;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.search-tab.active {
+    background-color: #3B82F6;
+    color: white;
+}
+
+.search-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-field {
+    width: 100%;
+    padding: 10px 40px 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    font-size: 14px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+}
+
+.search-field:focus {
+    outline: none;
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.search-icon {
+    position: absolute;
+    right: 15px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
