@@ -7,7 +7,7 @@
     <div class="course-navbar-title">
         <?= htmlspecialchars($cours['nom']) ?>
     </div>
-    
+
     <div class="course-navbar-buttons">
         <a href="/e-learning-role-final/public/admin/dashboard" class="navbar-btn navbar-btn-primary">
             <i class="fas fa-tachometer-alt"></i> Dashboard
@@ -15,6 +15,10 @@
         <a href="/e-learning-role-final/public/forum/cours/<?= $cours['id'] ?>" class="navbar-btn navbar-btn-primary">
             <i class="fas fa-comments"></i> Forum
         </a>
+        <a href="#" class="navbar-btn navbar-btn-danger" onclick="openLogoutModal(); return false;">
+            <i class="fas fa-sign-out-alt"></i> Déconnexion
+        </a>
+
     </div>
 </div>
 
@@ -26,7 +30,7 @@
         <p><strong>Professeur :</strong> <?= $cours['professeur'] ?></p>
         <p><strong>Niveau :</strong> <?= $cours['niveau'] ?> • <strong>Durée :</strong> <?= $cours['duree'] ?></p>
         <p><?= nl2br($cours['contenu']) ?></p>
-        
+
         <!-- Boutons d'action -->
         <div style="margin-top: 20px; display: flex; gap: 10px;">
             <a href="/e-learning-role-final/public/quiz/index/<?= $cours['id'] ?>" style="background-color: #3B82F6; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none;">
@@ -46,53 +50,55 @@
         $chapitreModel = $this->model('Chapitre');
         $chapitres = $chapitreModel->getByCoursId($cours['id']);
         $chapitres_total = count($chapitres);
-        
+
         // Récupérer tous les quiz du cours
         $quizModel = $this->model('Quiz');
         $quizzes = $quizModel->getByCoursId($cours['id']);
         $has_quizzes = !empty($quizzes);
         $quiz_total = count($quizzes);
-        
+
         // Récupérer tous les étudiants inscrits au cours
         $inscriptionModel = $this->model('CoursInscription');
         $etudiantsInscrits = $inscriptionModel->getEtudiantsParCours($cours['id']);
-        
+
         $etudiants_termines = 0;
         $etudiants_en_cours = 0;
         $total_progression = 0;
-        
+
         $tentativeModel = $this->model('QuizTentative');
-        
+
         // Pour chaque étudiant inscrit, calculer sa progression
         foreach ($etudiantsInscrits as $etudiant) {
             $user_id = $etudiant['id'];
             $a_commence = false;
-            
+
             // Vérification des chapitres
             $chapitres_vus = $chapitreModel->getVusParUser($user_id);
             $chapitres_termine = 0;
-            
+
             foreach ($chapitres as $chap) {
                 if (in_array($chap['id'], $chapitres_vus)) {
                     $chapitres_termine++;
                     $a_commence = true;
                 }
             }
-            
+
             // Calcul de la progression des chapitres
             $chapitre_progress = $chapitres_total > 0 ? ($chapitres_termine / $chapitres_total) * 100 : 100;
-            
+
             // Vérification des quiz
             $quiz_parfait = 0;
-            
+
             if ($has_quizzes) {
                 foreach ($quizzes as $quiz) {
                     $meilleureTentative = $tentativeModel->getMeilleureTentative($user_id, $quiz['id']);
-                    if ($meilleureTentative && 
-                        isset($meilleureTentative['score']) && 
-                        isset($meilleureTentative['score_max']) && 
+                    if (
+                        $meilleureTentative &&
+                        isset($meilleureTentative['score']) &&
+                        isset($meilleureTentative['score_max']) &&
                         $meilleureTentative['score_max'] > 0 &&
-                        $meilleureTentative['score'] == $meilleureTentative['score_max']) {
+                        $meilleureTentative['score'] == $meilleureTentative['score_max']
+                    ) {
                         $quiz_parfait++;
                         $a_commence = true;
                     } else if ($meilleureTentative) {
@@ -100,18 +106,18 @@
                     }
                 }
             }
-            
+
             // Calcul de la progression des quiz
             $quiz_progress = $quiz_total > 0 ? ($quiz_parfait / $quiz_total) * 100 : 100;
-            
+
             // Calcul de la progression globale pour cet étudiant
-            $global_progress = $has_quizzes ? 
-                ($chapitre_progress + $quiz_progress) / 2 : 
+            $global_progress = $has_quizzes ?
+                ($chapitre_progress + $quiz_progress) / 2 :
                 $chapitre_progress;
-            
+
             // Ajouter à la progression totale
             $total_progression += $global_progress;
-            
+
             // Déterminer si l'étudiant a terminé ou est en cours
             if ($chapitre_progress == 100 && (!$has_quizzes || $quiz_progress == 100)) {
                 $etudiants_termines++;
@@ -120,29 +126,29 @@
                 $etudiants_en_cours++;
             }
         }
-        
+
         // Nombre total d'étudiants inscrits
         $nombre_inscrits = count($etudiantsInscrits);
-        
+
         // Calcul de la moyenne de progression (éviter division par zéro)
         $moyenne = $nombre_inscrits > 0 ? round($total_progression / $nombre_inscrits) : 0;
-        
+
         // Récupérer la note moyenne et le nombre d'avis pour ce cours
         $feedbackModel = $this->model('CoursFeedback');
         $noteMoyenne = $feedbackModel->getMoyenneNotesParCours($cours['id']);
         $nombreAvis = $feedbackModel->getNombreFeedbacksParCours($cours['id']);
         ?>
-        
+
         <!-- Ajout de la note moyenne des avis -->
         <div style="margin-bottom: 10px;">
-            <span style="font-weight: bold;">Note moyenne :</span> 
+            <span style="font-weight: bold;">Note moyenne :</span>
             <?php if ($nombreAvis > 0): ?>
                 <?= number_format($noteMoyenne, 1) ?>/5 (<?= $nombreAvis ?> avis)
             <?php else: ?>
                 Aucun avis pour le moment
             <?php endif; ?>
         </div>
-        
+
         <!-- Statistiques existantes -->
         <div style="margin-bottom: 10px;">
             <span style="font-weight: bold;">Étudiants inscrits :</span> <?= $nombre_inscrits ?>
@@ -159,11 +165,11 @@
         <div style="margin-bottom: 10px;">
             <span style="font-weight: bold;">Étudiants en cours :</span> <?= $etudiants_en_cours ?>
         </div>
-        
+
         <!-- Bouton pour voir les avis -->
         <?php if ($nombreAvis > 0): ?>
-            <a href="/e-learning-role-final/public/admin/cours/feedbacks/<?= $cours['id'] ?>" 
-            style="display: inline-block; background-color: #3B82F6; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; margin-top: 15px; text-align: center; width: 80%; font-weight: 500;">
+            <a href="/e-learning-role-final/public/admin/cours/feedbacks/<?= $cours['id'] ?>"
+                style="display: inline-block; background-color: #3B82F6; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; margin-top: 15px; text-align: center; width: 80%; font-weight: 500;">
                 <i class="fas fa-comments"></i> Voir les avis des étudiants
             </a>
         <?php endif; ?>
@@ -216,7 +222,7 @@
                             ?>
                             <?php if (!empty($video_id)): ?>
                                 <div class="admin-video-container">
-                                    <iframe width="100%" height="360" src="https://www.youtube.com/embed/<?= $video_id ?>" 
+                                    <iframe width="100%" height="360" src="https://www.youtube.com/embed/<?= $video_id ?>"
                                         frameborder="0" allowfullscreen></iframe>
                                 </div>
                             <?php else: ?>
@@ -242,10 +248,43 @@
         <?php endif; ?>
 
         <p class="admin-chapter-actions">
-            <a href="/e-learning-role-final/public/admin/chapitre/modifier/<?= $chap['id'] ?>/<?= $cours['id'] ?>">✏️ Modifier le chapitre</a> | 
+            <a href="/e-learning-role-final/public/admin/chapitre/modifier/<?= $chap['id'] ?>/<?= $cours['id'] ?>">✏️ Modifier le chapitre</a> |
             <a href="/e-learning-role-final/public/admin/chapitre/supprimer/<?= $chap['id'] ?>/<?= $cours['id'] ?>" onclick="return confirm('Supprimer ce chapitre ?')">🗑️ Supprimer le chapitre</a>
         </p>
     </div>
 <?php endforeach; ?>
 
 </div>
+<!-- Modal de confirmation pour la déconnexion admin -->
+<div id="logoutModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-title">Déconnexion</div>
+        <div class="modal-text">
+            Êtes-vous sûr de vouloir vous déconnecter ?
+        </div>
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-cancel" onclick="closeLogoutModal()">
+                <i class="fas fa-times"></i> Annuler
+            </button>
+            <a href="/e-learning-role-final/public/logout" class="modal-btn modal-btn-danger">
+                <i class="fas fa-sign-out-alt"></i> Se déconnecter
+            </a>
+        </div>
+    </div>
+</div>
+<script>
+    function openLogoutModal() {
+        document.getElementById('logoutModal').style.display = 'flex';
+    }
+
+    function closeLogoutModal() {
+        document.getElementById('logoutModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        const logoutModal = document.getElementById('logoutModal');
+        if (event.target === logoutModal) {
+            closeLogoutModal();
+        }
+    }
+</script>

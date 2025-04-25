@@ -15,7 +15,7 @@
             <i class="fas fa-arrow-left"></i> Retour au cours
         </a>
     </div>
-    
+
     <div class="course-info">
         <img src="/e-learning-role-final/public/images/<?= $cours['image'] ?>" alt="<?= htmlspecialchars($cours['nom']) ?>" class="course-image">
         <div class="course-details">
@@ -35,7 +35,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="feedback-list">
         <?php if (empty($feedbacks)): ?>
             <div class="no-feedback">
@@ -56,7 +56,7 @@
                             <?= date('d/m/Y à H:i', strtotime($feedback['date_feedback'])) ?>
                         </div>
                     </div>
-                    
+
                     <div class="feedback-rating">
                         <div class="rating-stars">
                             <?php for ($i = 1; $i <= 5; $i++): ?>
@@ -69,7 +69,7 @@
                         </div>
                         <span style="color: #7f8c8d;">(<?= $feedback['note'] ?>/5)</span>
                     </div>
-                    
+
                     <div class="feedback-text">
                         <?= nl2br(htmlspecialchars($feedback['commentaire'])) ?>
                     </div>
