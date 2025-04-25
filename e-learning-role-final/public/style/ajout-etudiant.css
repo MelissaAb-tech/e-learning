@@ -96,3 +96,23 @@ button {
 button:hover {
     background: linear-gradient(to right, #007BFF, #1269b1);
 }
+
+select {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 25px;
+    border: 1px solid #cbd5e0;
+    border-radius: 10px;
+    background-color: #f7fafc;
+    transition: border-color 0.3s, background-color 0.3s;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    appearance: auto;
+    height: 45px;
+}
+    
+select:focus {
+    border-color: #007BFF;
+    background-color: #fff;
+    outline: none;
+}

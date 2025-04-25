@@ -49,8 +49,16 @@
             </div>
 
             <div class="info-row">
-                <label for="fonction">Fonction :</label>
-                <input type="text" id="fonction" name="fonction" value="<?= htmlspecialchars($user['fonction'] ?? '') ?>" required>
+                <label for="fonction">Occupation :</label>
+                <select id="fonction" name="fonction" required>
+                    <option value="Étudiant" <?= ($user['fonction'] ?? '') == 'Étudiant' ? 'selected' : '' ?>>Étudiant</option>
+                    <option value="Enseignant" <?= ($user['fonction'] ?? '') == 'Enseignant' ? 'selected' : '' ?>>Enseignant</option>
+                    <option value="Professionnel" <?= ($user['fonction'] ?? '') == 'Professionnel' ? 'selected' : '' ?>>Professionnel</option>
+                    <option value="Entrepreneur" <?= ($user['fonction'] ?? '') == 'Entrepreneur' ? 'selected' : '' ?>>Entrepreneur</option>
+                    <option value="Retraité" <?= ($user['fonction'] ?? '') == 'Retraité' ? 'selected' : '' ?>>Retraité</option>
+                    <option value="Demandeur d'emploi" <?= ($user['fonction'] ?? '') == 'Demandeur d\'emploi' ? 'selected' : '' ?>>Demandeur d'emploi</option>
+                    <option value="Autre" <?= ($user['fonction'] ?? '') == 'Autre' ? 'selected' : '' ?>>Autre</option>
+                </select>
             </div>
 
             <div class="info-row">

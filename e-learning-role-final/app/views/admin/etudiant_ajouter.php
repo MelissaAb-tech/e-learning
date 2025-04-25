@@ -21,8 +21,17 @@
         <label>Adresse :</label>
         <input type="text" name="adresse" required>
 
-        <label>Fonction :</label>
-        <input type="text" name="fonction" required>
+        <label>Occupation :</label>
+        <select name="fonction" required>
+            <option value="" disabled selected>Sélectionnez une occupation</option>
+            <option value="Étudiant">Étudiant</option>
+            <option value="Enseignant">Enseignant</option>
+            <option value="Professionnel">Professionnel</option>
+            <option value="Entrepreneur">Entrepreneur</option>
+            <option value="Retraité">Retraité</option>
+            <option value="Demandeur d'emploi">Demandeur d'emploi</option>
+            <option value="Autre">Autre</option>
+        </select>
 
         <label>Téléphone :</label>
         <input type="tel" name="telephone" required>

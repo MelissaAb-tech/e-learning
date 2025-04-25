@@ -32,3 +32,19 @@ button {
 button:hover {
     background: #ef6c00;
 }
+
+select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: white;
+    appearance: auto;
+}
+
+select:focus {
+    outline: none;
+    border-color: #ff9800;
+}

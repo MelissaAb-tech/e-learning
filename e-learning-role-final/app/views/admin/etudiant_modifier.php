@@ -1,5 +1,6 @@
 <link rel="stylesheet" href="/e-learning-role-final/public/style/ajout-etudiant.css">
 
+
 <div class="form-container">
     <h2>Modifier l'étudiant</h2>
     <form method="POST" enctype="multipart/form-data">
@@ -21,8 +22,16 @@
         <label>Adresse :</label>
         <input type="text" name="adresse" value="<?= htmlspecialchars($etudiant['adresse'] ?? '') ?>" required>
 
-        <label>Fonction :</label>
-        <input type="text" name="fonction" value="<?= htmlspecialchars($etudiant['fonction'] ?? '') ?>" required>
+        <label>Occupation :</label>
+        <select name="fonction" required>
+            <option value="Étudiant" <?= ($etudiant['fonction'] ?? '') == 'Étudiant' ? 'selected' : '' ?>>Étudiant</option>
+            <option value="Enseignant" <?= ($etudiant['fonction'] ?? '') == 'Enseignant' ? 'selected' : '' ?>>Enseignant</option>
+            <option value="Professionnel" <?= ($etudiant['fonction'] ?? '') == 'Professionnel' ? 'selected' : '' ?>>Professionnel</option>
+            <option value="Entrepreneur" <?= ($etudiant['fonction'] ?? '') == 'Entrepreneur' ? 'selected' : '' ?>>Entrepreneur</option>
+            <option value="Retraité" <?= ($etudiant['fonction'] ?? '') == 'Retraité' ? 'selected' : '' ?>>Retraité</option>
+            <option value="Demandeur d'emploi" <?= ($etudiant['fonction'] ?? '') == 'Demandeur d\'emploi' ? 'selected' : '' ?>>Demandeur d'emploi</option>
+            <option value="Autre" <?= ($etudiant['fonction'] ?? '') == 'Autre' ? 'selected' : '' ?>>Autre</option>
+        </select>
 
         <label>Téléphone :</label>
         <input type="tel" name="telephone" value="<?= htmlspecialchars($etudiant['telephone'] ?? '') ?>" required>
