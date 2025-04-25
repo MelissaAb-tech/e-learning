@@ -7,26 +7,26 @@
         background: linear-gradient(90deg, #2c3e50, #3B82F6);
         color: white;
         padding: 12px 30px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         margin-bottom: 20px;
         display: flex;
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
     }
-    
+
     .course-navbar-title {
         font-size: 18px;
         font-weight: bold;
         color: white;
         margin-right: 20px;
     }
-    
+
     .course-navbar-buttons {
         display: flex;
         gap: 10px;
     }
-    
+
     .navbar-btn {
         display: inline-flex;
         align-items: center;
@@ -39,40 +39,40 @@
         cursor: pointer;
         transition: all 0.2s ease;
     }
-    
+
     .navbar-btn-primary {
         background-color: rgba(255, 255, 255, 0.2);
         color: white;
     }
-    
+
     .navbar-btn-primary:hover {
         background-color: rgba(255, 255, 255, 0.3);
     }
-    
+
     @media (max-width: 768px) {
         .course-navbar {
             flex-direction: column;
             padding: 10px 20px;
         }
-        
+
         .course-navbar-title {
             margin-bottom: 10px;
             margin-right: 0;
         }
-        
+
         .course-navbar-buttons {
             width: 100%;
             justify-content: center;
         }
     }
-    
+
     .admin-files-section {
         margin: 15px 0;
         background-color: #f8f9fa;
         border-radius: 8px;
         padding: 15px;
     }
-    
+
     .admin-files-section h5 {
         margin-top: 0;
         margin-bottom: 10px;
@@ -81,13 +81,13 @@
         padding-bottom: 8px;
         color: #2c3e50;
     }
-    
+
     .admin-file-list {
         display: flex;
         flex-direction: column;
         gap: 8px;
     }
-    
+
     .admin-file-item {
         display: flex;
         align-items: center;
@@ -96,22 +96,22 @@
         border: 1px solid #e5e7eb;
         border-radius: 4px;
     }
-    
+
     .admin-file-item i {
         color: #e53e3e;
         margin-right: 10px;
         font-size: 18px;
     }
-    
+
     .admin-file-item a {
         color: #3182ce;
         text-decoration: none;
     }
-    
+
     .admin-file-item a:hover {
         text-decoration: underline;
     }
-    
+
     .admin-video-item {
         margin-bottom: 20px;
         background-color: white;
@@ -119,7 +119,7 @@
         border-radius: 6px;
         overflow: hidden;
     }
-    
+
     .admin-video-header {
         background-color: #f1f5f9;
         padding: 10px 15px;
@@ -128,25 +128,34 @@
         display: flex;
         align-items: center;
     }
-    
+
     .admin-video-header i {
         margin-right: 8px;
         font-size: 18px;
         color: #e53e3e;
     }
-    
+
     .admin-video-container {
         padding: 15px;
     }
-    
+
     .admin-chapter-actions {
         margin-top: 15px;
         border-top: 1px solid #e5e7eb;
         padding-top: 15px;
     }
-    
+
     .admin-chapter-actions a {
         text-decoration: none;
+    }
+
+    .navbar-btn-danger {
+        background-color: #EF4444;
+        color: white;
+    }
+
+    .navbar-btn-danger:hover {
+        background-color: #DC2626;
     }
 </style>
 
@@ -155,7 +164,7 @@
     <div class="course-navbar-title">
         <?= htmlspecialchars($cours['nom']) ?>
     </div>
-    
+
     <div class="course-navbar-buttons">
         <a href="/e-learning-role-final/public/admin/dashboard" class="navbar-btn navbar-btn-primary">
             <i class="fas fa-tachometer-alt"></i> Dashboard
@@ -163,6 +172,10 @@
         <a href="/e-learning-role-final/public/forum/cours/<?= $cours['id'] ?>" class="navbar-btn navbar-btn-primary">
             <i class="fas fa-comments"></i> Forum
         </a>
+        <a href="#" class="navbar-btn navbar-btn-danger" onclick="openLogoutModal(); return false;">
+            <i class="fas fa-sign-out-alt"></i> Déconnexion
+        </a>
+
     </div>
 </div>
 
@@ -174,7 +187,7 @@
         <p><strong>Professeur :</strong> <?= $cours['professeur'] ?></p>
         <p><strong>Niveau :</strong> <?= $cours['niveau'] ?> • <strong>Durée :</strong> <?= $cours['duree'] ?></p>
         <p><?= nl2br($cours['contenu']) ?></p>
-        
+
         <!-- Boutons d'action -->
         <div style="margin-top: 20px; display: flex; gap: 10px;">
             <a href="/e-learning-role-final/public/quiz/index/<?= $cours['id'] ?>" style="background-color: #3B82F6; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none;">
@@ -194,53 +207,55 @@
         $chapitreModel = $this->model('Chapitre');
         $chapitres = $chapitreModel->getByCoursId($cours['id']);
         $chapitres_total = count($chapitres);
-        
+
         // Récupérer tous les quiz du cours
         $quizModel = $this->model('Quiz');
         $quizzes = $quizModel->getByCoursId($cours['id']);
         $has_quizzes = !empty($quizzes);
         $quiz_total = count($quizzes);
-        
+
         // Récupérer tous les étudiants inscrits au cours
         $inscriptionModel = $this->model('CoursInscription');
         $etudiantsInscrits = $inscriptionModel->getEtudiantsParCours($cours['id']);
-        
+
         $etudiants_termines = 0;
         $etudiants_en_cours = 0;
         $total_progression = 0;
-        
+
         $tentativeModel = $this->model('QuizTentative');
-        
+
         // Pour chaque étudiant inscrit, calculer sa progression
         foreach ($etudiantsInscrits as $etudiant) {
             $user_id = $etudiant['id'];
             $a_commence = false;
-            
+
             // Vérification des chapitres
             $chapitres_vus = $chapitreModel->getVusParUser($user_id);
             $chapitres_termine = 0;
-            
+
             foreach ($chapitres as $chap) {
                 if (in_array($chap['id'], $chapitres_vus)) {
                     $chapitres_termine++;
                     $a_commence = true;
                 }
             }
-            
+
             // Calcul de la progression des chapitres
             $chapitre_progress = $chapitres_total > 0 ? ($chapitres_termine / $chapitres_total) * 100 : 100;
-            
+
             // Vérification des quiz
             $quiz_parfait = 0;
-            
+
             if ($has_quizzes) {
                 foreach ($quizzes as $quiz) {
                     $meilleureTentative = $tentativeModel->getMeilleureTentative($user_id, $quiz['id']);
-                    if ($meilleureTentative && 
-                        isset($meilleureTentative['score']) && 
-                        isset($meilleureTentative['score_max']) && 
+                    if (
+                        $meilleureTentative &&
+                        isset($meilleureTentative['score']) &&
+                        isset($meilleureTentative['score_max']) &&
                         $meilleureTentative['score_max'] > 0 &&
-                        $meilleureTentative['score'] == $meilleureTentative['score_max']) {
+                        $meilleureTentative['score'] == $meilleureTentative['score_max']
+                    ) {
                         $quiz_parfait++;
                         $a_commence = true;
                     } else if ($meilleureTentative) {
@@ -248,18 +263,18 @@
                     }
                 }
             }
-            
+
             // Calcul de la progression des quiz
             $quiz_progress = $quiz_total > 0 ? ($quiz_parfait / $quiz_total) * 100 : 100;
-            
+
             // Calcul de la progression globale pour cet étudiant
-            $global_progress = $has_quizzes ? 
-                ($chapitre_progress + $quiz_progress) / 2 : 
+            $global_progress = $has_quizzes ?
+                ($chapitre_progress + $quiz_progress) / 2 :
                 $chapitre_progress;
-            
+
             // Ajouter à la progression totale
             $total_progression += $global_progress;
-            
+
             // Déterminer si l'étudiant a terminé ou est en cours
             if ($chapitre_progress == 100 && (!$has_quizzes || $quiz_progress == 100)) {
                 $etudiants_termines++;
@@ -268,29 +283,29 @@
                 $etudiants_en_cours++;
             }
         }
-        
+
         // Nombre total d'étudiants inscrits
         $nombre_inscrits = count($etudiantsInscrits);
-        
+
         // Calcul de la moyenne de progression (éviter division par zéro)
         $moyenne = $nombre_inscrits > 0 ? round($total_progression / $nombre_inscrits) : 0;
-        
+
         // Récupérer la note moyenne et le nombre d'avis pour ce cours
         $feedbackModel = $this->model('CoursFeedback');
         $noteMoyenne = $feedbackModel->getMoyenneNotesParCours($cours['id']);
         $nombreAvis = $feedbackModel->getNombreFeedbacksParCours($cours['id']);
         ?>
-        
+
         <!-- Ajout de la note moyenne des avis -->
         <div style="margin-bottom: 10px;">
-            <span style="font-weight: bold;">Note moyenne :</span> 
+            <span style="font-weight: bold;">Note moyenne :</span>
             <?php if ($nombreAvis > 0): ?>
                 <?= number_format($noteMoyenne, 1) ?>/5 (<?= $nombreAvis ?> avis)
             <?php else: ?>
                 Aucun avis pour le moment
             <?php endif; ?>
         </div>
-        
+
         <!-- Statistiques existantes -->
         <div style="margin-bottom: 10px;">
             <span style="font-weight: bold;">Étudiants inscrits :</span> <?= $nombre_inscrits ?>
@@ -307,11 +322,11 @@
         <div style="margin-bottom: 10px;">
             <span style="font-weight: bold;">Étudiants en cours :</span> <?= $etudiants_en_cours ?>
         </div>
-        
+
         <!-- Bouton pour voir les avis -->
         <?php if ($nombreAvis > 0): ?>
-            <a href="/e-learning-role-final/public/admin/cours/feedbacks/<?= $cours['id'] ?>" 
-            style="display: inline-block; background-color: #3B82F6; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; margin-top: 15px; text-align: center; width: 80%; font-weight: 500;">
+            <a href="/e-learning-role-final/public/admin/cours/feedbacks/<?= $cours['id'] ?>"
+                style="display: inline-block; background-color: #3B82F6; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; margin-top: 15px; text-align: center; width: 80%; font-weight: 500;">
                 <i class="fas fa-comments"></i> Voir les avis des étudiants
             </a>
         <?php endif; ?>
@@ -364,7 +379,7 @@
                             ?>
                             <?php if (!empty($video_id)): ?>
                                 <div class="admin-video-container">
-                                    <iframe width="100%" height="360" src="https://www.youtube.com/embed/<?= $video_id ?>" 
+                                    <iframe width="100%" height="360" src="https://www.youtube.com/embed/<?= $video_id ?>"
                                         frameborder="0" allowfullscreen></iframe>
                                 </div>
                             <?php else: ?>
@@ -390,10 +405,43 @@
         <?php endif; ?>
 
         <p class="admin-chapter-actions">
-            <a href="/e-learning-role-final/public/admin/chapitre/modifier/<?= $chap['id'] ?>/<?= $cours['id'] ?>">✏️ Modifier le chapitre</a> | 
+            <a href="/e-learning-role-final/public/admin/chapitre/modifier/<?= $chap['id'] ?>/<?= $cours['id'] ?>">✏️ Modifier le chapitre</a> |
             <a href="/e-learning-role-final/public/admin/chapitre/supprimer/<?= $chap['id'] ?>/<?= $cours['id'] ?>" onclick="return confirm('Supprimer ce chapitre ?')">🗑️ Supprimer le chapitre</a>
         </p>
     </div>
 <?php endforeach; ?>
 
 </div>
+<!-- Modal de confirmation pour la déconnexion admin -->
+<div id="logoutModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-title">Déconnexion</div>
+        <div class="modal-text">
+            Êtes-vous sûr de vouloir vous déconnecter ?
+        </div>
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-cancel" onclick="closeLogoutModal()">
+                <i class="fas fa-times"></i> Annuler
+            </button>
+            <a href="/e-learning-role-final/public/logout" class="modal-btn modal-btn-danger">
+                <i class="fas fa-sign-out-alt"></i> Se déconnecter
+            </a>
+        </div>
+    </div>
+</div>
+<script>
+    function openLogoutModal() {
+        document.getElementById('logoutModal').style.display = 'flex';
+    }
+
+    function closeLogoutModal() {
+        document.getElementById('logoutModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        const logoutModal = document.getElementById('logoutModal');
+        if (event.target === logoutModal) {
+            closeLogoutModal();
+        }
+    }
+</script>

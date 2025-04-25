@@ -7,57 +7,57 @@
         margin: 40px auto;
         padding: 0 20px;
     }
-    
+
     .feedback-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 30px;
     }
-    
+
     .feedback-list {
         background: white;
         border-radius: 10px;
         overflow: hidden;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
-    
+
     .feedback-item {
         padding: 20px;
         border-bottom: 1px solid #eee;
     }
-    
+
     .feedback-item:last-child {
         border-bottom: none;
     }
-    
+
     .feedback-meta {
         display: flex;
         justify-content: space-between;
         margin-bottom: 10px;
     }
-    
+
     .feedback-user {
         font-weight: bold;
         color: #2c3e50;
     }
-    
+
     .feedback-date {
         color: #95a5a6;
         font-size: 14px;
     }
-    
+
     .feedback-rating {
         display: flex;
         align-items: center;
         margin-bottom: 15px;
     }
-    
+
     .rating-stars {
         color: #f39c12;
         margin-right: 5px;
     }
-    
+
     .feedback-text {
         padding: 10px;
         background-color: #f9f9f9;
@@ -65,7 +65,7 @@
         color: #333;
         line-height: 1.5;
     }
-    
+
     .btn-back {
         background-color: #3B82F6;
         color: white;
@@ -78,11 +78,11 @@
         align-items: center;
         gap: 6px;
     }
-    
+
     .btn-back:hover {
         background-color: #2563EB;
     }
-    
+
     .no-feedback {
         text-align: center;
         padding: 40px 20px;
@@ -92,7 +92,7 @@
 </style>
 
 <div class="admin-header">
-    <a href="/e-learning-role-final/public/logout" class="logout-button">
+    <a href="#" class="logout-button" onclick="openLogoutModal(); return false;">
         <i class="fas fa-sign-out-alt"></i> Déconnexion
     </a>
     <h1>Feedback des étudiants</h1>
@@ -104,7 +104,7 @@
             <i class="fas fa-arrow-left"></i> Retour au dashboard
         </a>
     </div>
-    
+
     <div class="feedback-list">
         <?php if (empty($feedbacks)): ?>
             <div class="no-feedback">
@@ -125,7 +125,7 @@
                             <?= date('d/m/Y à H:i', strtotime($feedback['date_feedback'])) ?>
                         </div>
                     </div>
-                    
+
                     <div class="feedback-rating">
                         <div class="rating-stars">
                             <?php for ($i = 1; $i <= 5; $i++): ?>
@@ -138,7 +138,7 @@
                         </div>
                         <span style="color: #7f8c8d;">(<?= $feedback['note'] ?>/5)</span>
                     </div>
-                    
+
                     <div class="feedback-text">
                         <?= nl2br(htmlspecialchars($feedback['commentaire'])) ?>
                     </div>
@@ -147,3 +147,31 @@
         <?php endif; ?>
     </div>
 </div>
+<!-- Modal de confirmation déconnexion -->
+<div id="logoutModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+     background-color: rgba(0, 0, 0, 0.5); z-index: 9999; justify-content: center; align-items: center;">
+    <div class="modal-content" style="background-color: white; padding: 25px; border-radius: 8px; width: 90%; max-width: 400px; text-align: center;">
+        <h3 style="margin-bottom: 15px;">Déconnexion</h3>
+        <p style="margin-bottom: 20px;">Êtes-vous sûr de vouloir vous déconnecter ?</p>
+        <div style="display: flex; justify-content: center; gap: 10px;">
+            <button onclick="closeLogoutModal()" style="padding: 8px 16px; background-color: #6c757d; color: white; border: none; border-radius: 5px;">Annuler</button>
+            <a href="/e-learning-role-final/public/logout" style="padding: 8px 16px; background-color: #EF4444; color: white; text-decoration: none; border-radius: 5px;">Se déconnecter</a>
+        </div>
+    </div>
+</div>
+<script>
+    function openLogoutModal() {
+        document.getElementById('logoutModal').style.display = 'flex';
+    }
+
+    function closeLogoutModal() {
+        document.getElementById('logoutModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('logoutModal');
+        if (event.target === modal) {
+            closeLogoutModal();
+        }
+    };
+</script>

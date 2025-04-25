@@ -7,57 +7,57 @@
         margin: 40px auto;
         padding: 0 20px;
     }
-    
+
     .feedback-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 30px;
     }
-    
+
     .feedback-list {
         background: white;
         border-radius: 10px;
         overflow: hidden;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
-    
+
     .feedback-item {
         padding: 20px;
         border-bottom: 1px solid #eee;
     }
-    
+
     .feedback-item:last-child {
         border-bottom: none;
     }
-    
+
     .feedback-meta {
         display: flex;
         justify-content: space-between;
         margin-bottom: 10px;
     }
-    
+
     .feedback-user {
         font-weight: bold;
         color: #2c3e50;
     }
-    
+
     .feedback-date {
         color: #95a5a6;
         font-size: 14px;
     }
-    
+
     .feedback-rating {
         display: flex;
         align-items: center;
         margin-bottom: 15px;
     }
-    
+
     .rating-stars {
         color: #f39c12;
         margin-right: 5px;
     }
-    
+
     .feedback-text {
         padding: 10px;
         background-color: #f9f9f9;
@@ -65,7 +65,7 @@
         color: #333;
         line-height: 1.5;
     }
-    
+
     .btn-back {
         background-color: #3B82F6;
         color: white;
@@ -78,18 +78,18 @@
         align-items: center;
         gap: 6px;
     }
-    
+
     .btn-back:hover {
         background-color: #2563EB;
     }
-    
+
     .no-feedback {
         text-align: center;
         padding: 40px 20px;
         color: #7f8c8d;
         font-size: 18px;
     }
-    
+
     .course-info {
         margin-bottom: 20px;
         background-color: #f8f9fa;
@@ -99,33 +99,33 @@
         align-items: center;
         gap: 20px;
     }
-    
+
     .course-image {
         width: 100px;
         height: 70px;
         object-fit: cover;
         border-radius: 5px;
     }
-    
+
     .course-details h3 {
         margin: 0 0 5px 0;
         font-size: 20px;
         color: #2c3e50;
     }
-    
+
     .course-details p {
         margin: 0;
         color: #7f8c8d;
         font-size: 14px;
     }
-    
+
     .average-rating {
         display: flex;
         align-items: center;
         gap: 10px;
         margin-top: 5px;
     }
-    
+
     .average-rating .rating-stars {
         font-size: 18px;
     }
@@ -144,7 +144,7 @@
             <i class="fas fa-arrow-left"></i> Retour au cours
         </a>
     </div>
-    
+
     <div class="course-info">
         <img src="/e-learning-role-final/public/images/<?= $cours['image'] ?>" alt="<?= htmlspecialchars($cours['nom']) ?>" class="course-image">
         <div class="course-details">
@@ -164,7 +164,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="feedback-list">
         <?php if (empty($feedbacks)): ?>
             <div class="no-feedback">
@@ -185,7 +185,7 @@
                             <?= date('d/m/Y à H:i', strtotime($feedback['date_feedback'])) ?>
                         </div>
                     </div>
-                    
+
                     <div class="feedback-rating">
                         <div class="rating-stars">
                             <?php for ($i = 1; $i <= 5; $i++): ?>
@@ -198,7 +198,7 @@
                         </div>
                         <span style="color: #7f8c8d;">(<?= $feedback['note'] ?>/5)</span>
                     </div>
-                    
+
                     <div class="feedback-text">
                         <?= nl2br(htmlspecialchars($feedback['commentaire'])) ?>
                     </div>
