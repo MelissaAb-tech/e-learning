@@ -127,7 +127,7 @@
         background: linear-gradient(90deg, #2c3e50, #3B82F6);
         color: white;
         padding: 12px 30px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         margin-bottom: 20px;
         display: flex;
         justify-content: space-between;
@@ -223,7 +223,7 @@
         gap: 10px;
         margin-top: 20px;
     }
-    
+
     .modal-btn {
         display: inline-flex;
         align-items: center;
@@ -239,31 +239,32 @@
         color: white;
         transition: background-color 0.3s, transform 0.2s;
     }
-    
+
     .modal-btn:hover {
         transform: translateY(-2px);
     }
-    
+
     .modal-btn-cancel {
         background-color: #6c757d;
     }
-    
+
     .modal-btn-cancel:hover {
         background-color: #5a6268;
     }
-    
+
     .modal-btn-confirm {
-        background-color: #9C27B0; /* Violet comme le bouton "Modifier mon avis" */
+        background-color: #9C27B0;
+        /* Violet comme le bouton "Modifier mon avis" */
     }
-    
+
     .modal-btn-confirm:hover {
         background-color: #7B1FA2;
     }
-    
+
     .modal-btn-danger {
         background-color: #ef4444;
     }
-    
+
     .modal-btn-danger:hover {
         background-color: #dc2626;
     }
@@ -359,7 +360,7 @@
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         max-width: 100%;
     }
-    
+
     /* Style pour le bouton de feedback */
     .feedback-btn {
         display: inline-block;
@@ -391,7 +392,7 @@
     .feedback-btn-edit:hover {
         background-color: #7B1FA2;
     }
-    
+
     /* Styles pour le modal de feedback */
     .feedback-modal-content {
         max-width: 500px;
@@ -416,9 +417,9 @@
         transition: color 0.3s ease;
     }
 
-    .feedback-modal-content .star-rating input[type="radio"]:checked ~ label,
+    .feedback-modal-content .star-rating input[type="radio"]:checked~label,
     .feedback-modal-content .star-rating label:hover,
-    .feedback-modal-content .star-rating label:hover ~ label {
+    .feedback-modal-content .star-rating label:hover~label {
         color: #FFB400;
     }
 
@@ -443,13 +444,13 @@
         resize: vertical;
         min-height: 120px;
     }
-    
+
     .feedback-modal-content textarea:focus {
         border-color: #9C27B0;
         outline: none;
         box-shadow: 0 0 0 2px rgba(156, 39, 176, 0.2);
     }
-    
+
     .success-message {
         background-color: #d4edda;
         color: #155724;
@@ -462,7 +463,7 @@
         justify-content: center;
         gap: 10px;
     }
-    
+
     .error-message {
         background-color: #f8d7da;
         color: #721c24;
@@ -474,6 +475,15 @@
         align-items: center;
         justify-content: center;
         gap: 10px;
+    }
+
+    .navbar-btn-danger {
+        background-color: #EF4444;
+        color: white;
+    }
+
+    .navbar-btn-danger:hover {
+        background-color: #DC2626;
     }
 </style>
 
@@ -493,6 +503,11 @@
         <a href="#" class="navbar-btn navbar-btn-warning" onclick="openResetModal()">
             <i class="fas fa-sync-alt"></i> Réinitialiser
         </a>
+        <a href="#" class="navbar-btn navbar-btn-danger" onclick="openLogoutModal(); return false;">
+            <i class="fas fa-sign-out-alt"></i> Déconnexion
+        </a>
+
+
     </div>
 </div>
 
@@ -778,6 +793,24 @@ $cours_complet = $chapitres_complets && $quiz_complets;
         </div>
     </div>
 </div>
+<!-- Modal de confirmation pour la déconnexion -->
+<div id="logoutModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-title">Déconnexion</div>
+        <div class="modal-text">
+            Êtes-vous sûr de vouloir vous déconnecter ?<br>
+            Vous serez redirigé vers la page d'accueil.
+        </div>
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-cancel" onclick="closeLogoutModal()">
+                <i class="fas fa-times"></i> Annuler
+            </button>
+            <a href="/e-learning-role-final/public/logout" class="modal-btn modal-btn-danger">
+                <i class="fas fa-sign-out-alt"></i> Se déconnecter
+            </a>
+        </div>
+    </div>
+</div>
 
 <!-- Modal de feedback pour le cours -->
 <div id="feedbackModal" class="modal">
@@ -832,7 +865,7 @@ $cours_complet = $chapitres_complets && $quiz_complets;
     function closeResetModal() {
         document.getElementById('resetModal').style.display = 'none';
     }
-    
+
     // Fonctions pour gérer le modal de feedback
     function openFeedbackModal() {
         document.getElementById('feedbackModal').style.display = 'flex';
@@ -846,11 +879,32 @@ $cours_complet = $chapitres_complets && $quiz_complets;
     window.onclick = function(event) {
         const resetModal = document.getElementById('resetModal');
         const feedbackModal = document.getElementById('feedbackModal');
-        
+
         if (event.target === resetModal) {
             closeResetModal();
         } else if (event.target === feedbackModal) {
             closeFeedbackModal();
+        }
+    }
+
+    function openLogoutModal() {
+        document.getElementById('logoutModal').style.display = 'flex';
+    }
+
+    function closeLogoutModal() {
+        document.getElementById('logoutModal').style.display = 'none';
+    }
+    window.onclick = function(event) {
+        const resetModal = document.getElementById('resetModal');
+        const feedbackModal = document.getElementById('feedbackModal');
+        const logoutModal = document.getElementById('logoutModal');
+
+        if (event.target === resetModal) {
+            closeResetModal();
+        } else if (event.target === feedbackModal) {
+            closeFeedbackModal();
+        } else if (event.target === logoutModal) {
+            closeLogoutModal();
         }
     }
 </script>
