@@ -120,4 +120,87 @@ class CoursController extends Controller
         header("Location: /e-learning-role-final/public/cours/voir/$id");
         exit;
     }
+
+    public function feedback($cours_id)
+    {
+        // Vérifier que l'utilisateur est connecté
+        if (!isset($_SESSION['user'])) {
+            header('Location: /e-learning-role-final/public/login');
+            exit;
+        }
+
+        // Vérifier que la requête est de type POST
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: /e-learning-role-final/public/cours/voir/$cours_id");
+            exit;
+        }
+
+        // Récupérer les données du formulaire
+        $etudiant_id = $_SESSION['user']['id'];
+        $note = $_POST['rating'];
+        $commentaire = $_POST['commentaire'];
+
+        // Vérifier que le cours existe
+        $coursModel = $this->model('Cours');
+        $cours = $coursModel->getById($cours_id);
+        
+        if (!$cours) {
+            echo "Cours introuvable.";
+            exit;
+        }
+
+        // Vérifier que l'étudiant a terminé le cours à 100%
+        $chapitreModel = $this->model('Chapitre');
+        $chapitres = $chapitreModel->getByCoursId($cours_id);
+        $chapitres_vus = $chapitreModel->getVusParUser($etudiant_id);
+        
+        $chapitres_total = count($chapitres);
+        $chapitres_termine = 0;
+        foreach ($chapitres as $chap) {
+            if (in_array($chap['id'], $chapitres_vus)) {
+                $chapitres_termine++;
+            }
+        }
+        $progression_chapitres = $chapitres_total > 0 ? ($chapitres_termine / $chapitres_total) * 100 : 0;
+        
+        // Vérifier les quiz
+        $quizModel = $this->model('Quiz');
+        $quizzes = $quizModel->getByCoursId($cours_id);
+        $quiz_total = count($quizzes);
+        $quiz_parfait = 0;
+        
+        if ($quiz_total > 0) {
+            $tentativeModel = $this->model('QuizTentative');
+            foreach ($quizzes as $quiz) {
+                $meilleureTentative = $tentativeModel->getMeilleureTentative($etudiant_id, $quiz['id']);
+                if ($meilleureTentative && 
+                    isset($meilleureTentative['score']) && 
+                    isset($meilleureTentative['score_max']) && 
+                    $meilleureTentative['score'] == $meilleureTentative['score_max']) {
+                    $quiz_parfait++;
+                }
+            }
+        }
+        $progression_quiz = $quiz_total > 0 ? ($quiz_parfait / $quiz_total) * 100 : 100;
+        
+        $cours_complet = ($progression_chapitres == 100) && ($progression_quiz == 100);
+        
+        if (!$cours_complet) {
+            $_SESSION['error_message'] = "Vous devez terminer le cours à 100% pour pouvoir donner votre avis.";
+            header("Location: /e-learning-role-final/public/cours/voir/$cours_id");
+            exit;
+        }
+
+        // Enregistrer le feedback
+        $feedbackModel = $this->model('CoursFeedback');
+        if ($feedbackModel->create($cours_id, $etudiant_id, $note, $commentaire)) {
+            $_SESSION['success_message'] = "Merci ! Votre avis a bien été enregistré.";
+        } else {
+            $_SESSION['error_message'] = "Une erreur est survenue lors de l'enregistrement de votre avis.";
+        }
+
+        // Rediriger vers la page du cours
+        header("Location: /e-learning-role-final/public/cours/voir/$cours_id");
+        exit;
+    }
 }

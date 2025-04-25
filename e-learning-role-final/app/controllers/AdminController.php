@@ -238,4 +238,35 @@ class AdminController extends Controller
         ]);
     }
 
+    // Méthode pour voir les feedbacks d'un cours spécifique
+    public function coursFeedbacks($cours_id)
+    {
+        // Vérifier que l'utilisateur est administrateur
+        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
+            header('Location: /e-learning-role-final/public/login');
+            exit;
+        }
+        
+        // Récupérer les informations du cours
+        $coursModel = $this->model('Cours');
+        $cours = $coursModel->getById($cours_id);
+        
+        if (!$cours) {
+            echo "Cours introuvable.";
+            exit;
+        }
+        
+        // Récupérer tous les feedbacks pour ce cours
+        $feedbackModel = $this->model('CoursFeedback');
+        $feedbacks = $feedbackModel->getByCours($cours_id);
+        $moyenne_notes = $feedbackModel->getMoyenneNotesParCours($cours_id);
+        
+        // Afficher la vue avec les feedbacks
+        $this->view('admin/cours_feedbacks', [
+            'cours' => $cours,
+            'feedbacks' => $feedbacks,
+            'moyenne_notes' => $moyenne_notes
+        ]);
+    }
+
 }

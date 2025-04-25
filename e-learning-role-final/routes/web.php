@@ -16,16 +16,20 @@ $router->get('admin/supprimer/([0-9]+)', 'AdminController@supprimer');
 
 // Nouvelle route pour la liste des feedbacks
 $router->get('admin/feedbacks', 'AdminController@feedbacks');
+// Route pour voir les feedbacks d'un cours spécifique
+$router->get('admin/cours/feedbacks/([0-9]+)', 'AdminController@coursFeedbacks');
 
 $router->get('cours/voir/([0-9]+)', 'CoursController@voir');
 $router->post('cours/voir/([0-9]+)', 'CoursController@voir');
-// Nouvelle route pour réinitialiser un cours
+// Route pour réinitialiser un cours
 $router->get('cours/reinitialiser/([0-9]+)', 'CoursController@reinitialiser');
+// Route pour le feedback de cours
+$router->post('cours/feedback/([0-9]+)', 'CoursController@feedback');
 
 $router->get('admin/chapitre/ajouter/([0-9]+)', 'ChapitreController@ajouter');
 $router->post('admin/chapitre/ajouter/([0-9]+)', 'ChapitreController@ajouter');
 
-// Nouvelles routes pour modifier un chapitre
+// Routes pour modifier un chapitre
 $router->get('admin/chapitre/modifier/([0-9]+)/([0-9]+)', 'ChapitreController@modifier');
 $router->post('admin/chapitre/modifier/([0-9]+)/([0-9]+)', 'ChapitreController@modifier');
 

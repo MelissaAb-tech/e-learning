@@ -31,7 +31,7 @@
     }
     
     .search-container {
-        margin-bottom: 20px;
+        margin-bottom: 40px;
         max-width: 400px;
     }
     

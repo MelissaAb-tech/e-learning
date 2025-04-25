@@ -190,10 +190,6 @@
     </form>
 </div>
 
-<!-- Ajoutez ce script à la fin du fichier pour la recherche en temps réel -->
-<!-- La partie HTML et PHP reste identique -->
-
-<!-- Remplacez uniquement le script JavaScript à la fin du fichier par celui-ci -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Sélectionner tous les cours et l'input de recherche

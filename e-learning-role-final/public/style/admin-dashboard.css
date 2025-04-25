@@ -16,7 +16,7 @@ body {
 
 .admin-section {
     max-width: 1200px;
-    margin: 40px auto;
+    margin: 0px auto;
     padding: 0 20px;
 }
 
@@ -312,4 +312,8 @@ body {
     .admin-content {
         order: 2;
     }
+}
+
+#students-section {
+    margin-top: 40px;
 }

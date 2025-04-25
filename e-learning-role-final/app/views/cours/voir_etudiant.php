@@ -127,7 +127,7 @@
         background: linear-gradient(90deg, #2c3e50, #3B82F6);
         color: white;
         padding: 12px 30px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         margin-bottom: 20px;
         display: flex;
         justify-content: space-between;
@@ -206,6 +206,8 @@
         font-weight: bold;
         margin-bottom: 15px;
         color: #333;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
     }
 
     .modal-text {
@@ -214,28 +216,56 @@
         line-height: 1.5;
     }
 
+    /* Styles améliorés pour les boutons du modal */
     .modal-buttons {
         display: flex;
         justify-content: flex-end;
         gap: 10px;
+        margin-top: 20px;
     }
-
+    
     .modal-btn {
-        padding: 8px 16px;
-        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border-radius: 6px;
+        font-size: 14px;
         font-weight: 500;
+        text-decoration: none;
         cursor: pointer;
         border: none;
-    }
-
-    .modal-btn-cancel {
-        background-color: #e2e8f0;
-        color: #4a5568;
-    }
-
-    .modal-btn-confirm {
-        background-color: #ef4444;
         color: white;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+    
+    .modal-btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    .modal-btn-cancel {
+        background-color: #6c757d;
+    }
+    
+    .modal-btn-cancel:hover {
+        background-color: #5a6268;
+    }
+    
+    .modal-btn-confirm {
+        background-color: #9C27B0; /* Violet comme le bouton "Modifier mon avis" */
+    }
+    
+    .modal-btn-confirm:hover {
+        background-color: #7B1FA2;
+    }
+    
+    .modal-btn-danger {
+        background-color: #ef4444;
+    }
+    
+    .modal-btn-danger:hover {
+        background-color: #dc2626;
     }
 
     @media (max-width: 768px) {
@@ -329,6 +359,122 @@
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         max-width: 100%;
     }
+    
+    /* Style pour le bouton de feedback */
+    .feedback-btn {
+        display: inline-block;
+        background-color: #FF9800;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        border: none;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+    }
+
+    .feedback-btn:hover {
+        background-color: #F57C00;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .feedback-btn-edit {
+        background-color: #9C27B0;
+    }
+
+    .feedback-btn-edit:hover {
+        background-color: #7B1FA2;
+    }
+    
+    /* Styles pour le modal de feedback */
+    .feedback-modal-content {
+        max-width: 500px;
+    }
+
+    .feedback-modal-content .star-rating {
+        direction: rtl;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        font-size: 28px;
+        margin: 15px 0;
+    }
+
+    .feedback-modal-content .star-rating input[type="radio"] {
+        display: none;
+    }
+
+    .feedback-modal-content .star-rating label {
+        color: #ccc;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .feedback-modal-content .star-rating input[type="radio"]:checked ~ label,
+    .feedback-modal-content .star-rating label:hover,
+    .feedback-modal-content .star-rating label:hover ~ label {
+        color: #FFB400;
+    }
+
+    .feedback-modal-content .form-group {
+        margin-bottom: 20px;
+    }
+
+    .feedback-modal-content label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    .feedback-modal-content textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        box-sizing: border-box;
+        font-family: inherit;
+        font-size: 15px;
+        resize: vertical;
+        min-height: 120px;
+    }
+    
+    .feedback-modal-content textarea:focus {
+        border-color: #9C27B0;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(156, 39, 176, 0.2);
+    }
+    
+    .success-message {
+        background-color: #d4edda;
+        color: #155724;
+        padding: 15px;
+        margin: 20px 30px;
+        border-radius: 5px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .error-message {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 15px;
+        margin: 20px 30px;
+        border-radius: 5px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
 </style>
 
 <!-- Barre de navigation du cours -->
@@ -349,6 +495,27 @@
         </a>
     </div>
 </div>
+
+<?php
+// Récupérer le feedback de l'étudiant pour ce cours (s'il existe)
+$feedbackModel = $this->model('CoursFeedback');
+$feedback_existant = $feedbackModel->getByEtudiantAndCours($_SESSION['user']['id'], $cours['id']);
+$a_deja_donne_feedback = !empty($feedback_existant);
+?>
+
+<?php if (isset($_SESSION['success_message'])): ?>
+    <div class="success-message">
+        <i class="fas fa-check-circle"></i> <?= $_SESSION['success_message'] ?>
+        <?php unset($_SESSION['success_message']); ?>
+    </div>
+<?php endif; ?>
+
+<?php if (isset($_SESSION['error_message'])): ?>
+    <div class="error-message">
+        <i class="fas fa-exclamation-circle"></i> <?= $_SESSION['error_message'] ?>
+        <?php unset($_SESSION['error_message']); ?>
+    </div>
+<?php endif; ?>
 
 <div class="course-box" style="margin:30px;">
     <img src="/e-learning-role-final/public/images/<?= $cours['image'] ?>" class="course-img" alt="Cours">
@@ -406,9 +573,20 @@ $cours_complet = $chapitres_complets && $quiz_complets;
             <div style="color: #2e7d32; margin-bottom: 15px;">
                 <span style="font-size: 24px;">🎓</span> Félicitations ! Vous maîtrisez parfaitement ce cours.
             </div>
-            <a href="/e-learning-role-final/public/certificat/generer/<?= $cours['id'] ?>" class="certificat-btn">
-                🏆 Obtenir mon certificat
-            </a>
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <a href="/e-learning-role-final/public/certificat/generer/<?= $cours['id'] ?>" class="certificat-btn">
+                    🏆 Obtenir mon certificat
+                </a>
+                <?php if (!$a_deja_donne_feedback): ?>
+                    <button onclick="openFeedbackModal()" class="feedback-btn">
+                        <i class="fas fa-star"></i> Donner mon avis sur ce cours
+                    </button>
+                <?php else: ?>
+                    <button onclick="openFeedbackModal()" class="feedback-btn feedback-btn-edit">
+                        <i class="fas fa-pen"></i> Modifier mon avis
+                    </button>
+                <?php endif; ?>
+            </div>
         <?php else: ?>
             Obtenez 100% à toutes les sections du cours pour obtenir votre certificat !
         <?php endif; ?>
@@ -591,9 +769,52 @@ $cours_complet = $chapitres_complets && $quiz_complets;
             Cette action est irréversible.
         </div>
         <div class="modal-buttons">
-            <button class="modal-btn modal-btn-cancel" onclick="closeResetModal()">Annuler</button>
-            <a href="/e-learning-role-final/public/cours/reinitialiser/<?= $cours['id'] ?>" class="modal-btn modal-btn-confirm">Réinitialiser</a>
+            <button class="modal-btn modal-btn-cancel" onclick="closeResetModal()">
+                <i class="fas fa-times"></i> Annuler
+            </button>
+            <a href="/e-learning-role-final/public/cours/reinitialiser/<?= $cours['id'] ?>" class="modal-btn modal-btn-danger">
+                <i class="fas fa-sync-alt"></i> Réinitialiser
+            </a>
         </div>
+    </div>
+</div>
+
+<!-- Modal de feedback pour le cours -->
+<div id="feedbackModal" class="modal">
+    <div class="modal-content feedback-modal-content">
+        <div class="modal-title">
+            <?= $a_deja_donne_feedback ? 'Modifier votre avis' : 'Partagez votre avis sur ce cours' ?>
+        </div>
+        <form method="POST" action="/e-learning-role-final/public/cours/feedback/<?= $cours['id'] ?>">
+            <div class="form-group">
+                <label>Note globale :</label>
+                <div class="star-rating">
+                    <input type="radio" name="rating" id="rating-5" value="5" <?= ($a_deja_donne_feedback && $feedback_existant['note'] == 5) ? 'checked' : '' ?>><label for="rating-5">&#9733;</label>
+                    <input type="radio" name="rating" id="rating-4" value="4" <?= ($a_deja_donne_feedback && $feedback_existant['note'] == 4) ? 'checked' : '' ?>><label for="rating-4">&#9733;</label>
+                    <input type="radio" name="rating" id="rating-3" value="3" <?= ($a_deja_donne_feedback && $feedback_existant['note'] == 3) ? 'checked' : '' ?>><label for="rating-3">&#9733;</label>
+                    <input type="radio" name="rating" id="rating-2" value="2" <?= ($a_deja_donne_feedback && $feedback_existant['note'] == 2) ? 'checked' : '' ?>><label for="rating-2">&#9733;</label>
+                    <input type="radio" name="rating" id="rating-1" value="1" <?= ($a_deja_donne_feedback && $feedback_existant['note'] == 1) ? 'checked' : '' ?>><label for="rating-1">&#9733;</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="commentaire">Votre avis sur ce cours :</label>
+                <textarea name="commentaire" id="commentaire" placeholder="Partagez votre expérience avec ce cours..." required><?= $a_deja_donne_feedback ? htmlspecialchars($feedback_existant['commentaire']) : '' ?></textarea>
+            </div>
+
+            <div class="modal-buttons">
+                <button type="button" class="modal-btn modal-btn-cancel" onclick="closeFeedbackModal()">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+                <button type="submit" class="modal-btn modal-btn-confirm">
+                    <?php if ($a_deja_donne_feedback): ?>
+                        <i class="fas fa-pen"></i> Mettre à jour mon avis
+                    <?php else: ?>
+                        <i class="fas fa-paper-plane"></i> Envoyer mon avis
+                    <?php endif; ?>
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -611,12 +832,25 @@ $cours_complet = $chapitres_complets && $quiz_complets;
     function closeResetModal() {
         document.getElementById('resetModal').style.display = 'none';
     }
+    
+    // Fonctions pour gérer le modal de feedback
+    function openFeedbackModal() {
+        document.getElementById('feedbackModal').style.display = 'flex';
+    }
 
-    // Fermer le modal si l'utilisateur clique en dehors
+    function closeFeedbackModal() {
+        document.getElementById('feedbackModal').style.display = 'none';
+    }
+
+    // Fermer les modals si l'utilisateur clique en dehors
     window.onclick = function(event) {
-        const modal = document.getElementById('resetModal');
-        if (event.target === modal) {
+        const resetModal = document.getElementById('resetModal');
+        const feedbackModal = document.getElementById('feedbackModal');
+        
+        if (event.target === resetModal) {
             closeResetModal();
+        } else if (event.target === feedbackModal) {
+            closeFeedbackModal();
         }
     }
 </script>

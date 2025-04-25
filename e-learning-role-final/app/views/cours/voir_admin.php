@@ -186,8 +186,7 @@
         </div>
     </div>
 
-    <!-- infos des statistique - Modifié pour utiliser les inscriptions -->
-    <div style="flex: 1; border: 1px solid #ddd; padding: 20px; border-radius: 10px; background-color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+    <div style="width: 20%; border: 1px solid #ddd; padding: 20px; border-radius: 10px; background-color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
         <h3 style="margin-bottom: 15px; font-size: 18px; border-bottom: 1px solid #eee; padding-bottom: 5px;">Statistiques du cours</h3>
 
         <?php
@@ -275,9 +274,24 @@
         
         // Calcul de la moyenne de progression (éviter division par zéro)
         $moyenne = $nombre_inscrits > 0 ? round($total_progression / $nombre_inscrits) : 0;
+        
+        // Récupérer la note moyenne et le nombre d'avis pour ce cours
+        $feedbackModel = $this->model('CoursFeedback');
+        $noteMoyenne = $feedbackModel->getMoyenneNotesParCours($cours['id']);
+        $nombreAvis = $feedbackModel->getNombreFeedbacksParCours($cours['id']);
         ?>
         
-        <!-- Ajout du nombre d'étudiants inscrits -->
+        <!-- Ajout de la note moyenne des avis -->
+        <div style="margin-bottom: 10px;">
+            <span style="font-weight: bold;">Note moyenne :</span> 
+            <?php if ($nombreAvis > 0): ?>
+                <?= number_format($noteMoyenne, 1) ?>/5 (<?= $nombreAvis ?> avis)
+            <?php else: ?>
+                Aucun avis pour le moment
+            <?php endif; ?>
+        </div>
+        
+        <!-- Statistiques existantes -->
         <div style="margin-bottom: 10px;">
             <span style="font-weight: bold;">Étudiants inscrits :</span> <?= $nombre_inscrits ?>
         </div>
@@ -293,6 +307,14 @@
         <div style="margin-bottom: 10px;">
             <span style="font-weight: bold;">Étudiants en cours :</span> <?= $etudiants_en_cours ?>
         </div>
+        
+        <!-- Bouton pour voir les avis -->
+        <?php if ($nombreAvis > 0): ?>
+            <a href="/e-learning-role-final/public/admin/cours/feedbacks/<?= $cours['id'] ?>" 
+            style="display: inline-block; background-color: #3B82F6; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; margin-top: 15px; text-align: center; width: 80%; font-weight: 500;">
+                <i class="fas fa-comments"></i> Voir les avis des étudiants
+            </a>
+        <?php endif; ?>
     </div>
 </div>
 
