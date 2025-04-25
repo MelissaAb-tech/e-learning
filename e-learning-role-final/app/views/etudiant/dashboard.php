@@ -49,7 +49,7 @@
                     <!-- L'étudiant est inscrit -->
                     <div class="course-actions">
                         <a href="/e-learning-role-final/public/cours/voir/<?= $c['id'] ?>" class="btn-access">
-                            <i class="fas fa-book-open"></i> Accéder au cours
+                            <i class="fas fa-book-open"></i> Accéder
                         </a>
                         <a href="/e-learning-role-final/public/etudiant/desinscrire/<?= $c['id'] ?>" class="btn-unsubscribe" onclick="return confirm('Êtes-vous sûr de vouloir vous désinscrire de ce cours ?')">
                             <i class="fas fa-user-minus"></i> Se désinscrire

@@ -366,7 +366,7 @@ body {
 
 .modal-buttons {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-around;
     gap: 10px;
     margin-top: 20px;
 }
@@ -385,6 +385,7 @@ body {
 
 .modal-btn-cancel {
     background-color: #6c757d;
+    width: 150px;
 }
 
 .modal-btn-cancel:hover {
@@ -397,4 +398,10 @@ body {
 
 .modal-btn-danger:hover {
     background-color: #DC2626;
+}
+
+.modal-title {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #333;
 }

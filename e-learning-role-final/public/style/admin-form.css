@@ -42,7 +42,7 @@ button {
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    width: 100%;
+    width: 150px;
 }
 
 button:hover {
@@ -107,6 +107,7 @@ button:hover {
 
 .modal {
     display: none;
+    /* caché par défaut */
     position: fixed;
     top: 0;
     left: 0;
@@ -125,24 +126,12 @@ button:hover {
     width: 100%;
     max-width: 400px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-.modal-title {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.modal-text {
-    margin-bottom: 20px;
-    color: #555;
-    line-height: 1.5;
+    animation: fadeIn 0.3s ease;
 }
 
 .modal-buttons {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-around;
     gap: 10px;
     margin-top: 20px;
 }
@@ -152,14 +141,16 @@ button:hover {
     border-radius: 6px;
     font-size: 14px;
     font-weight: 500;
+    text-decoration: none;
     cursor: pointer;
     border: none;
-    text-decoration: none;
     color: white;
+    transition: background-color 0.3s ease, transform 0.2s;
 }
 
 .modal-btn-cancel {
     background-color: #6c757d;
+    width: 150px;
 }
 
 .modal-btn-cancel:hover {
@@ -172,4 +163,10 @@ button:hover {
 
 .modal-btn-danger:hover {
     background-color: #DC2626;
+}
+
+.modal-title {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #333;
 }

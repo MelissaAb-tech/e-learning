@@ -254,7 +254,6 @@
     </div>
 <?php endforeach; ?>
 
-</div>
 <!-- Modal de confirmation pour la déconnexion admin -->
 <div id="logoutModal" class="modal">
     <div class="modal-content">

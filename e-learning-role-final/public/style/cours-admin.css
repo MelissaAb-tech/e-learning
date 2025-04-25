@@ -144,3 +144,12 @@
 .admin-chapter-actions a {
     text-decoration: none;
 }
+
+.navbar-btn-danger {
+    background-color: #EF4444;
+    color: white;
+}
+
+.navbar-btn-danger:hover {
+    background-color: #DC2626;
+}
