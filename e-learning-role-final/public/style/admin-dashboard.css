@@ -233,7 +233,8 @@ body {
 /* Modification ici - Inversion de l'ordre des colonnes */
 .admin-content {
     flex: 1;
-    order: 1; /* Premier élément dans l'ordre */
+    order: 1;
+    /* Premier élément dans l'ordre */
 }
 
 /* Colonne de statistiques - Maintenant à droite */
@@ -244,7 +245,8 @@ body {
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     height: fit-content;
-    order: 2; /* Second élément dans l'ordre */
+    order: 2;
+    /* Second élément dans l'ordre */
 }
 
 .stats-title {
@@ -307,9 +309,10 @@ body {
 
     .admin-sidebar-stats {
         width: auto;
-        order: 1; /* Mettre les stats en premier sur mobile */
+        order: 1;
+        /* Mettre les stats en premier sur mobile */
     }
-    
+
     .admin-content {
         order: 2;
     }

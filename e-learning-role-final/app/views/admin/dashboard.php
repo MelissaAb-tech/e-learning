@@ -87,7 +87,7 @@
                             <p><?= nl2br($c['contenu']) ?></p>
                             <div class="card-actions">
                                 <a href="/e-learning-role-final/public/admin/modifier/<?= $c['id'] ?>">Modifier</a>
-                                <a href="/e-learning-role-final/public/admin/supprimer/<?= $c['id'] ?>" onclick="return confirm('Supprimer ce cours ?')">Supprimer</a>
+                                <a href="#" class="btn-supprimer-cours" data-id="<?= $c['id'] ?>">Supprimer</a>
                                 <a href="/e-learning-role-final/public/admin/chapitre/ajouter/<?= $c['id'] ?>">Ajouter un chapitre</a>
                             </div>
                         </div>
@@ -111,7 +111,7 @@
                             <p><?= htmlspecialchars($etudiant['email']) ?></p>
                             <div class="card-actions">
                                 <a href="/e-learning-role-final/public/admin/etudiant/modifier/<?= $etudiant['id'] ?>">Modifier</a>
-                                <a href="/e-learning-role-final/public/admin/etudiant/supprimer/<?= $etudiant['id'] ?>" onclick="return confirm('Supprimer cet étudiant ?')">Supprimer</a>
+                                <a href="#" class="btn-supprimer-etudiant" data-id="<?= $etudiant['id'] ?>">Supprimer</a>
                             </div>
                         </div>
                     </div>
@@ -131,6 +131,37 @@
         <a href="/e-learning-role-final/public/logout" style="padding: 8px 16px; background-color: #EF4444; color: white; text-decoration: none; border-radius: 5px;">Se déconnecter</a>
     </div>
 </div>
+<!-- Modal de confirmation suppression étudiant -->
+<div id="confirmDeleteModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-title">Supprimer l'étudiant</div>
+        <div class="modal-text">Êtes-vous sûr de vouloir supprimer cet étudiant ?</div>
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-cancel" onclick="closeDeleteModal()">
+                <i class="fas fa-times"></i> Annuler
+            </button>
+            <a id="confirmDeleteLink" href="#" class="modal-btn modal-btn-danger">
+                <i class="fas fa-trash"></i> Supprimer
+            </a>
+        </div>
+    </div>
+</div>
+<!-- Modal de confirmation pour suppression de cours -->
+<div id="confirmDeleteCourseModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-title">Supprimer le cours</div>
+        <div class="modal-text">Êtes-vous sûr de vouloir supprimer ce cours ?</div>
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-cancel" onclick="closeDeleteCourseModal()">
+                <i class="fas fa-times"></i> Annuler
+            </button>
+            <a id="confirmDeleteCourseBtn" href="#" class="modal-btn modal-btn-danger">
+                <i class="fas fa-trash"></i> Supprimer
+            </a>
+        </div>
+    </div>
+</div>
+
 
 <!-- Script pour la recherche en temps réel -->
 <script>
@@ -290,4 +321,62 @@
             closeLogoutModal();
         }
     }
+    let deleteLink = null;
+
+    function openDeleteModal(id) {
+        deleteLink = document.getElementById('confirmDeleteLink');
+        deleteLink.href = `/e-learning-role-final/public/admin/etudiant/supprimer/${id}`;
+        document.getElementById('confirmDeleteModal').style.display = 'flex';
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('confirmDeleteModal').style.display = 'none';
+        deleteLink = null;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ajouter l'événement à tous les boutons "Supprimer"
+        document.querySelectorAll('.btn-supprimer-etudiant').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const etudiantId = this.getAttribute('data-id');
+                openDeleteModal(etudiantId);
+            });
+        });
+
+        // Ferme le modal si on clique en dehors
+        window.onclick = function(event) {
+            const modal = document.getElementById('confirmDeleteModal');
+            if (event.target === modal) {
+                closeDeleteModal();
+            }
+        }
+    });
+
+    function openDeleteCourseModal(courseId) {
+        const modal = document.getElementById('confirmDeleteCourseModal');
+        const confirmBtn = document.getElementById('confirmDeleteCourseBtn');
+        confirmBtn.href = `/e-learning-role-final/public/admin/supprimer/${courseId}`;
+        modal.style.display = 'flex';
+    }
+
+    function closeDeleteCourseModal() {
+        document.getElementById('confirmDeleteCourseModal').style.display = 'none';
+    }
+
+    // Ferme si on clique en dehors
+    window.onclick = function(event) {
+        const modal = document.getElementById('confirmDeleteCourseModal');
+        if (event.target === modal) {
+            closeDeleteCourseModal();
+        }
+    }
+
+    document.querySelectorAll('.btn-supprimer-cours').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const courseId = this.getAttribute('data-id');
+            openDeleteCourseModal(courseId);
+        });
+    });
 </script>
