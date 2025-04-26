@@ -28,9 +28,11 @@
 
         <label for="contenu">Description du cours</label>
         <textarea name="contenu" id="contenu" required><?= htmlspecialchars($cours['contenu']) ?></textarea>
-        
-        <button type="submit">Enregistrer les modifications</button>
-        <a href="/e-learning-role-final/public/admin/dashboard" style="display: inline-block; background-color: #6c757d; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; font-weight: 500; margin-top: 10px;">Retour au tableau de bord</a>
+        <hr style="margin:15px 0px">
+        <div style="margin-top: 20px;justify-content:space-between;display:flex;">
+            <button class="submitBtn" type="submit">Modifier</button>
+            <a href="/e-learning-role-final/public/admin/dashboard" style="background-color: #6c757d; color: white; padding: 12px 15px; text-decoration: none; border-radius: 5px; font-weight: 500;">Retour au tableau de bord</a>
+        </div>
     </form>
 </div>
 

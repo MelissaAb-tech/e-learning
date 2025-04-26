@@ -21,9 +21,9 @@
         <label>Adresse :</label>
         <input type="text" name="adresse" required>
 
-        <label>Occupation :</label>
+        <label>Profession :</label>
         <select name="fonction" required>
-            <option value="" disabled selected>Sélectionnez une occupation</option>
+            <option value="" disabled selected>Sélectionnez une profession</option>
             <option value="Étudiant">Étudiant</option>
             <option value="Enseignant">Enseignant</option>
             <option value="Professionnel">Professionnel</option>

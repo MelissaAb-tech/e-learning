@@ -14,10 +14,6 @@
     </div>
     <h1>Bienvenue sur votre espace étudiant</h1>
     <div class="search-and-description" style="display: flex; align-items: center; gap: 20px; margin-top: 15px;">
-        <div class="search-wrapper search-fixed-left">
-            <input type="text" id="recherche-input" name="recherche" placeholder="Rechercher un cours..." class="search-field">
-            <span class="search-icon"><i class="fas fa-search"></i></span>
-        </div>
 
         <p>Accédez à vos cours disponibles et suivez votre progression</p>
     </div>
@@ -32,10 +28,16 @@
     <?php
     // Suppression du message après affichage pour qu'il ne s'affiche qu'une fois
     unset($_SESSION['feedback_success']);
-    ?>
+?>
 <?php endif; ?>
 
+<div class="search-wrapper">
+    <input type="text" id="recherche-input" name="recherche" placeholder="Rechercher un cours..." class="search-field">
+    <span class="search-icon"><i class="fas fa-search"></i></span>
+</div>
+
 <div class="course-grid">
+
     <?php foreach ($cours as $c): ?>
         <div class="course-card">
             <img src="/e-learning-role-final/public/images/<?= $c['image'] ?>" alt="Image du cours">
@@ -51,7 +53,8 @@
                         <a href="/e-learning-role-final/public/cours/voir/<?= $c['id'] ?>" class="btn-access">
                             <i class="fas fa-book-open"></i> Accéder
                         </a>
-                        <a href="/e-learning-role-final/public/etudiant/desinscrire/<?= $c['id'] ?>" class="btn-unsubscribe" onclick="return confirm('Êtes-vous sûr de vouloir vous désinscrire de ce cours ?')">
+                        <a href="/e-learning-role-final/public/etudiant/desinscrire/<?= $c['id'] ?>" class="btn-unsubscribe"
+                            onclick="return confirm('Êtes-vous sûr de vouloir vous désinscrire de ce cours ?')">
                             <i class="fas fa-user-minus"></i> Se désinscrire
                         </a>
                     </div>
@@ -90,7 +93,8 @@
 
         <div class="form-group">
             <label for="commentaire">Commentaire :</label>
-            <textarea name="commentaire" id="commentaire" rows="4" placeholder="Exprimez-vous librement..." required></textarea>
+            <textarea name="commentaire" id="commentaire" rows="4" placeholder="Exprimez-vous librement..."
+                required></textarea>
         </div>
 
         <button type="submit" class="btn">Envoyer mon avis</button>
@@ -115,17 +119,17 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         // Sélectionner tous les cours et l'input de recherche
         const coursCards = document.querySelectorAll('.course-card');
         const searchInput = document.getElementById('recherche-input');
 
         // Ajouter un événement sur l'input pour détecter chaque frappe
-        searchInput.addEventListener('input', function() {
+        searchInput.addEventListener('input', function () {
             const searchTerm = this.value.toLowerCase().trim();
 
             // Parcourir chaque carte de cours et vérifier si elle correspond à la recherche
-            coursCards.forEach(function(card) {
+            coursCards.forEach(function (card) {
                 const title = card.querySelector('h3').textContent.toLowerCase();
                 const professor = card.querySelector('.prof').textContent.toLowerCase();
 
@@ -163,7 +167,7 @@
         });
 
         // Empêcher la soumission du formulaire si l'utilisateur appuie sur Entrée
-        searchInput.addEventListener('keydown', function(e) {
+        searchInput.addEventListener('keydown', function (e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
             }
@@ -177,7 +181,7 @@
     function closeLogoutModal() {
         document.getElementById('logoutModal').style.display = 'none';
     }
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         const logoutModal = document.getElementById('logoutModal');
         if (event.target === logoutModal) {
             closeLogoutModal();

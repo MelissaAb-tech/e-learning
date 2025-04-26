@@ -5,7 +5,7 @@
 <!-- Barre de navigation du cours -->
 <div class="course-navbar">
     <div class="course-navbar-title">
-        <?= htmlspecialchars($cours['nom']) ?>
+        <h3> <?= htmlspecialchars($cours['nom']) ?> </h3>
     </div>
 
     <div class="course-navbar-buttons">
@@ -25,263 +25,271 @@
 
     </div>
 </div>
+<div style="margin:0px 100px">
+    <?php
+    // Récupérer le feedback de l'étudiant pour ce cours (s'il existe)
+    $feedbackModel = $this->model('CoursFeedback');
+    $feedback_existant = $feedbackModel->getByEtudiantAndCours($_SESSION['user']['id'], $cours['id']);
+    $a_deja_donne_feedback = !empty($feedback_existant);
+    ?>
 
-<?php
-// Récupérer le feedback de l'étudiant pour ce cours (s'il existe)
-$feedbackModel = $this->model('CoursFeedback');
-$feedback_existant = $feedbackModel->getByEtudiantAndCours($_SESSION['user']['id'], $cours['id']);
-$a_deja_donne_feedback = !empty($feedback_existant);
-?>
+    <?php if (isset($_SESSION['success_message'])): ?>
+        <div class="success-message">
+            <i class="fas fa-check-circle"></i> <?= $_SESSION['success_message'] ?>
+            <?php unset($_SESSION['success_message']); ?>
+        </div>
+    <?php endif; ?>
 
-<?php if (isset($_SESSION['success_message'])): ?>
-    <div class="success-message">
-        <i class="fas fa-check-circle"></i> <?= $_SESSION['success_message'] ?>
-        <?php unset($_SESSION['success_message']); ?>
+    <?php if (isset($_SESSION['error_message'])): ?>
+        <div class="error-message">
+            <i class="fas fa-exclamation-circle"></i> <?= $_SESSION['error_message'] ?>
+            <?php unset($_SESSION['error_message']); ?>
+        </div>
+    <?php endif; ?>
+
+    <div class="course-box" style="margin:30px;">
+        <img src="/e-learning-role-final/public/images/<?= $cours['image'] ?>" class="course-img" alt="Cours">
+        <div class="course-info">
+            <span class="course-badge"><?= $cours['niveau'] ?> • <?= $cours['duree'] ?></span>
+            <h2><?= $cours['nom'] ?></h2>
+            <p class="prof">Professeur : <?= $cours['professeur'] ?></p>
+            <p><?= nl2br($cours['contenu']) ?></p>
+        </div>
     </div>
-<?php endif; ?>
 
-<?php if (isset($_SESSION['error_message'])): ?>
-    <div class="error-message">
-        <i class="fas fa-exclamation-circle"></i> <?= $_SESSION['error_message'] ?>
-        <?php unset($_SESSION['error_message']); ?>
-    </div>
-<?php endif; ?>
-
-<div class="course-box" style="margin:30px;">
-    <img src="/e-learning-role-final/public/images/<?= $cours['image'] ?>" class="course-img" alt="Cours">
-    <div class="course-info">
-        <span class="course-badge"><?= $cours['niveau'] ?> • <?= $cours['duree'] ?></span>
-        <h2><?= $cours['nom'] ?></h2>
-        <p class="prof">Professeur : <?= $cours['professeur'] ?></p>
-        <p><?= nl2br($cours['contenu']) ?></p>
-    </div>
-</div>
-
-<?php
-// Calculer la progression des chapitres
-$chapitres_total = count($chapitres);
-$chapitres_termine = 0;
-foreach ($chapitres as $chap) {
-    if (in_array($chap['id'], $chapitres_vus ?? [])) {
-        $chapitres_termine++;
-    }
-}
-$progression = $chapitres_total > 0 ? round(($chapitres_termine / $chapitres_total) * 100) : 0;
-
-// Calculer la progression des quiz
-$quiz_total = count($quizzes);
-$quiz_parfait = 0;
-
-if ($quiz_total > 0) {
-    foreach ($quizzes as $quiz) {
-        if (
-            isset($quiz['meilleure_tentative']) &&
-            $quiz['meilleure_tentative'] !== null &&
-            isset($quiz['meilleure_tentative']['score']) &&
-            isset($quiz['meilleure_tentative']['score_max']) &&
-            $quiz['meilleure_tentative']['score'] == $quiz['meilleure_tentative']['score_max']
-        ) {
-            $quiz_parfait++;
+    <?php
+    // Calculer la progression des chapitres
+    $chapitres_total = count($chapitres);
+    $chapitres_termine = 0;
+    foreach ($chapitres as $chap) {
+        if (in_array($chap['id'], $chapitres_vus ?? [])) {
+            $chapitres_termine++;
         }
     }
+    $progression = $chapitres_total > 0 ? round(($chapitres_termine / $chapitres_total) * 100) : 0;
 
-    $quiz_progression = $quiz_total > 0 ? round(($quiz_parfait / $quiz_total) * 100) : 0;
-} else {
-    $quiz_progression = 0;
-}
+    // Calculer la progression des quiz
+    $quiz_total = count($quizzes);
+    $quiz_parfait = 0;
 
-// Déterminer si toutes les sections sont complétées à 100%
-$chapitres_complets = ($chapitres_total > 0) ? ($progression == 100) : true;
-$quiz_complets = ($quiz_total > 0) ? ($quiz_progression == 100) : true;
-$cours_complet = $chapitres_complets && $quiz_complets;
-?>
+    if ($quiz_total > 0) {
+        foreach ($quizzes as $quiz) {
+            if (
+                isset($quiz['meilleure_tentative']) &&
+                $quiz['meilleure_tentative'] !== null &&
+                isset($quiz['meilleure_tentative']['score']) &&
+                isset($quiz['meilleure_tentative']['score_max']) &&
+                $quiz['meilleure_tentative']['score'] == $quiz['meilleure_tentative']['score_max']
+            ) {
+                $quiz_parfait++;
+            }
+        }
 
-<!-- Section de progression globale placée avant les chapitres -->
-<div class="progress-container">
-    <div class="progress-header">
-        <?php if ($cours_complet): ?>
-            <div style="color: #2e7d32; margin-bottom: 15px;">
-                <span style="font-size: 24px;">🎓</span> Félicitations ! Vous maîtrisez parfaitement ce cours.
+        $quiz_progression = $quiz_total > 0 ? round(($quiz_parfait / $quiz_total) * 100) : 0;
+    } else {
+        $quiz_progression = 0;
+    }
+
+    // Déterminer si toutes les sections sont complétées à 100%
+    $chapitres_complets = ($chapitres_total > 0) ? ($progression == 100) : true;
+    $quiz_complets = ($quiz_total > 0) ? ($quiz_progression == 100) : true;
+    $cours_complet = $chapitres_complets && $quiz_complets;
+    ?>
+
+    <!-- Section de progression globale placée avant les chapitres -->
+    <div class="progress-container">
+        <div class="progress-header">
+            <?php if ($cours_complet): ?>
+                <div style="color: #2e7d32; margin-bottom: 15px;">
+                    <span style="font-size: 24px;">🎓</span> Félicitations ! Vous maîtrisez parfaitement ce cours.
+                </div>
+                <div style="display: flex; gap: 15px; justify-content: center;">
+                    <a href="/e-learning-role-final/public/certificat/generer/<?= $cours['id'] ?>" class="certificat-btn">
+                        🏆 Obtenir mon certificat
+                    </a>
+                    <?php if (!$a_deja_donne_feedback): ?>
+                        <button onclick="openFeedbackModal()" class="feedback-btn">
+                            <i class="fas fa-star"></i> Donner mon avis sur ce cours
+                        </button>
+                    <?php else: ?>
+                        <button onclick="openFeedbackModal()" class="feedback-btn feedback-btn-edit">
+                            <i class="fas fa-pen"></i> Modifier mon avis
+                        </button>
+                    <?php endif; ?>
+                </div>
+            <?php else: ?>
+                Obtenez 100% à toutes les sections du cours pour obtenir votre certificat !
+            <?php endif; ?>
+        </div>
+
+        <!-- Barre de progression des chapitres -->
+        <div class="progress-section">
+            <div class="progress-label">
+                <span>Progression des chapitres :</span>
+                <span><?= $chapitres_termine ?>/<?= $chapitres_total ?> chapitres (<?= $progression ?>%)</span>
             </div>
-            <div style="display: flex; gap: 15px; justify-content: center;">
-                <a href="/e-learning-role-final/public/certificat/generer/<?= $cours['id'] ?>" class="certificat-btn">
-                    🏆 Obtenir mon certificat
-                </a>
-                <?php if (!$a_deja_donne_feedback): ?>
-                    <button onclick="openFeedbackModal()" class="feedback-btn">
-                        <i class="fas fa-star"></i> Donner mon avis sur ce cours
-                    </button>
-                <?php else: ?>
-                    <button onclick="openFeedbackModal()" class="feedback-btn feedback-btn-edit">
-                        <i class="fas fa-pen"></i> Modifier mon avis
-                    </button>
-                <?php endif; ?>
+            <div style="background: #e0e0e0; border-radius: 20px; height: 12px; overflow: hidden;">
+                <div
+                    style="height: 100%; background: linear-gradient(90deg, #4CAF50, #81C784); width: <?= $progression ?>%;">
+                </div>
             </div>
-        <?php else: ?>
-            Obtenez 100% à toutes les sections du cours pour obtenir votre certificat !
+        </div>
+
+        <!-- Barre de progression des quiz -->
+        <?php if ($quiz_total > 0): ?>
+            <div class="progress-section">
+                <div class="progress-label">
+                    <span>Progression des quiz :</span>
+                    <span><?= $quiz_parfait ?>/<?= $quiz_total ?> quiz parfaits (<?= $quiz_progression ?>%)</span>
+                </div>
+                <div style="background: #e0e0e0; border-radius: 20px; height: 12px; overflow: hidden;">
+                    <div
+                        style="height: 100%; background: linear-gradient(90deg, #FF9800, #FFB74D); width: <?= $quiz_progression ?>%;">
+                    </div>
+                </div>
+            </div>
         <?php endif; ?>
     </div>
 
-    <!-- Barre de progression des chapitres -->
-    <div class="progress-section">
-        <div class="progress-label">
-            <span>Progression des chapitres :</span>
-            <span><?= $chapitres_termine ?>/<?= $chapitres_total ?> chapitres (<?= $progression ?>%)</span>
-        </div>
-        <div style="background: #e0e0e0; border-radius: 20px; height: 12px; overflow: hidden;">
-            <div style="height: 100%; background: linear-gradient(90deg, #4CAF50, #81C784); width: <?= $progression ?>%;"></div>
-        </div>
-    </div>
+    <h3 style="margin-left: 30px;">Chapitres :</h3>
 
-    <!-- Barre de progression des quiz -->
-    <?php if ($quiz_total > 0): ?>
-        <div class="progress-section">
-            <div class="progress-label">
-                <span>Progression des quiz :</span>
-                <span><?= $quiz_parfait ?>/<?= $quiz_total ?> quiz parfaits (<?= $quiz_progression ?>%)</span>
-            </div>
-            <div style="background: #e0e0e0; border-radius: 20px; height: 12px; overflow: hidden;">
-                <div style="height: 100%; background: linear-gradient(90deg, #FF9800, #FFB74D); width: <?= $quiz_progression ?>%;"></div>
-            </div>
-        </div>
-    <?php endif; ?>
-</div>
-
-<h3 style="margin-left: 30px;">Chapitres :</h3>
-
-<?php foreach ($chapitres as $chap): ?>
-    <div class="accordion-item">
-        <div class="accordion-title" onclick="toggleChapitre(<?= $chap['id'] ?>)">
-            <?= htmlspecialchars($chap['titre']) ?>
-            <?php if (in_array($chap['id'], $chapitres_vus ?? [])): ?>
-                ✅
-            <?php endif; ?>
-        </div>
-
-        <div class="accordion-content" id="chapitre-content-<?= $chap['id'] ?>">
-            <p><?= nl2br(htmlspecialchars($chap['description'])) ?></p>
-
-            <!-- Affichage des fichiers PDF -->
-            <?php if (!empty($chap['pdfs'])): ?>
-                <div class="documents-section">
-                    <h4>Documents PDF</h4>
-                    <div class="document-list">
-                        <?php foreach ($chap['pdfs'] as $pdf): ?>
-                            <div class="document-item">
-                                <i class="fas fa-file-pdf"></i>
-                                <a href="/e-learning-role-final/public/pdfs/<?= $pdf['pdf'] ?>" target="_blank">
-                                    <?= htmlspecialchars($pdf['pdf']) ?>
-                                </a>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-            <?php endif; ?>
-
-            <!-- Affichage des vidéos (YouTube et MP4) -->
-            <?php if (!empty($chap['videos'])): ?>
-                <div class="videos-section">
-                    <h4>Vidéos</h4>
-                    <?php foreach ($chap['videos'] as $video): ?>
-                        <?php if ($video['est_youtube'] == 1): ?>
-                            <div class="video-item youtube-video">
-                                <h5>Vidéo YouTube</h5>
-                                <?php
-                                // Extraire l'ID de la vidéo YouTube
-                                $video_id = "";
-                                if (preg_match('/youtube\.com\/watch\?v=([^&]+)/', $video['video'], $matches)) {
-                                    $video_id = $matches[1];
-                                } elseif (preg_match('/youtu\.be\/([^?]+)/', $video['video'], $matches)) {
-                                    $video_id = $matches[1];
-                                }
-                                ?>
-                                <?php if (!empty($video_id)): ?>
-                                    <div class="video-container">
-                                        <iframe width="100%" height="360" src="https://www.youtube.com/embed/<?= $video_id ?>"
-                                            frameborder="0" allowfullscreen></iframe>
-                                    </div>
-                                <?php else: ?>
-                                    <a href="<?= $video['video'] ?>" target="_blank">Voir la vidéo YouTube</a>
-                                <?php endif; ?>
-                            </div>
-                        <?php else: ?>
-                            <div class="video-item mp4-video">
-                                <h5>Fichier vidéo MP4</h5>
-                                <div class="video-container">
-                                    <video controls width="100%">
-                                        <source src="/e-learning-role-final/public/videos/<?= $video['video'] ?>" type="video/mp4">
-                                        Votre navigateur ne supporte pas la lecture de vidéos.
-                                    </video>
-                                </div>
-                            </div>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
-
-            <form method="POST" action="/e-learning-role-final/public/chapitre/valider">
-                <input type="hidden" name="chapitre_id" value="<?= $chap['id'] ?>">
-                <button type="submit">
-                    <?= in_array($chap['id'], $chapitres_vus ?? []) ? '❌ Marquer comme non terminé' : '✅ Marquer comme terminé' ?>
-                </button>
-            </form>
-        </div>
-    </div>
-<?php endforeach; ?>
-
-<!-- Section des quiz avec style renforcé -->
-<h3 style="margin-left: 30px;">Quiz du cours :</h3>
-
-<div>
-    <?php if (empty($quizzes)): ?>
-        <p style="margin-left: 30px;">Aucun quiz n'est disponible pour ce cours pour le moment.</p>
-    <?php else: ?>
-        <?php foreach ($quizzes as $quiz): ?>
-            <div class="quiz-card-fixed">
-                <!-- Titre et description -->
-                <h4 class="quiz-title-fixed"><?= htmlspecialchars($quiz['titre']) ?></h4>
-                <p class="quiz-description-fixed"><?= nl2br(htmlspecialchars($quiz['description'])) ?></p>
-
-                <!-- Score précédent si disponible avec vérifications supplémentaires -->
-                <?php if (isset($quiz['meilleure_tentative']) && $quiz['meilleure_tentative'] !== null): ?>
-                    <?php
-                    $scoreParfait = (isset($quiz['meilleure_tentative']['score']) &&
-                        isset($quiz['meilleure_tentative']['score_max']) &&
-                        $quiz['meilleure_tentative']['score'] == $quiz['meilleure_tentative']['score_max']);
-                    ?>
-                    <?php if (
-                        isset($quiz['meilleure_tentative']['score']) &&
-                        isset($quiz['meilleure_tentative']['score_max']) &&
-                        $quiz['meilleure_tentative']['score_max'] > 0
-                    ): ?>
-                        <div style="background-color: <?= $scoreParfait ? '#e8f5e9' : '#fff3e0' ?> !important; padding: 8px !important; border-radius: 4px !important; margin-bottom: 15px !important;">
-                            <strong>Score précédent:</strong> <?= $quiz['meilleure_tentative']['score'] ?>/<?= $quiz['meilleure_tentative']['score_max'] ?>
-                            (<?= round(($quiz['meilleure_tentative']['score'] / $quiz['meilleure_tentative']['score_max']) * 100) ?>%)
-                            <?php if ($scoreParfait): ?>
-                                <span style="color: #2e7d32; margin-left: 8px; font-weight: bold;">✅ Parfait !</span>
-                            <?php endif; ?>
-                        </div>
-                    <?php elseif (isset($quiz['meilleure_tentative']['score']) && isset($quiz['meilleure_tentative']['score_max'])): ?>
-                        <div style="background-color: #fff3e0 !important; padding: 8px !important; border-radius: 4px !important; margin-bottom: 15px !important;">
-                            <strong>Score précédent:</strong> <?= $quiz['meilleure_tentative']['score'] ?? 0 ?>/<?= $quiz['meilleure_tentative']['score_max'] ?? 0 ?>
-                        </div>
-                    <?php endif; ?>
-
-                    <!-- Bouton "Refaire le quiz" quand il y a eu une tentative -->
-                    <a href="/e-learning-role-final/public/quiz/etudiant/tenter/<?= $quiz['id'] ?>" class="btn-quiz-fixed">
-                        🔄 Refaire le quiz
-                    </a>
-                <?php else: ?>
-                    <!-- Bouton "Commencer le quiz" quand il n'y a jamais eu de tentative -->
-                    <a href="/e-learning-role-final/public/quiz/etudiant/tenter/<?= $quiz['id'] ?>" class="btn-quiz-fixed">
-                        ▶️ Commencer le quiz
-                    </a>
+    <?php foreach ($chapitres as $chap): ?>
+        <div class="accordion-item">
+            <div class="accordion-title" onclick="toggleChapitre(<?= $chap['id'] ?>)">
+                <?= htmlspecialchars($chap['titre']) ?>
+                <?php if (in_array($chap['id'], $chapitres_vus ?? [])): ?>
+                    ✅
                 <?php endif; ?>
             </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
-</div>
 
+            <div class="accordion-content" id="chapitre-content-<?= $chap['id'] ?>">
+                <p><?= nl2br(htmlspecialchars($chap['description'])) ?></p>
+
+                <!-- Affichage des fichiers PDF -->
+                <?php if (!empty($chap['pdfs'])): ?>
+                    <div class="documents-section">
+                        <h4>Documents PDF</h4>
+                        <div class="document-list">
+                            <?php foreach ($chap['pdfs'] as $pdf): ?>
+                                <div class="document-item">
+                                    <i class="fas fa-file-pdf"></i>
+                                    <a href="/e-learning-role-final/public/pdfs/<?= $pdf['pdf'] ?>" target="_blank">
+                                        <?= htmlspecialchars($pdf['pdf']) ?>
+                                    </a>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <!-- Affichage des vidéos (YouTube et MP4) -->
+                <?php if (!empty($chap['videos'])): ?>
+                    <div class="videos-section">
+                        <h4>Vidéos</h4>
+                        <?php foreach ($chap['videos'] as $video): ?>
+                            <?php if ($video['est_youtube'] == 1): ?>
+                                <div class="video-item youtube-video">
+                                    <h5>Vidéo YouTube</h5>
+                                    <?php
+                                    // Extraire l'ID de la vidéo YouTube
+                                    $video_id = "";
+                                    if (preg_match('/youtube\.com\/watch\?v=([^&]+)/', $video['video'], $matches)) {
+                                        $video_id = $matches[1];
+                                    } elseif (preg_match('/youtu\.be\/([^?]+)/', $video['video'], $matches)) {
+                                        $video_id = $matches[1];
+                                    }
+                                    ?>
+                                    <?php if (!empty($video_id)): ?>
+                                        <div class="video-container">
+                                            <iframe width="100%" height="360" src="https://www.youtube.com/embed/<?= $video_id ?>"
+                                                frameborder="0" allowfullscreen></iframe>
+                                        </div>
+                                    <?php else: ?>
+                                        <a href="<?= $video['video'] ?>" target="_blank">Voir la vidéo YouTube</a>
+                                    <?php endif; ?>
+                                </div>
+                            <?php else: ?>
+                                <div class="video-item mp4-video">
+                                    <h5>Fichier vidéo MP4</h5>
+                                    <div class="video-container">
+                                        <video controls width="100%">
+                                            <source src="/e-learning-role-final/public/videos/<?= $video['video'] ?>" type="video/mp4">
+                                            Votre navigateur ne supporte pas la lecture de vidéos.
+                                        </video>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+
+                <form method="POST" action="/e-learning-role-final/public/chapitre/valider">
+                    <input type="hidden" name="chapitre_id" value="<?= $chap['id'] ?>">
+                    <button class="mark-btn" type="submit">
+                        <?= in_array($chap['id'], $chapitres_vus ?? []) ? '❌ Marquer comme non terminé' : '✅ Marquer comme terminé' ?>
+                    </button>
+                </form>
+            </div>
+        </div>
+    <?php endforeach; ?>
+
+    <!-- Section des quiz avec style renforcé -->
+    <h3 style="margin-left: 30px;">Quiz du cours :</h3>
+
+    <div>
+        <?php if (empty($quizzes)): ?>
+            <p style="margin-left: 30px;">Aucun quiz n'est disponible pour ce cours pour le moment.</p>
+        <?php else: ?>
+            <?php foreach ($quizzes as $quiz): ?>
+                <div class="quiz-card-fixed">
+                    <!-- Titre et description -->
+                    <h4 class="quiz-title-fixed"><?= htmlspecialchars($quiz['titre']) ?></h4>
+                    <p class="quiz-description-fixed"><?= nl2br(htmlspecialchars($quiz['description'])) ?></p>
+
+                    <!-- Score précédent si disponible avec vérifications supplémentaires -->
+                    <?php if (isset($quiz['meilleure_tentative']) && $quiz['meilleure_tentative'] !== null): ?>
+                        <?php
+                        $scoreParfait = (isset($quiz['meilleure_tentative']['score']) &&
+                            isset($quiz['meilleure_tentative']['score_max']) &&
+                            $quiz['meilleure_tentative']['score'] == $quiz['meilleure_tentative']['score_max']);
+                        ?>
+                        <?php if (
+                            isset($quiz['meilleure_tentative']['score']) &&
+                            isset($quiz['meilleure_tentative']['score_max']) &&
+                            $quiz['meilleure_tentative']['score_max'] > 0
+                        ): ?>
+                            <div
+                                style="background-color: <?= $scoreParfait ? '#e8f5e9' : '#fff3e0' ?> !important; padding: 8px !important; border-radius: 4px !important; margin-bottom: 15px !important;">
+                                <strong>Score précédent:</strong>
+                                <?= $quiz['meilleure_tentative']['score'] ?>/<?= $quiz['meilleure_tentative']['score_max'] ?>
+                                (<?= round(($quiz['meilleure_tentative']['score'] / $quiz['meilleure_tentative']['score_max']) * 100) ?>%)
+                                <?php if ($scoreParfait): ?>
+                                    <span style="color: #2e7d32; margin-left: 8px; font-weight: bold;">✅ Parfait !</span>
+                                <?php endif; ?>
+                            </div>
+                        <?php elseif (isset($quiz['meilleure_tentative']['score']) && isset($quiz['meilleure_tentative']['score_max'])): ?>
+                            <div
+                                style="background-color: #fff3e0 !important; padding: 8px !important; border-radius: 4px !important; margin-bottom: 15px !important;">
+                                <strong>Score précédent:</strong>
+                                <?= $quiz['meilleure_tentative']['score'] ?? 0 ?>/<?= $quiz['meilleure_tentative']['score_max'] ?? 0 ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <!-- Bouton "Refaire le quiz" quand il y a eu une tentative -->
+                        <a href="/e-learning-role-final/public/quiz/etudiant/tenter/<?= $quiz['id'] ?>" class="btn-quiz-fixed">
+                            🔄 Refaire le quiz
+                        </a>
+                    <?php else: ?>
+                        <!-- Bouton "Commencer le quiz" quand il n'y a jamais eu de tentative -->
+                        <a href="/e-learning-role-final/public/quiz/etudiant/tenter/<?= $quiz['id'] ?>" class="btn-quiz-fixed">
+                            ▶️ Commencer le quiz
+                        </a>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
+</div>
 <!-- Modal de confirmation pour la réinitialisation -->
 <div id="resetModal" class="modal">
     <div class="modal-content">
@@ -302,7 +310,8 @@ $cours_complet = $chapitres_complets && $quiz_complets;
             <button class="modal-btn modal-btn-cancel" onclick="closeResetModal()">
                 <i class="fas fa-times"></i> Annuler
             </button>
-            <a href="/e-learning-role-final/public/cours/reinitialiser/<?= $cours['id'] ?>" class="modal-btn modal-btn-danger">
+            <a href="/e-learning-role-final/public/cours/reinitialiser/<?= $cours['id'] ?>"
+                class="modal-btn modal-btn-danger">
                 <i class="fas fa-sync-alt"></i> Réinitialiser
             </a>
         </div>
@@ -347,7 +356,8 @@ $cours_complet = $chapitres_complets && $quiz_complets;
 
             <div class="form-group">
                 <label for="commentaire">Votre avis sur ce cours :</label>
-                <textarea name="commentaire" id="commentaire" placeholder="Partagez votre expérience avec ce cours..." required><?= $a_deja_donne_feedback ? htmlspecialchars($feedback_existant['commentaire']) : '' ?></textarea>
+                <textarea name="commentaire" id="commentaire" placeholder="Partagez votre expérience avec ce cours..."
+                    required><?= $a_deja_donne_feedback ? htmlspecialchars($feedback_existant['commentaire']) : '' ?></textarea>
             </div>
 
             <div class="modal-buttons">
@@ -391,7 +401,7 @@ $cours_complet = $chapitres_complets && $quiz_complets;
     }
 
     // Fermer les modals si l'utilisateur clique en dehors
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         const resetModal = document.getElementById('resetModal');
         const feedbackModal = document.getElementById('feedbackModal');
 
@@ -409,7 +419,7 @@ $cours_complet = $chapitres_complets && $quiz_complets;
     function closeLogoutModal() {
         document.getElementById('logoutModal').style.display = 'none';
     }
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         const resetModal = document.getElementById('resetModal');
         const feedbackModal = document.getElementById('feedbackModal');
         const logoutModal = document.getElementById('logoutModal');

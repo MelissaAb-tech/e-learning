@@ -38,10 +38,10 @@
         </div>
         
         <button type="button" id="add-option" onclick="addOption()">+ Ajouter une option</button>
-        
-        <div style="margin-top: 20px;">
-            <button type="submit">Mettre à jour la question</button>
-            <a href="/e-learning-role-final/public/quiz/questions/<?= $quiz['id'] ?>" style="display: inline-block; margin-top: 10px;">Retour aux questions</a>
+        <hr style="margin:15px 0px">
+        <div style="margin-top: 20px;justify-content:space-between;display:flex;">
+            <button class="submitBtn" type="submit">Mettre à jour la question</button>
+            <a class="back-btn" href="/e-learning-role-final/public/quiz/questions/<?= $quiz['id'] ?>" >Retour aux questions</a>
         </div>
     </form>
 </div>

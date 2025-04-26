@@ -2,7 +2,7 @@
 
 <div class="admin-header">
     <h1>Questions du quiz: <?= htmlspecialchars($quiz['titre']) ?></h1>
-    <a href="/e-learning-role-final/public/quiz/index/<?= $cours['id'] ?>" style="color: white; margin-top: 10px; display: inline-block;">Retour aux quiz</a>
+    <a class="back-btn" href="/e-learning-role-final/public/quiz/index/<?= $cours['id'] ?>" >Retour aux quiz</a>
 </div>
 
 <div class="admin-section">

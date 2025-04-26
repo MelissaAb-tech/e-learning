@@ -15,7 +15,10 @@
         <label for="description">Description (facultatif)</label>
         <textarea name="description" id="description" rows="4"></textarea>
         
-        <button type="submit">Créer le quiz</button>
-        <a href="/e-learning-role-final/public/quiz/index/<?= $cours['id'] ?>" style="display: inline-block; margin-top: 10px;">Retour aux quiz</a>
+        <hr style="margin:15px 0px">
+        <div style="margin-top: 20px;justify-content:space-between;display:flex;">
+            <button type="submit">Créer le quiz</button>
+            <a class="back-btn" href="/e-learning-role-final/public/quiz/index/<?= $cours['id'] ?>" >Retour aux quiz</a>
+        </div>
     </form>
 </div>

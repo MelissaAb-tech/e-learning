@@ -22,7 +22,7 @@
         <label>Adresse :</label>
         <input type="text" name="adresse" value="<?= htmlspecialchars($etudiant['adresse'] ?? '') ?>" required>
 
-        <label>Occupation :</label>
+        <label>Profession :</label>
         <select name="fonction" required>
             <option value="Étudiant" <?= ($etudiant['fonction'] ?? '') == 'Étudiant' ? 'selected' : '' ?>>Étudiant</option>
             <option value="Enseignant" <?= ($etudiant['fonction'] ?? '') == 'Enseignant' ? 'selected' : '' ?>>Enseignant</option>

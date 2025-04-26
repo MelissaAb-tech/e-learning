@@ -49,7 +49,7 @@
             </div>
 
             <div class="info-row">
-                <label for="fonction">Occupation :</label>
+                <label for="fonction">Profession :</label>
                 <select id="fonction" name="fonction" required>
                     <option value="Étudiant" <?= ($user['fonction'] ?? '') == 'Étudiant' ? 'selected' : '' ?>>Étudiant</option>
                     <option value="Enseignant" <?= ($user['fonction'] ?? '') == 'Enseignant' ? 'selected' : '' ?>>Enseignant</option>
