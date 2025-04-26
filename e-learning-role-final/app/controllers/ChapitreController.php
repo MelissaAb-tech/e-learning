@@ -114,12 +114,14 @@ class ChapitreController extends Controller
             $youtube_links = [];
 
             // Conserver les PDFs existants si demandé
-            if (isset($_POST['keep_pdfs'])) {
-                foreach ($_POST['keep_pdfs'] as $pdf_id) {
-                    foreach ($chapitre['pdfs'] as $pdf) {
-                        if ($pdf['id'] == $pdf_id) {
-                            $pdfs[] = $pdf['pdf'];
-                            break;
+            if (isset($_POST['pdf_to_keep'])) {
+                foreach ($_POST['pdf_to_keep'] as $pdf_id => $keep) {
+                    if ($keep == "1") {  // Ne conserver que si la valeur est 1
+                        foreach ($chapitre['pdfs'] as $pdf) {
+                            if ($pdf['id'] == $pdf_id) {
+                                $pdfs[] = $pdf['pdf'];
+                                break;
+                            }
                         }
                     }
                 }
@@ -142,16 +144,18 @@ class ChapitreController extends Controller
             }
 
             // Conserver les vidéos existantes si demandé
-            if (isset($_POST['keep_videos'])) {
-                foreach ($_POST['keep_videos'] as $video_id) {
-                    foreach ($chapitre['videos'] as $video) {
-                        if ($video['id'] == $video_id) {
-                            if ($video['est_youtube'] == 1) {
-                                $youtube_links[] = $video['video'];
-                            } else {
-                                $videos[] = $video['video'];
+            if (isset($_POST['video_to_keep'])) {
+                foreach ($_POST['video_to_keep'] as $video_id => $keep) {
+                    if ($keep == "1") {  // Ne conserver que si la valeur est 1
+                        foreach ($chapitre['videos'] as $video) {
+                            if ($video['id'] == $video_id) {
+                                if ($video['est_youtube'] == 1) {
+                                    $youtube_links[] = $video['video'];
+                                } else {
+                                    $videos[] = $video['video'];
+                                }
+                                break;
                             }
-                            break;
                         }
                     }
                 }

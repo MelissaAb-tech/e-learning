@@ -270,6 +270,7 @@ textarea {
     justify-content: center;
     padding: 0;
     transition: color 0.2s;
+    width:50px;
 }
 
 .file-delete-btn:hover {
