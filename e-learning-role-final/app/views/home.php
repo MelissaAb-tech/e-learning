@@ -85,7 +85,7 @@
                 </div>
                 <div class="course-card">
                     <div class="course-image">
-                        <img src="/e-learning-role-final/public/images/images.png" alt="Système">
+                        <img src="/e-learning-role-final/public/images/system.jpg" alt="Système">
                     </div>
                     <div class="course-content">
                         <span class="course-badge">Facile • 6 mois</span>
@@ -94,6 +94,91 @@
                         <p class="course-desc">Découvrez les fondamentaux de l'administration système et apprenez à gérer des infrastructures informatiques.</p>
                         <a href="/e-learning-role-final/public/register" class="btn btn-course">S'inscrire pour accéder</a>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Section "Comment ça marche ?" -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2>Comment ça marche ?</h2>
+            <div class="how-grid">
+                <div class="how-step">
+                    <div class="how-icon">📝</div>
+                    <h3>1. Inscription</h3>
+                    <p>Créez votre compte en quelques clics pour accéder à tous nos cours en ligne.</p>
+                </div>
+                <div class="how-step">
+                    <div class="how-icon">📚</div>
+                    <h3>2. Choisissez un cours</h3>
+                    <p>Parcourez notre catalogue et inscrivez-vous aux formations qui correspondent à vos objectifs.</p>
+                </div>
+                <div class="how-step">
+                    <div class="how-icon">🎓</div>
+                    <h3>3. Apprenez à votre rythme</h3>
+                    <p>Suivez vos cours où vous voulez, avancez à votre rythme et obtenez vos certifications.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Section "Avis d'étudiants" -->
+    <section class="student-reviews">
+        <div class="container">
+            <h2>Avis d'étudiants</h2>
+            <div class="reviews-grid">
+                <div class="review-card">
+                    <p class="review-text">"La plateforme est vraiment intuitive et les cours sont super bien expliqués. J'ai pu apprendre à coder en quelques mois !"</p>
+                    <div class="review-author">
+                        <img src="/e-learning-role-final/public/images/dupont.jpg" alt="Étudiant 1">
+                        <div>
+                            <h4>Jean Dupuis</h4>
+                            <span>Étudiant en Développement Web</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="review-card">
+                    <p class="review-text">"Très bonne expérience d'apprentissage. Les quiz m'ont beaucoup aidée à vérifier mes connaissances au fur et à mesure."</p>
+                    <div class="review-author">
+                        <img src="/e-learning-role-final/public/images/sarah.jpg" alt="Étudiant 2">
+                        <div>
+                            <h4>Sarah Martin</h4>
+                            <span>Étudiante en Intelligence Artificielle</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="review-card">
+                    <p class="review-text">"J'ai adoré le format flexible, j'ai pu suivre les cours à mon rythme malgré mon travail à plein temps."</p>
+                    <div class="review-author">
+                        <img src="/e-learning-role-final/public/images/olivier.jpg" alt="Étudiant 3">
+                        <div>
+                            <h4>Olivier Petit</h4>
+                            <span>Étudiant en Administration Système</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Section "FAQ" -->
+    <section class="faq">
+        <div class="container">
+            <h2>Questions fréquentes</h2>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h3>Comment puis-je m'inscrire ?</h3>
+                    <p>Il vous suffit de cliquer sur "S'inscrire" et de remplir le formulaire en quelques minutes.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Les cours sont-ils gratuits ?</h3>
+                    <p>Tous nos cours sont gratuits</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Puis-je apprendre depuis à mon rythme ?</h3>
+                    <p>Oui, tous nos cours sont accessibles depuis votre ordinateur pour un apprentissage à votre rythme</p>
                 </div>
             </div>
         </div>

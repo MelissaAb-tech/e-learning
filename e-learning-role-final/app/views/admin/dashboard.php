@@ -172,6 +172,7 @@
         </div>
     </div>
 </div>
+
 <!-- Chatbot-->
 <div id="chatbot-wrapper" class="chatbot-wrapper" data-role="admin">
     <div id="chatbot-container" class="chatbot-collapsed">
