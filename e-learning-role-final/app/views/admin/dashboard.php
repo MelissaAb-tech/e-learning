@@ -112,7 +112,8 @@
                             <p><?= htmlspecialchars($etudiant['email']) ?></p>
                             <div class="card-actions">
                                 <a href="/e-learning-role-final/public/admin/etudiant/modifier/<?= $etudiant['id'] ?>">Modifier</a>
-                                <a href="/e-learning-role-final/public/admin/etudiant/supprimer/<?= $etudiant['id'] ?>" onclick="return confirm('Supprimer cet étudiant ?')">Supprimer</a>
+                                <a href="#" class="btn-supprimer-etudiant" data-id="<?= $etudiant['id'] ?>">Supprimer</a>
+
                             </div>
                         </div>
                     </div>
@@ -140,21 +141,7 @@
         </div>
     </div>
 </div>
-<!-- Confirmation suppression étudiant -->
-<div id="confirmDeleteModal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <div class="modal-title">Supprimer l'étudiant</div>
-        <div class="modal-text">Êtes-vous sûr de vouloir supprimer cet étudiant ?</div>
-        <div class="modal-buttons">
-            <button class="modal-btn modal-btn-cancel" onclick="closeDeleteModal()">
-                <i class="fas fa-times"></i> Annuler
-            </button>
-            <a id="confirmDeleteLink" href="#" class="modal-btn modal-btn-danger">
-                <i class="fas fa-trash"></i> Supprimer
-            </a>
-        </div>
-    </div>
-</div>
+
 <!-- Confirmation pour suppression de cours -->
 <div id="confirmDeleteCourseModal" class="modal" style="display: none;">
     <div class="modal-content">
@@ -165,6 +152,21 @@
                 <i class="fas fa-times"></i> Annuler
             </button>
             <a id="confirmDeleteCourseBtn" href="#" class="modal-btn modal-btn-danger">
+                <i class="fas fa-trash"></i> Supprimer
+            </a>
+        </div>
+    </div>
+</div>
+<!-- Confirmation suppression étudiant -->
+<div id="confirmDeleteModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-title">Supprimer l'étudiant</div>
+        <div class="modal-text">Êtes-vous sûr de vouloir supprimer cet étudiant ?</div>
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-cancel" onclick="closeDeleteModal()">
+                <i class="fas fa-times"></i> Annuler
+            </button>
+            <a id="confirmDeleteLink" href="#" class="modal-btn modal-btn-danger">
                 <i class="fas fa-trash"></i> Supprimer
             </a>
         </div>

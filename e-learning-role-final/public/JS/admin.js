@@ -153,3 +153,66 @@ window.onclick = function (event) {
         closeLogoutModal();
     }
 }
+// suppression de cours avec confirmation
+
+document.querySelectorAll('.btn-supprimer-cours').forEach(button => {
+    button.addEventListener('click', function (e) {
+        e.preventDefault(); // Bloquer l'action normale
+        const coursId = this.getAttribute('data-id');
+
+        // Ouvrir le modal
+        openDeleteCourseModal(coursId);
+    });
+});
+
+function openDeleteCourseModal(coursId) {
+    const modal = document.getElementById('confirmDeleteCourseModal');
+    const confirmBtn = document.getElementById('confirmDeleteCourseBtn');
+
+    // Mettre à jour le lien du bouton "Supprimer" dans le modal
+    confirmBtn.href = `/e-learning-role-final/public/admin/supprimer/${coursId}`;
+
+    modal.style.display = 'flex'; // Afficher le modal
+}
+
+function closeDeleteCourseModal() {
+    const modal = document.getElementById('confirmDeleteCourseModal');
+    modal.style.display = 'none'; // Cacher le modal
+}
+
+// Fermer le modal si on clique en dehors de la boîte
+window.addEventListener('click', function (event) {
+    const modal = document.getElementById('confirmDeleteCourseModal');
+    if (event.target === modal) {
+        closeDeleteCourseModal();
+    }
+});
+// Gestion de la suppression des étudiants avec confirmation (modale)
+document.querySelectorAll('.btn-supprimer-etudiant').forEach(button => {
+    button.addEventListener('click', function (e) {
+        e.preventDefault(); // Empêche le lien de s'ouvrir directement
+
+        const etudiantId = this.getAttribute('data-id');
+
+        // Mettre à jour dynamiquement le lien "Supprimer" dans le modal
+        const confirmBtn = document.getElementById('confirmDeleteLink');
+        confirmBtn.href = `/e-learning-role-final/public/admin/etudiant/supprimer/${etudiantId}`;
+
+        // Ouvrir le modal
+        document.getElementById('confirmDeleteModal').style.display = 'flex';
+    });
+});
+
+// Fonction pour fermer la modale de suppression étudiant
+function closeDeleteModal() {
+    document.getElementById('confirmDeleteModal').style.display = 'none';
+}
+
+// Fermer la modale si on clique en dehors de la fenêtre
+window.addEventListener('click', function (event) {
+    const modal = document.getElementById('confirmDeleteModal');
+    if (event.target === modal) {
+        closeDeleteModal();
+    }
+});
+
