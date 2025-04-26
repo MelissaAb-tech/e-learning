@@ -1,0 +1,88 @@
+{
+    "chatbotQA": [
+        {
+            "question": "Comment ajouter un nouveau cours en tant qu'administrateur ?",
+            "answer": "Connecte-toi en tant qu'admin, puis accède à \"Gestion des cours\" et clique sur \"Ajouter un cours\"."
+        },
+        {
+            "question": "Puis-je ajouter plusieurs chapitres à un cours ?",
+            "answer": "Oui, lorsque tu ajoutes un cours, tu peux aussi créer plusieurs chapitres avec leurs propres vidéos, PDF et descriptions en cliquant sur le bouton \"Ajouter un chapitre\"."
+        },
+        {
+            "question": "Les administrateurs peuvent-ils modifier un cours après sa création ?",
+            "answer": "Oui, un administrateur peut modifier, supprimer ou ajouter de nouveaux chapitres à tout moment."
+        },
+        {
+            "question": "Comment voir le nombre d'étudiants inscrits à un cours ?",
+            "answer": "Sur la page de gestion des cours (admin) on trouve dans la rubrique statistique le nombre d'étudiants inscrit au cours."
+        },
+        {
+            "question": "Comment voir le nombre de cours ?",
+            "answer": "Sur la page de gestion des cours (admin) on trouve dans la rubrique statistique le nombre de cours."
+        },
+        {
+            "question": "Comment ajouter un nouveau cours ?",
+            "answer": "Clique sur \"Ajouter un cours\" dans la section \"Gestion des cours\", puis remplis les informations demandées (titre, description, image, niveau, durée, professeur)."
+        },
+        {
+            "question": "Comment supprimer un cours ?",
+            "answer": "Dans \"Gestion des cours\", utilise le bouton \"Supprimer\" associé au cours que tu souhaites enlever."
+        },
+        {
+            "question": "Où puis-je voir la liste des étudiants inscrits ?",
+            "answer": "Dans la section \"Gestion des étudiants\", tu peux voir tous les étudiants inscrits avec leur adresse email."
+        },
+        {
+            "question": "Comment ajouter un nouvel étudiant ?",
+            "answer": "Va dans \"Gestion des étudiants\" et clique sur \"Ajouter un étudiant\" pour renseigner ses informations."
+        },
+        {
+            "question": "Comment modifier les informations d'un étudiant ?",
+            "answer": "Dans \"Gestion des étudiants\", clique sur \"Modifier\" à côté de l'étudiant dont tu souhaites changer les informations."
+        },
+        {
+            "question": "Où voir les statistiques générales ?",
+            "answer": "Les statistiques principales (nombre de cours, nombre d'étudiants inscrits, note moyenne) sont affichées en haut du panneau d'administration."
+        },
+        {
+            "question": "Comment lire les feedbacks des étudiants ?",
+            "answer": "Clique sur \"Lire les feedbacks\" pour consulter les avis donnés sur les cours."
+        },
+        {
+            "question": "Puis-je rechercher un cours ou un étudiant ?",
+            "answer": "Oui, utilise la barre de recherche pour trouver rapidement un cours ou un étudiant."
+        },
+        {
+            "question": "Comment me déconnecter de mon compte ",
+            "answer": "Clique simplement sur le bouton \"Déconnexion\" en haut de ton espace"
+        },
+        {
+            "question": "Comment rechercher un cours spécifique ?",
+            "answer": "Utilise la barre \"Rechercher un cours...\" pour trouver rapidement un cours par son titre "
+        },
+        {
+            "question": "Comment me déconnecter depuis la page du cours ?",
+            "answer": "Clique simplement sur \"Déconnexion\" en haut à droite de la page."
+        },
+        {
+            "question": "Qu'est-ce que ce site propose ?",
+            "answer": "Ce site propose des cours en ligne, avec des chapitres, des vidéos, des quiz et des certificats de réussite."
+        },
+        {
+            "question": "Quels types de cours sont disponibles ?",
+            "answer": "Nous proposons des cours de niveaux débutant à avancé dans des domaines comme l'intelligence artificielle, le développement web, et bien d'autres."
+        }
+    ],
+    "defaultResponses": {
+        "greetings": [
+            "Bonjour ! Comment puis-je t'aider ?",
+            "Salut ! Je suis là pour répondre à tes questions.",
+            "Bienvenue ! Que puis-je faire pour toi ?"
+        ],
+        "suggestions": [
+            "Puis-je rechercher un cours ou un étudiant ?",
+            "Comment lire les feedbacks des étudiants ?",
+            "Comment ajouter un nouveau cours ?"
+        ]
+    }
+}

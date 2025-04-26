@@ -1,6 +1,7 @@
 <link rel="stylesheet" href="/e-learning-role-final/public/style/etudiant-dashboard.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="/e-learning-role-final/public/style/dashboard-etudiant-extra.css">
+<link rel="stylesheet" href="/e-learning-role-final/public/style/chatbot.css">
 
 <div class="student-header">
     <div class="header-top">
@@ -28,7 +29,7 @@
     <?php
     // Suppression du message après affichage pour qu'il ne s'affiche qu'une fois
     unset($_SESSION['feedback_success']);
-?>
+    ?>
 <?php endif; ?>
 
 <div class="search-wrapper">
@@ -117,19 +118,47 @@
         </div>
     </div>
 </div>
+<!-- Chatbot-->
+<div id="chatbot-wrapper" class="chatbot-wrapper" data-role="etudiant">
+
+    <div id="chatbot-container" class="chatbot-collapsed">
+        <div class="chatbot-header">
+            <div class="chatbot-title">
+                <div class="chatbot-avatar"></div>
+                <span>Assistant E-Learning</span>
+            </div>
+            <div class="chatbot-controls">
+                <button id="chatbot-minimize" aria-label="Réduire">_</button>
+                <button id="chatbot-close" aria-label="Fermer">x</button>
+            </div>
+        </div>
+        <div class="chatbot-body">
+            <div id="chatbot-messages"></div>
+        </div>
+        <div class="chatbot-suggestions" id="chatbot-suggestions"></div>
+        <div class="chatbot-footer">
+            <form id="chatbot-form">
+                <input type="text" id="chatbot-input" placeholder="Pose ta question" autocomplete="off">
+                <button type="submit" id="chatbot-submit">➤</button>
+            </form>
+        </div>
+    </div>
+    <button id="chatbot-toggle" class="chatbot-toggle" aria-label="Ouvrir l'assistant">💬</button>
+</div>
+<script src="/e-learning-role-final/public/JS/chatbot.js"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         // Sélectionner tous les cours et l'input de recherche
         const coursCards = document.querySelectorAll('.course-card');
         const searchInput = document.getElementById('recherche-input');
 
         // Ajouter un événement sur l'input pour détecter chaque frappe
-        searchInput.addEventListener('input', function () {
+        searchInput.addEventListener('input', function() {
             const searchTerm = this.value.toLowerCase().trim();
 
             // Parcourir chaque carte de cours et vérifier si elle correspond à la recherche
-            coursCards.forEach(function (card) {
+            coursCards.forEach(function(card) {
                 const title = card.querySelector('h3').textContent.toLowerCase();
                 const professor = card.querySelector('.prof').textContent.toLowerCase();
 
@@ -167,7 +196,7 @@
         });
 
         // Empêcher la soumission du formulaire si l'utilisateur appuie sur Entrée
-        searchInput.addEventListener('keydown', function (e) {
+        searchInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
             }
@@ -181,7 +210,7 @@
     function closeLogoutModal() {
         document.getElementById('logoutModal').style.display = 'none';
     }
-    window.onclick = function (event) {
+    window.onclick = function(event) {
         const logoutModal = document.getElementById('logoutModal');
         if (event.target === logoutModal) {
             closeLogoutModal();

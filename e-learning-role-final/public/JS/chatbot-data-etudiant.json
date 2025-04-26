@@ -1,0 +1,152 @@
+{
+    "chatbotQA": [
+        {
+            "question": "Comment m'inscrire à un cours ?",
+            "answer": "Pour t'inscrire à un cours, connecte-toi à ton compte étudiant, puis clique sur le bouton \"S'inscrire\" disponible sur la page du cours qui t'intéresse."
+        },
+        {
+            "question": "Où trouver les chapitres d'un cours ?",
+            "answer": "Une fois inscrit à un cours, tu peux accéder aux chapitres sur la page du cours courant."
+        },
+        {
+            "question": "Comment marqué un chapitre comme terminé ?",
+            "answer": "Tu peux marquer un chapitre comme terminé en appuyant sur le bouton \"Terminer\" en bas de la page du dernier chapitre."
+        },
+        {
+            "question": "Puis-je télécharger les PDF des chapitres ?",
+            "answer": "Oui, chaque chapitre propose un bouton de téléchargement pour récupérer le PDF associé."
+        },
+        {
+            "question": "Est-ce que je peux changer mes informations personnelles ?",
+            "answer": "Bien sûr ! Va dans \"Mon compte\" depuis ton tableau de bord pour modifier tes informations."
+        },
+        {
+            "question": "Que faire si je rencontre un problème technique ?",
+            "answer": "Contacte l'équipe technique ou utilise le forum"
+        },
+        {
+            "question": "Où voir ma progression dans un cours ?",
+            "answer": "Sur la page du cours, tu verras une barre de progression indiquant ton avancement en pourcentage."
+        },
+        {
+            "question": "Puis-je voir les vidéos directement sur la plateforme ?",
+            "answer": "Oui, les vidéos de chaque chapitre sont intégrées et peuvent être visionnées directement sans téléchargement."
+        },
+        {
+            "question": "Est-ce que je peux me désinscrire d'un cours si je me suis inscrit par erreur ?",
+            "answer": "Oui, grâce au bouton \"Se désinscrire\" disponible sur la page du cours ou depuis ton tableau de bord."
+        },
+        {
+            "question": "Comment me déconnecter de mon compte étudiant ?",
+            "answer": "Clique simplement sur le bouton \"Déconnexion\" en haut de ton espace étudiant."
+        },
+        {
+            "question": "Comment accéder à mon compte et modifier mes informations ?",
+            "answer": "Clique sur \"Mon compte\" pour voir ou modifier ton prénom, ton âge, ton adresse, ton téléphone, ta photo de profil ou ta fonction."
+        },
+        {
+            "question": "Où puis-je voir les cours disponibles ?",
+            "answer": "Dès que tu es connecté, tu trouveras la liste des cours disponibles directement sur ton tableau de bord étudiant."
+        },
+        {
+            "question": "Comment rechercher un cours spécifique ?",
+            "answer": "Utilise la barre \"Rechercher un cours...\" pour trouver rapidement un cours par son titre ou par son professeur."
+        },
+        {
+            "question": "Comment savoir le niveau d'un cours (débutant, difficile) ?",
+            "answer": "Le niveau est indiqué juste au-dessus du titre de chaque cours (par exemple \"Débutant • 5 heures\" ou \"Difficile • 3 mois\")."
+        },
+        {
+            "question": "Puis-je laisser un avis sur un cours ?",
+            "answer": "Oui ! Va dans la section \"Exprimez-vous\" sur ton espace étudiant, donne une note de 1 à 5 étoiles et écris ton commentaire."
+        },
+        {
+            "question": "Comment envoyer mon avis ?",
+            "answer": "Après avoir choisi ta note et rédigé ton commentaire dans \"Exprimez-vous\", clique sur \"Envoyer mon avis\"."
+        },
+        {
+            "question": "Mon avis est-il pris en compte immédiatement ?",
+            "answer": "Ton avis est envoyé à l'équipe de la plateforme et sera pris en compte pour améliorer les cours et l'expérience étudiante."
+        },
+        {
+            "question": "Où voir ma progression dans le cours ?",
+            "answer": "Ta progression est affichée sous \"Progression des chapitres\" et \"Progression des quiz\" sur la page du cours."
+        },
+        {
+            "question": "Comment obtenir mon certificat après avoir terminé un cours ?",
+            "answer": "Clique sur \"Obtenir mon certificat\" une fois que tu as complété tous les chapitres et le quiz du cours."
+        },
+        {
+            "question": "Comment donner mon avis sur un cours terminé ?",
+            "answer": "Clique sur \"Donner mon avis sur ce cours\" pour noter le cours et laisser un commentaire."
+        },
+        {
+            "question": "Puis-je refaire un quiz même si j'ai obtenu 100% ?",
+            "answer": "Oui, tu peux refaire le quiz autant de fois que tu le souhaites en cliquant sur \"Refaire le quiz\"."
+        },
+        {
+            "question": "Que signifient les coches vertes à côté des chapitres ?",
+            "answer": "Les coches vertes indiquent que tu as terminé les chapitres correspondants."
+        },
+        {
+            "question": "Que faire si je veux recommencer tout le cours ?",
+            "answer": "Clique sur \"Réinitialiser\" pour remettre ta progression à zéro et recommencer le cours depuis le début."
+        },
+        {
+            "question": "Où poser une question ou discuter avec d'autres étudiants ?",
+            "answer": "Utilise la section \"Forum\" pour échanger avec les autres étudiants inscrits au cours."
+        },
+        {
+            "question": "Comment revenir à la liste de tous mes cours ?",
+            "answer": "Clique sur \"Mes cours\" pour revenir à ton tableau de bord étudiant."
+        },
+        {
+            "question": "Comment me déconnecter depuis la page du cours ?",
+            "answer": "Clique simplement sur \"Déconnexion\" en haut à droite de la page."
+        },
+        {
+            "question": "Qu'est-ce que ce site propose ?",
+            "answer": "Ce site propose des cours en ligne, avec des chapitres, des vidéos, des quiz et des certificats de réussite."
+        },
+        {
+            "question": "Comment créer un compte étudiant ?",
+            "answer": "Tu peux créer ton compte étudiant depuis la page d'inscription accessible sur la page d'accueil du site."
+        },
+        {
+            "question": "Est-ce que l'inscription est gratuite ?",
+            "answer": "Oui, l'inscription est gratuite pour accéder aux cours disponibles."
+        },
+        {
+            "question": "Quels types de cours sont disponibles ?",
+            "answer": "Nous proposons des cours de niveaux débutant à avancé dans des domaines comme l'intelligence artificielle, le développement web, et bien d'autres."
+        },
+        {
+            "question": "Puis-je suivre les cours à mon rythme ?",
+            "answer": "Oui, tous nos cours sont accessibles à ton propre rythme sans limite de temps."
+        },
+        {
+            "question": "Vais-je recevoir un certificat à la fin d'un cours ?",
+            "answer": "Oui, après avoir terminé tous les chapitres et réussi le quiz final, tu pourras obtenir un certificat."
+        },
+        {
+            "question": "Y a-t-il un forum pour échanger avec d'autres étudiants ?",
+            "answer": "Oui, chaque cours possède un espace \"Forum\" pour poser tes questions et discuter avec les autres."
+        },
+        {
+            "question": "Puis-je changer ma photo de profil ?",
+            "answer": "Oui, va dans \"Mon compte\" pour mettre à jour ta photo de profil."
+        }
+    ],
+    "defaultResponses": {
+        "greetings": [
+            "Bonjour ! Comment puis-je t'aider ?",
+            "Salut ! Je suis là pour répondre à tes questions.",
+            "Bienvenue ! Que puis-je faire pour toi ?"
+        ],
+        "suggestions": [
+            "Qu'est-ce que ce site propose ?",
+            "Puis-je laisser un avis sur un cours ?",
+            "Puis-je suivre les cours à mon rythme ?"
+        ]
+    }
+}

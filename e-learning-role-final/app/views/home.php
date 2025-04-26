@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Learning - Votre plateforme de formation en ligne</title>
     <link rel="stylesheet" href="/e-learning-role-final/public/style/home.css">
+    <link rel="stylesheet" href="/e-learning-role-final/public/style/chatbot.css">
 </head>
+
 <body>
     <!-- Header with navigation -->
     <header>
@@ -17,7 +20,7 @@
             </div>
         </div>
     </header>
-    
+
     <!-- Hero section -->
     <section class="hero">
         <div class="container">
@@ -26,7 +29,7 @@
             <a href="/e-learning-role-final/public/register" class="btn btn-hero">Commencer dès maintenant</a>
         </div>
     </section>
-    
+
     <!-- Features section -->
     <section class="features">
         <div class="container">
@@ -95,12 +98,42 @@
             </div>
         </div>
     </section>
-    
+
+    <!-- Chatbot-->
+    <div id="chatbot-wrapper" class="chatbot-wrapper" data-role="etudiant">
+        <div id="chatbot-container" class="chatbot-collapsed">
+            <div class="chatbot-header">
+                <div class="chatbot-title">
+                    <div class="chatbot-avatar"></div>
+                    <span>Assistant E-Learning</span>
+                </div>
+                <div class="chatbot-controls">
+                    <button id="chatbot-minimize" aria-label="Réduire">_</button>
+                    <button id="chatbot-close" aria-label="Fermer">x</button>
+                </div>
+            </div>
+            <div class="chatbot-body">
+                <div id="chatbot-messages"></div>
+            </div>
+            <div class="chatbot-suggestions" id="chatbot-suggestions"></div>
+            <div class="chatbot-footer">
+                <form id="chatbot-form">
+                    <input type="text" id="chatbot-input" placeholder="Pose ta question" autocomplete="off">
+                    <button type="submit" id="chatbot-submit">➤</button>
+                </form>
+            </div>
+        </div>
+        <button id="chatbot-toggle" class="chatbot-toggle" aria-label="Ouvrir l'assistant">💬</button>
+    </div>
+
     <!-- Footer -->
     <footer>
         <div class="container">
             <p>&copy; 2025 E-Learning. Tous droits réservés.</p>
         </div>
     </footer>
+
+    <script src="/e-learning-role-final/public/JS/chatbot.js"></script>
 </body>
+
 </html>
