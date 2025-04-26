@@ -252,7 +252,6 @@ header {
     margin-bottom: 50px;
 }
 
-/* Grille pour les étapes */
 .how-grid {
     display: flex;
     justify-content: space-between;
@@ -297,7 +296,7 @@ header {
 }
 
 /* Avis des étudiants */
-/* Section Avis d'étudiants */
+
 .student-reviews {
     padding: 80px 0;
     background-color: #ffffff;
@@ -367,7 +366,6 @@ header {
 }
 
 /* FAQ */
-/* FAQ Section */
 .faq {
     padding: 80px 0;
     background-color: #f8f9fa;

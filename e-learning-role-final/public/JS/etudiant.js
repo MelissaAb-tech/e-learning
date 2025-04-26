@@ -66,3 +66,30 @@ window.onclick = function (event) {
         closeLogoutModal();
     }
 }
+// La désinscription avec confirmation
+document.querySelectorAll('.btn-unsubscribe').forEach(button => {
+    button.addEventListener('click', function (e) {
+        e.preventDefault(); // Empêche d'aller directement sur le lien
+        const coursId = this.getAttribute('data-cours-id');
+
+        // Modifier dynamiquement le lien du bouton 
+        const confirmBtn = document.getElementById('confirmUnsubscribeLink');
+        confirmBtn.href = `/e-learning-role-final/public/etudiant/desinscrire/${coursId}`;
+
+        // Afficher le modal
+        document.getElementById('confirmUnsubscribeModal').style.display = 'flex';
+    });
+});
+
+// Fonction pour fermer le modal
+function closeUnsubscribeModal() {
+    document.getElementById('confirmUnsubscribeModal').style.display = 'none';
+}
+
+// Fermer le modal si on clique en dehors
+window.addEventListener('click', function (event) {
+    const modal = document.getElementById('confirmUnsubscribeModal');
+    if (event.target === modal) {
+        closeUnsubscribeModal();
+    }
+});

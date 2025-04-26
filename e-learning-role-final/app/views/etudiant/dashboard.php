@@ -54,10 +54,10 @@
                         <a href="/e-learning-role-final/public/cours/voir/<?= $c['id'] ?>" class="btn-access">
                             <i class="fas fa-book-open"></i> Accéder
                         </a>
-                        <a href="/e-learning-role-final/public/etudiant/desinscrire/<?= $c['id'] ?>" class="btn-unsubscribe"
-                            onclick="return confirm('Êtes-vous sûr de vouloir vous désinscrire de ce cours ?')">
+                        <a href="#" class="btn-unsubscribe" data-cours-id="<?= $c['id'] ?>">
                             <i class="fas fa-user-minus"></i> Se désinscrire
                         </a>
+
                     </div>
                 <?php else: ?>
                     <!-- L'étudiant n'est pas inscrit -->
@@ -101,7 +101,7 @@
         <button type="submit" class="btn">Envoyer mon avis</button>
     </form>
 </div>
-<!-- Modal de confirmation pour la déconnexion -->
+<!-- confirmation pour la déconnexion -->
 <div id="logoutModal" class="modal">
     <div class="modal-content">
         <div class="modal-title">Déconnexion</div>
@@ -118,6 +118,22 @@
         </div>
     </div>
 </div>
+<!-- confirmation désinscription du cours -->
+<div id="confirmUnsubscribeModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-title">Se désinscrire du cours</div>
+        <div class="modal-text">Êtes-vous sûr de vouloir vous désinscrire de ce cours ?</div>
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-cancel" onclick="closeUnsubscribeModal()">
+                <i class="fas fa-times"></i> Annuler
+            </button>
+            <a id="confirmUnsubscribeLink" href="#" class="modal-btn modal-btn-danger">
+                <i class="fas fa-user-minus"></i> Se désinscrire
+            </a>
+        </div>
+    </div>
+</div>
+
 <!-- Chatbot-->
 <div id="chatbot-wrapper" class="chatbot-wrapper" data-role="etudiant">
 
