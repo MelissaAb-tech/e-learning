@@ -30,17 +30,16 @@ class Database
                 if ($needInit) {
                     self::initDatabase();
                 }
-                
+
                 // Vérifier si les tables pour fichiers multiples existent déjà
                 self::createMultiFilesTables();
-                
             } catch (PDOException $e) {
                 die("Erreur de connexion à la base de données: " . $e->getMessage());
             }
         }
         return self::$pdo;
     }
-    
+
     private static function createMultiFilesTables()
     {
         try {
@@ -54,13 +53,13 @@ class Database
                     pdf VARCHAR(255) NOT NULL,
                     FOREIGN KEY (chapitre_id) REFERENCES chapitres(id) ON DELETE CASCADE
                 )");
-                
+
                 // Migrer les données existantes
                 self::$pdo->exec("INSERT INTO chapitre_pdfs (chapitre_id, pdf)
                     SELECT id, pdf FROM chapitres 
                     WHERE pdf IS NOT NULL AND pdf != ''");
             }
-            
+
             // Vérifier si la table chapitre_videos existe déjà
             $result = self::$pdo->query("SHOW TABLES LIKE 'chapitre_videos'");
             if ($result->rowCount() === 0) {
@@ -72,7 +71,7 @@ class Database
                     est_youtube TINYINT(1) DEFAULT 0,
                     FOREIGN KEY (chapitre_id) REFERENCES chapitres(id) ON DELETE CASCADE
                 )");
-                
+
                 // Migrer les données existantes
                 self::$pdo->exec("INSERT INTO chapitre_videos (chapitre_id, video, est_youtube)
                     SELECT id, video, 
@@ -93,7 +92,7 @@ class Database
         try {
             // Créer toutes les tables nécessaires
             self::createTables();
-            
+
             // Insérer des données de démonstration
             self::insertDemoData();
         } catch (PDOException $e) {
@@ -312,10 +311,10 @@ class Database
         $users = [
             // ID 1: Administrateur
             ['Admin', 'admin@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', null, null, null, null, 'admin.jpg', null],
-            
+
             // ID 2: Premier étudiant (avec mot de passe 'password')
             ['Dupont', 'etudiant1@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'etudiant', 'Jean', 51, '15 Rue de Paris', '0612345678', 'dupont.jpg', 'Professionnel'],
-            
+
             // ID 3: Deuxième étudiant
             ['Martin', 'etudiant2@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'etudiant', 'Sophie', 25, '8 Avenue des Lilas', '0698765432', 'martin.jpg', 'Étudiant']
         ];
@@ -327,15 +326,15 @@ class Database
 
         // Insertion des cours
         $cours = [
-            // ID 1: Cours sur l'IA
-            ['Introduction à l\'IA', 'Prof. Dupont', 'Ce cours présente les bases de l\'intelligence artificielle et ses applications dans le monde moderne.', 'Débutant', '5 heures', 'ia.jpg', 'projet_LFC_etape5.pdf', '89ac89e8-b983-4285-a11a-249c8d100ad4-mp4_720p.mp4'],
-            
-            // ID 2: Cours de développement web
-            ['Développement Web', 'Prof. Martin', 'Apprenez à créer des sites web avec HTML, CSS, JavaScript et PHP. Un cours complet pour devenir développeur web.', 'Difficile', '3 mois', 'html.jpg', 'LFC_TP2.pdf', '89ac89e8-b983-4285-a11a-249c8d100ad4-mp4_720p.mp4'],
-            
-            // ID 3: Cours d'administration système
-            ['Administration Système', 'Prof. Durand', 'Découvrez les fondamentaux de l\'administration système et apprenez à gérer des infrastructures informatiques.', 'Intermédiaire', '6 mois', 'images.png', null, null]
+            ['Introduction à l\'IA', 'Prof. Dupont', 'Bases de l\'intelligence artificielle.', 'Débutant', '5 heures', 'ia.jpg', null, null],
+            ['Développement Web', 'Prof. Martin', 'Créer des sites web modernes.', 'Difficile', '3 mois', 'html.jpg', null, null],
+            ['Administration Système', 'Prof. Durand', 'Gestion d\'infrastructure.', 'Intermédiaire', '6 mois', 'system.jpg', null, null],
+            ['Programmation Python', 'Prof. Petit', 'Apprenez Python de zéro.', 'Débutant', '2 mois', 'python.png', null, null],
+            ['Bases de Données', 'Prof. Moreau', 'Modélisation et SQL.', 'Intermédiaire', '4 mois', 'database.jpg', null, null],
+            ['Développement Mobile', 'Prof. Lefevre', 'Applications Android & iOS.', 'Difficile', '5 mois', 'mobile.jpg', null, null],
+
         ];
+
 
         $stmt = self::$pdo->prepare("INSERT INTO `cours` (nom, professeur, contenu, niveau, duree, image, pdf, video) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         foreach ($cours as $c) {
@@ -372,6 +371,36 @@ class Database
         ];
 
         foreach ($chapitres_cours3 as $chap) {
+            $stmt->execute($chap);
+        }
+
+        // Cours 4 : Programmation Python
+        $chapitres_cours4 = [
+            [4, 'Introduction à Python', 'Syntaxe de base, variables et types.', 'PythonIntro.pdf', null],
+            [4, 'Contrôle de flux', 'Conditions, boucles, exceptions.', null, 'https://youtu.be/WGJJIrtnfpk'],
+            [4, 'Programmation orientée objet', 'Classes et objets en Python.', 'OOP_Python.pdf', 'https://youtu.be/qiSCMNBIP2g']
+        ];
+        foreach ($chapitres_cours4 as $chap) {
+            $stmt->execute($chap);
+        }
+
+        // Cours 5 : Bases de Données
+        $chapitres_cours5 = [
+            [5, 'Conception de bases de données', 'Modélisation conceptuelle.', 'BDD_Modelisation.pdf', null],
+            [5, 'Langage SQL', 'Créer, modifier, interroger une base.', 'SQL.pdf', 'https://youtu.be/7S_tz1z_5bA'],
+            [5, 'Sécurité des données', 'Gestion des permissions et sécurité.', null, 'https://youtu.be/CibYKICXU_k']
+        ];
+        foreach ($chapitres_cours5 as $chap) {
+            $stmt->execute($chap);
+        }
+
+        // Cours 6 : Développement Mobile
+        $chapitres_cours6 = [
+            [6, 'Introduction aux apps mobiles', 'Comprendre Android et iOS.', 'MobileIntro.pdf', null],
+            [6, 'Développement Android', 'Créer sa première app Android.', null, 'https://youtu.be/fis26HvvDII'],
+            [6, 'Développement iOS', 'Première app iOS avec Swift.', 'iOSApp.pdf', 'https://youtu.be/5NV6Rdv1a3I']
+        ];
+        foreach ($chapitres_cours6 as $chap) {
             $stmt->execute($chap);
         }
 
@@ -417,7 +446,11 @@ class Database
         // Ajouter des feedbacks généraux
         $feedbacks = [
             [2, 5, 'Très bonne plateforme de formation en ligne. Interface intuitive et contenus de qualité.'],
-            [3, 4, 'Bon site, mais quelques bugs mineurs. Les cours sont très intéressants.']
+            [3, 4, 'Bon site, mais quelques bugs mineurs. Les cours sont très intéressants.'],
+            [4, 4, 'Bonne diversité de cours, mais quelques améliorations pourraient être apportées sur la partie quiz.'],
+            [3, 4, 'Excellente expérience d\'apprentissage en ligne, continuez comme ça !'],
+            [4, 3, 'Les vidéos sont bien faites, mais quelques fichiers PDF supplémentaires seraient utiles.'],
+
         ];
 
         $stmt = self::$pdo->prepare("INSERT INTO `feedbacks_generaux` (etudiant_id, note, commentaire) VALUES (?, ?, ?)");
@@ -520,6 +553,90 @@ class Database
         $stmt->execute([$tentative_id, 2, 5]); // Première bonne réponse à la question 2
         $stmt->execute([$tentative_id, 2, 6]); // Deuxième bonne réponse à la question 2
         $stmt->execute([$tentative_id, 2, 7]); // Troisième bonne réponse à la question 2
+        // Ajouter un quiz pour le cours d'Administration Système
+        $stmt = self::$pdo->prepare("INSERT INTO `quizzes` (cours_id, titre, description) VALUES (?, ?, ?)");
+        $stmt->execute([3, 'Quiz Administration Système', 'Testez vos connaissances sur l\'administration système']);
+        $quiz_id = self::$pdo->lastInsertId();
+
+        // Question 1 (choix unique)
+        $stmt = self::$pdo->prepare("INSERT INTO `questions` (quiz_id, texte, type, ordre) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$quiz_id, 'Quel est le rôle d\'un système d\'exploitation ?', 'unique', 1]);
+        $question_id = self::$pdo->lastInsertId();
+
+        // Options
+        $stmt = self::$pdo->prepare("INSERT INTO `options` (question_id, texte, est_correcte, ordre) VALUES (?, ?, ?, ?)");
+        $options = [
+            [$question_id, 'Gérer le matériel et les logiciels', 1, 1],
+            [$question_id, 'Compiler le code uniquement', 0, 2],
+            [$question_id, 'Servir uniquement d\'interface utilisateur', 0, 3],
+            [$question_id, 'Augmenter la vitesse du réseau', 0, 4]
+        ];
+        foreach ($options as $option) {
+            $stmt->execute($option);
+        }
+
+        // Ajouter un quiz pour le cours Programmation Python
+        $stmt = self::$pdo->prepare("INSERT INTO `quizzes` (cours_id, titre, description) VALUES (?, ?, ?)");
+        $stmt->execute([4, 'Quiz Programmation Python', 'Évaluez vos connaissances sur Python']);
+        $quiz_id = self::$pdo->lastInsertId();
+
+        // Question 1
+        $stmt = self::$pdo->prepare("INSERT INTO `questions` (quiz_id, texte, type, ordre) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$quiz_id, 'Quelle syntaxe est correcte pour afficher quelque chose en Python ?', 'unique', 1]);
+        $question_id = self::$pdo->lastInsertId();
+
+        $stmt = self::$pdo->prepare("INSERT INTO `options` (question_id, texte, est_correcte, ordre) VALUES (?, ?, ?, ?)");
+        $options = [
+            [$question_id, 'print("Hello World")', 1, 1],
+            [$question_id, 'echo "Hello World"', 0, 2],
+            [$question_id, 'printf("Hello World")', 0, 3],
+            [$question_id, 'console.log("Hello World")', 0, 4]
+        ];
+        foreach ($options as $option) {
+            $stmt->execute($option);
+        }
+
+        // Ajouter un quiz pour le cours Bases de Données
+        $stmt = self::$pdo->prepare("INSERT INTO `quizzes` (cours_id, titre, description) VALUES (?, ?, ?)");
+        $stmt->execute([5, 'Quiz Bases de Données', 'Testez vos bases en conception de bases de données']);
+        $quiz_id = self::$pdo->lastInsertId();
+
+        // Question 1
+        $stmt = self::$pdo->prepare("INSERT INTO `questions` (quiz_id, texte, type, ordre) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$quiz_id, 'Quel langage est utilisé pour interroger une base de données relationnelle ?', 'unique', 1]);
+        $question_id = self::$pdo->lastInsertId();
+
+        $stmt = self::$pdo->prepare("INSERT INTO `options` (question_id, texte, est_correcte, ordre) VALUES (?, ?, ?, ?)");
+        $options = [
+            [$question_id, 'SQL', 1, 1],
+            [$question_id, 'HTML', 0, 2],
+            [$question_id, 'CSS', 0, 3],
+            [$question_id, 'PHP', 0, 4]
+        ];
+        foreach ($options as $option) {
+            $stmt->execute($option);
+        }
+
+        // Ajouter un quiz pour le cours Développement Mobile
+        $stmt = self::$pdo->prepare("INSERT INTO `quizzes` (cours_id, titre, description) VALUES (?, ?, ?)");
+        $stmt->execute([6, 'Quiz Développement Mobile', 'Vérifiez vos connaissances en développement mobile']);
+        $quiz_id = self::$pdo->lastInsertId();
+
+        // Question 1
+        $stmt = self::$pdo->prepare("INSERT INTO `questions` (quiz_id, texte, type, ordre) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$quiz_id, 'Quel langage est utilisé pour développer des applications Android ?', 'unique', 1]);
+        $question_id = self::$pdo->lastInsertId();
+
+        $stmt = self::$pdo->prepare("INSERT INTO `options` (question_id, texte, est_correcte, ordre) VALUES (?, ?, ?, ?)");
+        $options = [
+            [$question_id, 'Java', 1, 1],
+            [$question_id, 'Swift', 0, 2],
+            [$question_id, 'Python', 0, 3],
+            [$question_id, 'C#', 0, 4]
+        ];
+        foreach ($options as $option) {
+            $stmt->execute($option);
+        }
     }
 
     private static function insertDemoForumData()
@@ -538,22 +655,22 @@ class Database
         $stmt = self::$pdo->prepare("INSERT INTO `topics` (cours_id, user_id, titre, contenu, date_creation) VALUES (?, ?, ?, ?, NOW())");
         $stmt->execute([2, 2, 'Différence entre Flexbox et Grid', 'Quelle est la différence entre Flexbox et Grid en CSS ? Dans quels cas devrait-on utiliser l\'un plutôt que l\'autre ?']);
         $topic_id = self::$pdo->lastInsertId();
-        
+
         // Créer un topic dans le forum du cours d'Administration Système par Sophie Martin
         $stmt = self::$pdo->prepare("INSERT INTO `topics` (cours_id, user_id, titre, contenu, date_creation) VALUES (?, ?, ?, ?, NOW())");
         $stmt->execute([3, 3, 'Configuration de serveurs virtuels sous Linux', 'Bonjour à tous, je suis en train d\'apprendre à configurer des serveurs virtuels sous Linux. Avez-vous des conseils ou bonnes pratiques à partager ? Merci d\'avance.']);
         $topic_id = self::$pdo->lastInsertId();
-        
+
         // Ajouter une discussion de 4 échanges entre Sophie Martin et Jean Dupont
         $stmt = self::$pdo->prepare("INSERT INTO `reponses` (topic_id, user_id, contenu, date_creation) VALUES (?, ?, ?, NOW())");
         $stmt->execute([$topic_id, 2, 'Bonjour Sophie, j\'ai récemment configuré plusieurs serveurs virtuels. Je te conseille d\'abord de bien maîtriser les commandes de base comme ls, cd, chmod, etc. Ensuite, apprends à utiliser SSH correctement pour te connecter à distance.']);
-        
+
         $stmt->execute([$topic_id, 3, 'Merci Jean pour ces conseils ! J\'ai déjà une bonne maîtrise des commandes de base. As-tu des ressources à me recommander pour la sécurisation d\'un serveur ?']);
-        
+
         $stmt->execute([$topic_id, 2, 'Bien sûr ! Je te recommande de configurer un pare-feu avec UFW ou iptables, de désactiver la connexion root en SSH, d\'utiliser des clés SSH plutôt que des mots de passe et de mettre en place fail2ban pour bloquer les tentatives d\'intrusion.']);
-        
+
         $stmt->execute([$topic_id, 3, 'Super, merci pour ces infos détaillées. J\'ai commencé à mettre en place UFW et c\'est effectivement très utile. As-tu des conseils sur la configuration de NGINX comme reverse proxy ?']);
-        
+
         $stmt->execute([$topic_id, 2, 'NGINX est excellent comme reverse proxy ! N\'oublie pas d\'activer HTTPS avec Let\'s Encrypt, c\'est gratuit et très simple à mettre en place avec certbot.']);
     }
 }
