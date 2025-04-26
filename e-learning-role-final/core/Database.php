@@ -91,24 +91,11 @@ class Database
     private static function initDatabase()
     {
         try {
-            // Vérifier si les tables principales existent déjà
-            $tables = self::$pdo->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN);
-
-            // Si les tables n'existent pas, créer la structure de base
-            if (!in_array('users', $tables)) {
-                self::createTables();
-                self::insertDemoData();
-            }
-
-            // Vérifier si les tables de quiz existent
-            if (!in_array('quizzes', $tables)) {
-                self::createQuizTables();
-            }
-
-            // Vérifier si les tables de forum existent
-            if (!in_array('topics', $tables)) {
-                self::createForumTables();
-            }
+            // Créer toutes les tables nécessaires
+            self::createTables();
+            
+            // Insérer des données de démonstration
+            self::insertDemoData();
         } catch (PDOException $e) {
             die("Erreur lors de l'initialisation de la base de données: " . $e->getMessage());
         }
@@ -171,16 +158,50 @@ class Database
         // Ajouter les contraintes de clé étrangère
         self::$pdo->exec("ALTER TABLE `chapitres` ADD CONSTRAINT `chapitres_ibfk_1` FOREIGN KEY (`cours_id`) REFERENCES `cours` (`id`) ON DELETE CASCADE");
 
+        // Créer la table cours_inscriptions
+        self::$pdo->exec("CREATE TABLE IF NOT EXISTS `cours_inscriptions` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `user_id` int(11) NOT NULL,
+            `cours_id` int(11) NOT NULL,
+            `date_inscription` timestamp NOT NULL DEFAULT current_timestamp(),
+            PRIMARY KEY (`id`),
+            UNIQUE KEY `user_cours` (`user_id`,`cours_id`),
+            KEY `user_id` (`user_id`),
+            KEY `cours_id` (`cours_id`),
+            CONSTRAINT `cours_inscriptions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+            CONSTRAINT `cours_inscriptions_ibfk_2` FOREIGN KEY (`cours_id`) REFERENCES `cours` (`id`) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
+
         // Création des tables de quiz
         self::createQuizTables();
 
+        // Création des tables de forum
+        self::createForumTables();
+
+        // Création des tables de feedback
         self::$pdo->exec("CREATE TABLE IF NOT EXISTS `feedbacks_generaux` (
-                `id` INT AUTO_INCREMENT PRIMARY KEY,
-                `etudiant_id` INT NOT NULL,
-                `note` INT NOT NULL CHECK (note BETWEEN 1 AND 5),
-                `commentaire` TEXT NOT NULL,
-                `date_feedback` DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (`etudiant_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+            `id` INT AUTO_INCREMENT PRIMARY KEY,
+            `etudiant_id` INT NOT NULL,
+            `note` INT NOT NULL CHECK (note BETWEEN 1 AND 5),
+            `commentaire` TEXT NOT NULL,
+            `date_feedback` DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (`etudiant_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
+
+        // Création de la table feedbacks_cours
+        self::$pdo->exec("CREATE TABLE IF NOT EXISTS `feedbacks_cours` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `cours_id` int(11) NOT NULL,
+            `etudiant_id` int(11) NOT NULL,
+            `note` int(11) NOT NULL CHECK (note BETWEEN 1 AND 5),
+            `commentaire` text NOT NULL,
+            `date_feedback` timestamp NOT NULL DEFAULT current_timestamp(),
+            PRIMARY KEY (`id`),
+            UNIQUE KEY `etudiant_cours` (`etudiant_id`,`cours_id`),
+            KEY `cours_id` (`cours_id`),
+            KEY `etudiant_id` (`etudiant_id`),
+            CONSTRAINT `feedbacks_cours_ibfk_1` FOREIGN KEY (`cours_id`) REFERENCES `cours` (`id`) ON DELETE CASCADE,
+            CONSTRAINT `feedbacks_cours_ibfk_2` FOREIGN KEY (`etudiant_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
     }
 
@@ -221,6 +242,36 @@ class Database
             KEY `question_id` (`question_id`),
             CONSTRAINT `options_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
+
+        // Table des tentatives de quiz
+        self::$pdo->exec("CREATE TABLE IF NOT EXISTS `tentatives_quiz` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `user_id` int(11) NOT NULL,
+            `quiz_id` int(11) NOT NULL,
+            `score` int(11) NOT NULL,
+            `score_max` int(11) NOT NULL,
+            `date_tentative` timestamp NOT NULL DEFAULT current_timestamp(),
+            PRIMARY KEY (`id`),
+            KEY `user_id` (`user_id`),
+            KEY `quiz_id` (`quiz_id`),
+            CONSTRAINT `tentatives_quiz_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+            CONSTRAINT `tentatives_quiz_ibfk_2` FOREIGN KEY (`quiz_id`) REFERENCES `quizzes` (`id`) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
+
+        // Table des réponses des étudiants
+        self::$pdo->exec("CREATE TABLE IF NOT EXISTS `reponses_etudiant` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `tentative_id` int(11) NOT NULL,
+            `question_id` int(11) NOT NULL,
+            `option_id` int(11) NOT NULL,
+            PRIMARY KEY (`id`),
+            KEY `tentative_id` (`tentative_id`),
+            KEY `question_id` (`question_id`),
+            KEY `option_id` (`option_id`),
+            CONSTRAINT `reponses_etudiant_ibfk_1` FOREIGN KEY (`tentative_id`) REFERENCES `tentatives_quiz` (`id`) ON DELETE CASCADE,
+            CONSTRAINT `reponses_etudiant_ibfk_2` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE CASCADE,
+            CONSTRAINT `reponses_etudiant_ibfk_3` FOREIGN KEY (`option_id`) REFERENCES `options` (`id`) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
     }
 
     private static function createForumTables()
@@ -259,89 +310,156 @@ class Database
     {
         // Insertion des utilisateurs
         $users = [
-            [3, 'lilo', 'lilo@gmail.com', '$2y$10$YxK4mXLf44uASA6a04fR6uemlintf5Nth/b3igynRp.VfCanNWRnS', 'etudiant', 'lilo', 26, '13 RUE g', '0663669', '1745240459_images.png', 'Stagiaire'],
-            [8, 'Admin', 'admin@example.com', '$2y$10$YxK4mXLf44uASA6a04fR6uemlintf5Nth/b3igynRp.VfCanNWRnS', 'admin', NULL, NULL, NULL, NULL, NULL, NULL],
-            [9, 'ab', 'melissaabider@gmail.com', '$2y$10$1h7b1hquwNttCw5Odi8YZuvbIaPNteBJGRab6cN8ReQwy7gsmtnUC', 'etudiant', 'Melissa', 22, '13 RUE EDGAR FAURE', '0663669774', NULL, 'Stagiaire']
+            // ID 1: Administrateur
+            ['Admin', 'admin@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', null, null, null, null, 'admin.jpg', null],
+            
+            // ID 2: Premier étudiant (avec mot de passe 'password')
+            ['Dupont', 'etudiant1@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'etudiant', 'Jean', 51, '15 Rue de Paris', '0612345678', 'dupont.jpg', 'Professionnel'],
+            
+            // ID 3: Deuxième étudiant
+            ['Martin', 'etudiant2@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'etudiant', 'Sophie', 25, '8 Avenue des Lilas', '0698765432', 'martin.jpg', 'Étudiant']
         ];
 
-        $stmt = self::$pdo->prepare("INSERT INTO `users` (`id`, `nom`, `email`, `password`, `role`, `prenom`, `age`, `adresse`, `telephone`, `photo_profil`, `fonction`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = self::$pdo->prepare("INSERT INTO `users` (nom, email, password, role, prenom, age, adresse, telephone, photo_profil, fonction) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         foreach ($users as $user) {
             $stmt->execute($user);
         }
 
         // Insertion des cours
         $cours = [
-            [1, 'Introduction à l\'IA', 'Prof. Dupont', 'Ce cours présente les bases de l\'intelligence', 'Débutant', '5 heures', 'ia.jpg', 'Billet_aller.pdf', '89ac89e8-b983-4285-a11a-249c8d100ad4-mp4_720p.mp4'],
-            [2, 'Développement Web', 'Prof. Martin', 'Apprenez à créer des sites web avec HTML, CSS, JS et PHP.', 'Difficile', '3 mois', 'html.jpg', 'Billet_retour.pdf', '89ac89e8-b983-4285-a11a-249c8d100ad4-mp4_720p.mp4'],
-            [7, 'system', 'Prof. Dupont', 'system', 'Facile', '6 mois', 'images.png', NULL, NULL]
+            // ID 1: Cours sur l'IA
+            ['Introduction à l\'IA', 'Prof. Dupont', 'Ce cours présente les bases de l\'intelligence artificielle et ses applications dans le monde moderne.', 'Débutant', '5 heures', 'ia.jpg', 'projet_LFC_etape5.pdf', '89ac89e8-b983-4285-a11a-249c8d100ad4-mp4_720p.mp4'],
+            
+            // ID 2: Cours de développement web
+            ['Développement Web', 'Prof. Martin', 'Apprenez à créer des sites web avec HTML, CSS, JavaScript et PHP. Un cours complet pour devenir développeur web.', 'Difficile', '3 mois', 'html.jpg', 'LFC_TP2.pdf', '89ac89e8-b983-4285-a11a-249c8d100ad4-mp4_720p.mp4'],
+            
+            // ID 3: Cours d'administration système
+            ['Administration Système', 'Prof. Durand', 'Découvrez les fondamentaux de l\'administration système et apprenez à gérer des infrastructures informatiques.', 'Intermédiaire', '6 mois', 'images.png', null, null]
         ];
 
-        $stmt = self::$pdo->prepare("INSERT INTO `cours` (`id`, `nom`, `professeur`, `contenu`, `niveau`, `duree`, `image`, `pdf`, `video`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = self::$pdo->prepare("INSERT INTO `cours` (nom, professeur, contenu, niveau, duree, image, pdf, video) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         foreach ($cours as $c) {
             $stmt->execute($c);
         }
 
-        // Insertion des chapitres
-        $chapitres = [
-            [1, 1, 'CM_1', 'htdtf', 'projet_LFC_etape5.pdf', '89ac89e8-b983-4285-a11a-249c8d100ad4-mp4_720p.mp4'],
-            [4, 1, 'CM_2', 'scszfczfd', 'Billet_aller.pdf', '89ac89e8-b983-4285-a11a-249c8d100ad4-mp4_720p.mp4'],
-            [6, 1, 'CM_3', 'frthdrh', 'Billet_retour.pdf', '89ac89e8-b983-4285-a11a-249c8d100ad4-mp4_720p.mp4'],
-            [8, 2, 'CM_1', 'cm1', NULL, NULL],
-            [9, 2, 'CM_2', 'cm2', NULL, NULL],
-            [11, 7, 'CM_1', 'cm1', NULL, NULL],
-            [12, 7, 'CM_2', 'cm2', NULL, NULL]
+        // Insertion des chapitres (pour le cours 1 : IA)
+        $chapitres_cours1 = [
+            [1, 'Introduction à l\'IA', 'Ce chapitre présente les concepts fondamentaux de l\'intelligence artificielle et son histoire.', 'introIA.pdf', 'https://youtu.be/yQLmgw3rClM?si=yAFjSel41iFi7pL1'],
+            [1, 'Machine Learning', 'Découvrez les principes de l\'apprentissage automatique et ses applications.', 'ML.pdf', 'https://youtu.be/RC7GTAKoFGA'],
+            [1, 'Deep Learning', 'Explorez les réseaux de neurones et les architectures avancées.', 'DL.pdf', 'DL.mp4']
         ];
 
-        $stmt = self::$pdo->prepare("INSERT INTO `chapitres` (`id`, `cours_id`, `titre`, `description`, `pdf`, `video`) VALUES (?, ?, ?, ?, ?, ?)");
-        foreach ($chapitres as $chap) {
+        $stmt = self::$pdo->prepare("INSERT INTO `chapitres` (cours_id, titre, description, pdf, video) VALUES (?, ?, ?, ?, ?)");
+        foreach ($chapitres_cours1 as $chap) {
             $stmt->execute($chap);
         }
 
-        // Insertion des données de progression
-        $progression = [
-            [1, 3, 1],
-            [2, 3, 4],
-            [4, 3, 6],
-            [9, 3, 8],
-            [10, 3, 9],
-            [8, 3, 10],
-            [18, 3, 11],
-            [6, 9, 1],
-            [7, 9, 4],
-            [11, 9, 6],
-            [12, 9, 8],
-            [15, 9, 9],
-            [14, 9, 10],
-            [16, 9, 11],
-            [17, 9, 12]
+        // Insertion des chapitres (pour le cours 2 : Web)
+        $chapitres_cours2 = [
+            [2, 'HTML et CSS', 'Les bases du développement web frontend.', 'HTMLCSS.pdf', null],
+            [2, 'JavaScript', 'Apprenez à rendre vos pages interactives.', null, 'https://youtu.be/Ew7KG2j8eII'],
+            [2, 'PHP et MySQL', 'Programmation côté serveur et bases de données.', 'PHPSQL.pdf', 'https://youtu.be/-NTvIHHDmg8']
         ];
 
-        $stmt = self::$pdo->prepare("INSERT INTO `chapitre_progression` (`id`, `user_id`, `chapitre_id`) VALUES (?, ?, ?)");
-        foreach ($progression as $prog) {
+        foreach ($chapitres_cours2 as $chap) {
+            $stmt->execute($chap);
+        }
+
+        // Insertion des chapitres (pour le cours 3 : Administration Système)
+        $chapitres_cours3 = [
+            [3, 'Introduction aux systèmes d\'exploitation', 'Découverte des concepts fondamentaux des OS.', null, 'https://youtu.be/AcZ87MTiXr4'],
+            [3, 'Administration Linux', 'Gestion des systèmes Linux en environnement professionnel.', 'Linux.pdf', null]
+        ];
+
+        foreach ($chapitres_cours3 as $chap) {
+            $stmt->execute($chap);
+        }
+
+        // Marquage des chapitres comme vus pour l'étudiant 1 (Jean Dupont)
+        $progression_etudiant1 = [
+            [2, 1], // Etudiant 1 (ID: 2) a vu le chapitre 1 (Introduction à l'IA)
+            [2, 2], // Etudiant 1 (ID: 2) a vu le chapitre 2 (Machine Learning)
+            [2, 3]  // Etudiant 1 (ID: 2) a vu le chapitre 3 (Deep Learning)
+        ];
+
+        $stmt = self::$pdo->prepare("INSERT INTO `chapitre_progression` (user_id, chapitre_id) VALUES (?, ?)");
+        foreach ($progression_etudiant1 as $prog) {
             $stmt->execute($prog);
         }
 
-        // Ajouter des quiz de démonstration
+        // Inscription des étudiants aux cours
+        $inscriptions = [
+            [2, 1], // Etudiant 1 (Jean Dupont, ID: 2) s'inscrit au cours 1 (IA)
+            [2, 2], // Etudiant 1 (Jean Dupont, ID: 2) s'inscrit au cours 2 (Web)
+            [2, 3], // Etudiant 1 (Jean Dupont, ID: 2) s'inscrit au cours 3 (Admin Système)
+            [3, 1], // Etudiant 2 (Sophie Martin, ID: 3) s'inscrit au cours 1 (IA)
+            [3, 3]  // Etudiant 2 (Sophie Martin, ID: 3) s'inscrit au cours 3 (Admin Système)
+        ];
+
+        $stmt = self::$pdo->prepare("INSERT INTO `cours_inscriptions` (user_id, cours_id) VALUES (?, ?)");
+        foreach ($inscriptions as $insc) {
+            try {
+                $stmt->execute($insc);
+            } catch (PDOException $e) {
+                // Ignorer les erreurs de clé dupliquée
+                if (!strpos($e->getMessage(), 'Duplicate entry')) {
+                    throw $e;
+                }
+            }
+        }
+
+        // Ajouter un quiz pour le cours 1 (IA)
         self::insertDemoQuizzes();
-        self::$pdo->exec("INSERT INTO `feedbacks_generaux` (`etudiant_id`, `note`, `commentaire`) VALUES (3, 5, 'Très bonne plateforme, simple à utiliser !')");
+
+        // Ajouter des topics et réponses dans le forum
+        self::insertDemoForumData();
+
+        // Ajouter des feedbacks généraux
+        $feedbacks = [
+            [2, 5, 'Très bonne plateforme de formation en ligne. Interface intuitive et contenus de qualité.'],
+            [3, 4, 'Bon site, mais quelques bugs mineurs. Les cours sont très intéressants.']
+        ];
+
+        $stmt = self::$pdo->prepare("INSERT INTO `feedbacks_generaux` (etudiant_id, note, commentaire) VALUES (?, ?, ?)");
+        foreach ($feedbacks as $feedback) {
+            $stmt->execute($feedback);
+        }
+
+        // Ajouter des feedbacks pour les cours
+        $feedbacks_cours = [
+            [1, 2, 5, 'Excellent cours sur l\'IA ! Les explications sont claires et les exemples pertinents.']
+            // Le feedback de Jean Dupont (ID: 2) sur le cours de développement web (ID: 2) a été retiré
+        ];
+
+        $stmt = self::$pdo->prepare("INSERT INTO `feedbacks_cours` (cours_id, etudiant_id, note, commentaire) VALUES (?, ?, ?, ?)");
+        foreach ($feedbacks_cours as $feedback) {
+            try {
+                $stmt->execute($feedback);
+            } catch (PDOException $e) {
+                // Ignorer les erreurs de clé dupliquée
+                if (!strpos($e->getMessage(), 'Duplicate entry')) {
+                    throw $e;
+                }
+            }
+        }
     }
 
     private static function insertDemoQuizzes()
     {
-        // Ajouter un quiz de demo pour le cours d'IA
-        $stmt = self::$pdo->prepare("INSERT INTO `quizzes` (`cours_id`, `titre`, `description`) VALUES (?, ?, ?)");
+        // Ajouter un quiz pour le cours d'IA
+        $stmt = self::$pdo->prepare("INSERT INTO `quizzes` (cours_id, titre, description) VALUES (?, ?, ?)");
         $stmt->execute([1, 'Quiz d\'introduction à l\'IA', 'Testez vos connaissances sur les bases de l\'intelligence artificielle']);
         $quiz_id = self::$pdo->lastInsertId();
 
         // Ajouter des questions pour ce quiz
-        $stmt = self::$pdo->prepare("INSERT INTO `questions` (`quiz_id`, `texte`, `type`, `ordre`) VALUES (?, ?, ?, ?)");
+        $stmt = self::$pdo->prepare("INSERT INTO `questions` (quiz_id, texte, type, ordre) VALUES (?, ?, ?, ?)");
 
         // Question 1 (choix unique)
         $stmt->execute([$quiz_id, 'Qu\'est-ce que le Machine Learning ?', 'unique', 1]);
         $question_id = self::$pdo->lastInsertId();
 
         // Options pour la question 1
-        $stmt = self::$pdo->prepare("INSERT INTO `options` (`question_id`, `texte`, `est_correcte`, `ordre`) VALUES (?, ?, ?, ?)");
+        $stmt = self::$pdo->prepare("INSERT INTO `options` (question_id, texte, est_correcte, ordre) VALUES (?, ?, ?, ?)");
         $options = [
             [$question_id, 'Un domaine de l\'IA qui permet aux machines d\'apprendre à partir des données', 1, 1],
             [$question_id, 'Un langage de programmation spécifique pour l\'IA', 0, 2],
@@ -353,12 +471,12 @@ class Database
         }
 
         // Question 2 (choix multiple)
-        $stmt = self::$pdo->prepare("INSERT INTO `questions` (`quiz_id`, `texte`, `type`, `ordre`) VALUES (?, ?, ?, ?)");
+        $stmt = self::$pdo->prepare("INSERT INTO `questions` (quiz_id, texte, type, ordre) VALUES (?, ?, ?, ?)");
         $stmt->execute([$quiz_id, 'Quels sont les types d\'apprentissage en Machine Learning ?', 'multiple', 2]);
         $question_id = self::$pdo->lastInsertId();
 
         // Options pour la question 2
-        $stmt = self::$pdo->prepare("INSERT INTO `options` (`question_id`, `texte`, `est_correcte`, `ordre`) VALUES (?, ?, ?, ?)");
+        $stmt = self::$pdo->prepare("INSERT INTO `options` (question_id, texte, est_correcte, ordre) VALUES (?, ?, ?, ?)");
         $options = [
             [$question_id, 'Apprentissage supervisé', 1, 1],
             [$question_id, 'Apprentissage non supervisé', 1, 2],
@@ -368,5 +486,74 @@ class Database
         foreach ($options as $option) {
             $stmt->execute($option);
         }
+
+        // Ajouter un quiz pour le cours de développement web
+        $stmt = self::$pdo->prepare("INSERT INTO `quizzes` (cours_id, titre, description) VALUES (?, ?, ?)");
+        $stmt->execute([2, 'Quiz HTML/CSS', 'Vérifiez vos connaissances sur le développement web frontend']);
+        $quiz_id = self::$pdo->lastInsertId();
+
+        // Question 1 (choix unique)
+        $stmt = self::$pdo->prepare("INSERT INTO `questions` (quiz_id, texte, type, ordre) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$quiz_id, 'Quelle balise HTML est utilisée pour créer un lien hypertexte ?', 'unique', 1]);
+        $question_id = self::$pdo->lastInsertId();
+
+        // Options pour la question 1
+        $stmt = self::$pdo->prepare("INSERT INTO `options` (question_id, texte, est_correcte, ordre) VALUES (?, ?, ?, ?)");
+        $options = [
+            [$question_id, '<a>', 1, 1],
+            [$question_id, '<link>', 0, 2],
+            [$question_id, '<href>', 0, 3],
+            [$question_id, '<url>', 0, 4]
+        ];
+        foreach ($options as $option) {
+            $stmt->execute($option);
+        }
+
+        // Enregistrer une tentative pour l'étudiant 1 sur le quiz d'IA
+        $stmt = self::$pdo->prepare("INSERT INTO `tentatives_quiz` (user_id, quiz_id, score, score_max) VALUES (?, ?, ?, ?)");
+        $stmt->execute([2, 1, 2, 2]); // Étudiant 1 a obtenu 2/2 au quiz d'IA
+        $tentative_id = self::$pdo->lastInsertId();
+
+        // Enregistrer les réponses de l'étudiant
+        $stmt = self::$pdo->prepare("INSERT INTO `reponses_etudiant` (tentative_id, question_id, option_id) VALUES (?, ?, ?)");
+        $stmt->execute([$tentative_id, 1, 1]); // Bonne réponse à la question 1
+        $stmt->execute([$tentative_id, 2, 5]); // Première bonne réponse à la question 2
+        $stmt->execute([$tentative_id, 2, 6]); // Deuxième bonne réponse à la question 2
+        $stmt->execute([$tentative_id, 2, 7]); // Troisième bonne réponse à la question 2
+    }
+
+    private static function insertDemoForumData()
+    {
+        // Créer un topic dans le forum du cours d'IA
+        $stmt = self::$pdo->prepare("INSERT INTO `topics` (cours_id, user_id, titre, contenu, date_creation) VALUES (?, ?, ?, ?, NOW())");
+        $stmt->execute([1, 2, 'Problème avec les réseaux de neurones', 'Bonjour, j\'ai du mal à comprendre le concept de rétropropagation dans les réseaux de neurones. Quelqu\'un pourrait-il m\'expliquer simplement ?']);
+        $topic_id = self::$pdo->lastInsertId();
+
+        // Ajouter des réponses à ce topic
+        $stmt = self::$pdo->prepare("INSERT INTO `reponses` (topic_id, user_id, contenu, date_creation) VALUES (?, ?, ?, NOW())");
+        $stmt->execute([$topic_id, 3, 'La rétropropagation est simplement un algorithme qui permet d\'ajuster les poids des connexions entre les neurones en calculant l\'erreur à la sortie puis en la propageant en arrière. Cela permet au réseau "d\'apprendre" de ses erreurs.']);
+        $stmt->execute([$topic_id, 2, 'Merci pour l\'explication ! Est-ce que quelqu\'un pourrait recommander des ressources en français pour approfondir ce sujet ?']);
+
+        // Créer un autre topic dans le forum du cours de développement web
+        $stmt = self::$pdo->prepare("INSERT INTO `topics` (cours_id, user_id, titre, contenu, date_creation) VALUES (?, ?, ?, ?, NOW())");
+        $stmt->execute([2, 2, 'Différence entre Flexbox et Grid', 'Quelle est la différence entre Flexbox et Grid en CSS ? Dans quels cas devrait-on utiliser l\'un plutôt que l\'autre ?']);
+        $topic_id = self::$pdo->lastInsertId();
+        
+        // Créer un topic dans le forum du cours d'Administration Système par Sophie Martin
+        $stmt = self::$pdo->prepare("INSERT INTO `topics` (cours_id, user_id, titre, contenu, date_creation) VALUES (?, ?, ?, ?, NOW())");
+        $stmt->execute([3, 3, 'Configuration de serveurs virtuels sous Linux', 'Bonjour à tous, je suis en train d\'apprendre à configurer des serveurs virtuels sous Linux. Avez-vous des conseils ou bonnes pratiques à partager ? Merci d\'avance.']);
+        $topic_id = self::$pdo->lastInsertId();
+        
+        // Ajouter une discussion de 4 échanges entre Sophie Martin et Jean Dupont
+        $stmt = self::$pdo->prepare("INSERT INTO `reponses` (topic_id, user_id, contenu, date_creation) VALUES (?, ?, ?, NOW())");
+        $stmt->execute([$topic_id, 2, 'Bonjour Sophie, j\'ai récemment configuré plusieurs serveurs virtuels. Je te conseille d\'abord de bien maîtriser les commandes de base comme ls, cd, chmod, etc. Ensuite, apprends à utiliser SSH correctement pour te connecter à distance.']);
+        
+        $stmt->execute([$topic_id, 3, 'Merci Jean pour ces conseils ! J\'ai déjà une bonne maîtrise des commandes de base. As-tu des ressources à me recommander pour la sécurisation d\'un serveur ?']);
+        
+        $stmt->execute([$topic_id, 2, 'Bien sûr ! Je te recommande de configurer un pare-feu avec UFW ou iptables, de désactiver la connexion root en SSH, d\'utiliser des clés SSH plutôt que des mots de passe et de mettre en place fail2ban pour bloquer les tentatives d\'intrusion.']);
+        
+        $stmt->execute([$topic_id, 3, 'Super, merci pour ces infos détaillées. J\'ai commencé à mettre en place UFW et c\'est effectivement très utile. As-tu des conseils sur la configuration de NGINX comme reverse proxy ?']);
+        
+        $stmt->execute([$topic_id, 2, 'NGINX est excellent comme reverse proxy ! N\'oublie pas d\'activer HTTPS avec Let\'s Encrypt, c\'est gratuit et très simple à mettre en place avec certbot.']);
     }
 }
