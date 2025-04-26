@@ -129,22 +129,22 @@
             <h2>Avis d'étudiants</h2>
             <div class="reviews-grid">
                 <div class="review-card">
-                    <p class="review-text">"La plateforme est vraiment intuitive et les cours sont super bien expliqués. J'ai pu apprendre à coder en quelques mois !"</p>
+                    <p class="review-text">"La plateforme est vraiment intuitive et les cours sont super bien expliqués. J'ai pu apprendre le machine learning en quelques mois !"</p>
                     <div class="review-author">
                         <img src="/e-learning-role-final/public/images/dupont.jpg" alt="Étudiant 1">
                         <div>
-                            <h4>Jean Dupuis</h4>
-                            <span>Étudiant en Développement Web</span>
+                            <h4>Jean Dupont</h4>
+                            <span>Data Analyst</span>
                         </div>
                     </div>
                 </div>
                 <div class="review-card">
                     <p class="review-text">"Très bonne expérience d'apprentissage. Les quiz m'ont beaucoup aidée à vérifier mes connaissances au fur et à mesure."</p>
                     <div class="review-author">
-                        <img src="/e-learning-role-final/public/images/sarah.jpg" alt="Étudiant 2">
+                        <img src="/e-learning-role-final/public/images/martin.jpg" alt="Étudiant 2">
                         <div>
                             <h4>Sarah Martin</h4>
-                            <span>Étudiante en Intelligence Artificielle</span>
+                            <span>Étudiante en Informatique</span>
                         </div>
                     </div>
                 </div>
@@ -154,7 +154,7 @@
                         <img src="/e-learning-role-final/public/images/olivier.jpg" alt="Étudiant 3">
                         <div>
                             <h4>Olivier Petit</h4>
-                            <span>Étudiant en Administration Système</span>
+                            <span>En reconversion professionnelle</span>
                         </div>
                     </div>
                 </div>

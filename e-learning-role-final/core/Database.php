@@ -316,7 +316,13 @@ class Database
             ['Dupont', 'etudiant1@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'etudiant', 'Jean', 51, '15 Rue de Paris', '0612345678', 'dupont.jpg', 'Professionnel'],
 
             // ID 3: Deuxième étudiant
-            ['Martin', 'etudiant2@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'etudiant', 'Sophie', 25, '8 Avenue des Lilas', '0698765432', 'martin.jpg', 'Étudiant']
+            ['Martin', 'etudiant2@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'etudiant', 'Sophie', 25, '8 Avenue des Lilas', '0698765432', 'martin.jpg', 'Étudiant'],
+            
+            // ID 4: Troisième étudiant
+            ['Dubois', 'etudiant3@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'etudiant', 'Julien', 28, '12 Rue du Commerce', '0712345678', 'olivier.jpg', 'Entrepreneur'],
+            
+            // ID 5: Quatrième étudiant
+            ['Lefebvre', 'etudiant4@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'etudiant', 'Marie', 32, '24 Boulevard Saint-Michel', '0645678912', 'sarah.jpg', 'Professionnel']
         ];
 
         $stmt = self::$pdo->prepare("INSERT INTO `users` (nom, email, password, role, prenom, age, adresse, telephone, photo_profil, fonction) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -388,7 +394,7 @@ class Database
         $chapitres_cours5 = [
             [5, 'Conception de bases de données', 'Modélisation conceptuelle.', 'BDD_Modelisation.pdf', null],
             [5, 'Langage SQL', 'Créer, modifier, interroger une base.', 'SQL.pdf', 'https://youtu.be/7S_tz1z_5bA'],
-            [5, 'Sécurité des données', 'Gestion des permissions et sécurité.', null, 'https://youtu.be/CibYKICXU_k']
+            [5, 'Sécurité des données', 'Gestion des permissions et sécurité.', null, 'https://youtu.be/VlF-XG1vVPU']
         ];
         foreach ($chapitres_cours5 as $chap) {
             $stmt->execute($chap);
@@ -398,7 +404,7 @@ class Database
         $chapitres_cours6 = [
             [6, 'Introduction aux apps mobiles', 'Comprendre Android et iOS.', 'MobileIntro.pdf', null],
             [6, 'Développement Android', 'Créer sa première app Android.', null, 'https://youtu.be/fis26HvvDII'],
-            [6, 'Développement iOS', 'Première app iOS avec Swift.', 'iOSApp.pdf', 'https://youtu.be/5NV6Rdv1a3I']
+            [6, 'Développement iOS', 'Première app iOS avec Swift.', 'iOSApp.pdf', 'https://youtu.be/NuNaDfmWVtQ']
         ];
         foreach ($chapitres_cours6 as $chap) {
             $stmt->execute($chap);
@@ -446,10 +452,9 @@ class Database
         // Ajouter des feedbacks généraux
         $feedbacks = [
             [2, 5, 'Très bonne plateforme de formation en ligne. Interface intuitive et contenus de qualité.'],
-            [3, 4, 'Bon site, mais quelques bugs mineurs. Les cours sont très intéressants.'],
-            [4, 4, 'Bonne diversité de cours, mais quelques améliorations pourraient être apportées sur la partie quiz.'],
-            [3, 4, 'Excellente expérience d\'apprentissage en ligne, continuez comme ça !'],
-            [4, 3, 'Les vidéos sont bien faites, mais quelques fichiers PDF supplémentaires seraient utiles.'],
+            [3, 4, 'Bon site. Les cours sont très intéressants.'],
+            [4, 4, 'Excellente expérience d\'apprentissage en ligne, continuez comme ça !'],
+            [5, 3, 'Les vidéos sont bien faites, mais quelques fichiers PDF supplémentaires seraient utiles.'],
 
         ];
 
