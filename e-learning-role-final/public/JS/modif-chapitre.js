@@ -1,4 +1,4 @@
-// Variables pour stocker l'ID et le type de l'élément à supprimer
+
 let currentDeleteType = '';
 let currentDeleteId = null;
 
@@ -33,8 +33,6 @@ function addPdfField() {
     card.appendChild(input);
     card.appendChild(removeBtn);
     container.appendChild(card);
-
-    // Mettre à jour la visibilité des boutons après ajout
     updateRemoveButtonsVisibility(container);
 }
 
@@ -58,8 +56,6 @@ function addYoutubeField() {
     card.appendChild(input);
     card.appendChild(removeBtn);
     container.appendChild(card);
-
-    // Mettre à jour la visibilité des boutons après ajout
     updateRemoveButtonsVisibility(container);
 }
 
@@ -82,8 +78,6 @@ function addVideoField() {
     card.appendChild(input);
     card.appendChild(removeBtn);
     container.appendChild(card);
-
-    // Mettre à jour la visibilité des boutons après ajout
     updateRemoveButtonsVisibility(container);
 }
 
@@ -91,34 +85,32 @@ function removeCard(button) {
     const card = button.parentElement;
     const container = card.parentElement;
 
-    // Ne pas supprimer s'il ne reste qu'un seul élément
+    // Ne pas supprimer 
     if (container.children.length > 1) {
         container.removeChild(card);
-
-        // Mettre à jour la visibilité des boutons après suppression
         updateRemoveButtonsVisibility(container);
     }
 }
 
-// Fonction pour mettre à jour la visibilité des boutons de suppression
+// mettre à jour la visibilité des boutons de suppression
 function updateRemoveButtonsVisibility(container) {
     const cards = container.querySelectorAll('.file-input-card');
     const removeButtons = container.querySelectorAll('.remove-file-btn');
 
-    // Si nous avons plus d'un élément, afficher tous les boutons de suppression
+    // Si on a plus d'un élément afficher tous les boutons de suppression
     if (cards.length > 1) {
         removeButtons.forEach(btn => {
             btn.style.visibility = 'visible';
         });
     } else {
-        // Sinon, masquer tous les boutons de suppression
+        // masquer tous les boutons de suppression
         removeButtons.forEach(btn => {
             btn.style.visibility = 'hidden';
         });
     }
 }
 
-// Fonction pour ouvrir le modal de confirmation
+// Ouvrir le modal de confirmation
 function confirmDelete(type, id) {
     // Mémoriser le type et l'ID pour l'action de suppression
     currentDeleteType = type;
@@ -134,12 +126,12 @@ function confirmDelete(type, id) {
     };
 }
 
-// Fonction pour fermer le modal
+// Fermer le modal
 function closeDeleteModal() {
     document.getElementById('delete-modal').style.display = 'none';
 }
 
-// Fonction pour marquer un fichier comme à supprimer
+// Marquer un fichier comme à supprimer
 function markForDeletion(type, id) {
     // Mettre à jour le champ caché pour indiquer que ce fichier doit être supprimé
     const keepField = document.getElementById(`keep-${type}-${id}`);
@@ -172,7 +164,7 @@ function markForDeletion(type, id) {
     }
 }
 
-// Fonction pour annuler le marquage pour suppression
+// Annuler le marquage pour suppression
 function undoMarkForDeletion(type, id) {
     // Réinitialiser le champ caché
     const keepField = document.getElementById(`keep-${type}-${id}`);

@@ -46,7 +46,6 @@ class User
         $existingEmail = $stmt->fetchColumn();
 
         if ($existingEmail > 0) {
-            // si l'email est déjà pris
             return false; // retourner false si l'email existe 
         }
 
@@ -66,11 +65,10 @@ class User
     {
         $stmt = $this->db->prepare("SELECT * FROM users WHERE id = ?");
         $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);  // Retourner les données sous forme de tableau 
+        return $stmt->fetch(PDO::FETCH_ASSOC);  // retourner les données sous forme de tableau 
     }
 
-    // Méthode pour mettre à jour les informations de l'utilisateur
-
+    //mettre à jour les informations de l'utilisateur
     public function updateInfo($id, $nom, $prenom, $age, $fonction, $email, $adresse, $telephone, $photo_profil, $password)
     {
         $stmt = $this->db->prepare("

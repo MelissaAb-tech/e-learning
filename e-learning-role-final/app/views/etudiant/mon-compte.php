@@ -16,7 +16,7 @@
             <?php unset($_SESSION['error_message']); ?>
         </div>
     <?php endif; ?>
-    
+
     <div class="profile-header">
         <div class="profile-img-container">
             <?php if ($user['photo_profil']): ?>
@@ -85,8 +85,6 @@
                 <label for="confirm_password">Confirmer mot de passe :</label>
                 <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirmer le nouveau mot de passe">
             </div>
-
-            <!-- Ajouter le champ de photo de profil -->
             <div class="info-row">
                 <label for="photo_profil">Photo de profil :</label>
                 <input type="file" id="photo_profil" name="photo_profil" accept="image/*">

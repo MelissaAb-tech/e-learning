@@ -36,16 +36,16 @@ class AdminController extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Récupérer l'image existante
             $image = $_POST['image'] ?? '';
-            
+
             // Si une nouvelle image est uploadée
             if (!empty($_FILES['nouvelle_image']['name'])) {
                 $targetDir = "../public/images/";
                 $image = basename($_FILES['nouvelle_image']['name']);
                 $targetFile = $targetDir . $image;
-                
+
                 move_uploaded_file($_FILES['nouvelle_image']['tmp_name'], $targetFile);
             }
-            
+
             $coursModel->update(
                 $id,
                 $_POST['nom'],
@@ -55,7 +55,7 @@ class AdminController extends Controller
                 $_POST['duree'],
                 $image
             );
-            
+
             header('Location: /e-learning-role-final/public/admin/dashboard');
         } else {
             $cours = $coursModel->getById($id);
@@ -103,14 +103,14 @@ class AdminController extends Controller
     {
         $cours = $this->model('Cours')->getAll();
         $etudiants = $this->model('User')->getAllEtudiants();
-        
+
         // Récupérer la moyenne des notes et le nombre de feedbacks
         $feedbackModel = $this->model('FeedbackModel');
         $moyenneNotes = $feedbackModel->getMoyenneNotes();
         $nombreFeedbacks = $feedbackModel->getNombreFeedbacks();
-        
+
         $this->view('admin/dashboard', [
-            'cours' => $cours, 
+            'cours' => $cours,
             'etudiants' => $etudiants,
             'moyenneNotes' => $moyenneNotes,
             'nombreFeedbacks' => $nombreFeedbacks
@@ -129,32 +129,32 @@ class AdminController extends Controller
             $adresse = $_POST['adresse'];
             $fonction = $_POST['fonction'];
             $telephone = $_POST['telephone'];
-    
+
             $photo_profil = null;
             if (!empty($_FILES['photo_profil']['name'])) {
                 // Définir le répertoire de destination avec un chemin absolu
                 $uploadDir = __DIR__ . '/../../public/images/';
-                
+
                 // Nouveau nom unique pour éviter les collisions
                 $photo_profil = time() . '_' . basename($_FILES['photo_profil']['name']);
-                
+
                 // Vérifier si le répertoire existe sinon le créer
                 if (!file_exists($uploadDir)) {
                     mkdir($uploadDir, 0777, true);
                 }
-                
+
                 // Déplacer l'image téléchargée
                 move_uploaded_file($_FILES['photo_profil']['tmp_name'], $uploadDir . $photo_profil);
             }
-    
+
             // Appeler la méthode pour créer l'étudiant dans la bd
             $this->model('User')->createEtudiant($prenom, $nom, $email, $password, $age, $adresse, $fonction, $telephone, $photo_profil);
-    
+
             // Rediriger l'admin vers le tableau de bord après ajout de l'étudiant
             header('Location: /e-learning-role-final/public/admin/dashboard');
             exit;
         }
-    
+
         $this->view('admin/etudiant_ajouter');
     }
 
@@ -194,12 +194,12 @@ class AdminController extends Controller
                 // Nouveau nom pour l'image pour éviter les conflits
                 $photo_profil = time() . '_' . basename($_FILES['photo_profil']['name']);
                 $uploadDir = __DIR__ . '/../../public/images/';
-                
+
                 // Vérifier si le dossier existe, sinon le créer
                 if (!file_exists($uploadDir)) {
                     mkdir($uploadDir, 0777, true);
                 }
-                
+
                 move_uploaded_file($_FILES['photo_profil']['tmp_name'], $uploadDir . $photo_profil);
             }
 
@@ -219,48 +219,48 @@ class AdminController extends Controller
 
         $this->view('admin/etudiant_modifier', ['etudiant' => $etudiant]);
     }
-    
+
     public function feedbacks()
     {
-        // Vérifier que l'utilisateur est administrateur
+        // Vérifier que l'utilisateur est admin
         if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
             header('Location: /e-learning-role-final/public/login');
             exit;
         }
-        
+
         // Récupérer tous les feedbacks
         $feedbackModel = $this->model('FeedbackModel');
         $feedbacks = $feedbackModel->getAllFeedbacks();
-        
+
         // Afficher la vue avec les feedbacks
         $this->view('admin/feedbacks', [
             'feedbacks' => $feedbacks
         ]);
     }
 
-    // Méthode pour voir les feedbacks d'un cours spécifique
+    // voir les feedbacks d'un cours spécifique
     public function coursFeedbacks($cours_id)
     {
-        // Vérifier que l'utilisateur est administrateur
+        // Vérifier que l'utilisateur est admin
         if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
             header('Location: /e-learning-role-final/public/login');
             exit;
         }
-        
+
         // Récupérer les informations du cours
         $coursModel = $this->model('Cours');
         $cours = $coursModel->getById($cours_id);
-        
+
         if (!$cours) {
             echo "Cours introuvable.";
             exit;
         }
-        
+
         // Récupérer tous les feedbacks pour ce cours
         $feedbackModel = $this->model('CoursFeedback');
         $feedbacks = $feedbackModel->getByCours($cours_id);
         $moyenne_notes = $feedbackModel->getMoyenneNotesParCours($cours_id);
-        
+
         // Afficher la vue avec les feedbacks
         $this->view('admin/cours_feedbacks', [
             'cours' => $cours,
@@ -268,5 +268,4 @@ class AdminController extends Controller
             'moyenne_notes' => $moyenne_notes
         ]);
     }
-
 }

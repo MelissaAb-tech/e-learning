@@ -19,10 +19,9 @@ class CoursController extends Controller
         $user = $_SESSION['user'] ?? null;
         $isAdmin = $user && isset($user['role']) && $user['role'] === 'admin';
 
-        // Afficher la vue en fonction du rôle (admin ou étudiant)
+        // Afficher la vue en fonction du role
         if ($isAdmin) {
             // Récupération directe des statistiques pour l'admin
-            // La vue calculera elle-même les statistiques correctes
             $this->view('cours/voir_admin', [
                 'cours' => $cours,
                 'chapitres' => $chapitres
@@ -33,17 +32,17 @@ class CoursController extends Controller
                 header('Location: /e-learning-role-final/public/login');
                 exit;
             }
-            
+
             // Vérifier si l'utilisateur est inscrit au cours
             $inscriptionModel = $this->model('CoursInscription');
             $estInscrit = $inscriptionModel->estInscrit($_SESSION['user']['id'], $id);
-            
-            // Si l'utilisateur n'est pas inscrit, le rediriger vers le dashboard
+
+            //rediriger vers le dashboard
             if (!$estInscrit) {
                 header('Location: /e-learning-role-final/public/etudiant/dashboard');
                 exit;
             }
-            
+
             // Récupérer les chapitres vus par l'utilisateur
             $chapitres_vus = $chapitreModel->getVusParUser($_SESSION['user']['id']);
 
@@ -57,19 +56,19 @@ class CoursController extends Controller
             }
             $progression = $chapitres_total > 0 ? round(($chapitres_termine / $chapitres_total) * 100) : 0;
 
-            // Récupérer TOUS les quiz pour ce cours
+            // Récupérer tout les quiz pour ce cours
             $quizModel = $this->model('Quiz');
             $quizzes = $quizModel->getByCoursId($id);
-            
+
             // Récupérer les tentatives de l'étudiant pour chaque quiz
             $tentativeModel = $this->model('QuizTentative');
             $user_id = $_SESSION['user']['id'];
-            
+
             foreach ($quizzes as &$quiz) {
                 $meilleureTentative = $tentativeModel->getMeilleureTentative($user_id, $quiz['id']);
                 $quiz['meilleure_tentative'] = $meilleureTentative;
             }
-            
+
             $this->view('cours/voir_etudiant', [
                 'cours' => $cours,
                 'chapitres' => $chapitres,
@@ -81,7 +80,7 @@ class CoursController extends Controller
             ]);
         }
     }
-    
+
     public function reinitialiser($id)
     {
         // Vérifier que l'utilisateur est connecté
@@ -91,45 +90,42 @@ class CoursController extends Controller
         }
 
         $user_id = $_SESSION['user']['id'];
-        
+
         // Vérifier que le cours existe
         $coursModel = $this->model('Cours');
         $cours = $coursModel->getById($id);
-        
+
         if (!$cours) {
             echo "Cours introuvable.";
             exit;
         }
-        
-        // 1. Supprimer les chapitres marqués comme vus par l'utilisateur
+
+        // supprimer les chapitres marqués comme vus 
         $chapitreModel = $this->model('Chapitre');
         $chapitreModel->resetProgressionUser($user_id, $id);
-        
-        // 2. Supprimer les tentatives de quiz de l'utilisateur pour ce cours
+
+        // supprimer les tentatives de quiz de l'utilisateur 
         $quizModel = $this->model('Quiz');
         $quizzes = $quizModel->getByCoursId($id);
-        
+
         $tentativeModel = $this->model('QuizTentative');
         foreach ($quizzes as $quiz) {
             $tentativeModel->deleteTentativesByUserAndQuiz($user_id, $quiz['id']);
         }
-        
-        // Note: l'inscription au cours est maintenue même après réinitialisation
-        
-        // Rediriger vers la page du cours
+        // rediriger vers la page du cours
         header("Location: /e-learning-role-final/public/cours/voir/$id");
         exit;
     }
 
     public function feedback($cours_id)
     {
-        // Vérifier que l'utilisateur est connecté
+        // vérifier que l'utilisateur est connecté
         if (!isset($_SESSION['user'])) {
             header('Location: /e-learning-role-final/public/login');
             exit;
         }
 
-        // Vérifier que la requête est de type POST
+        // vérifier que la requête est de type POST
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header("Location: /e-learning-role-final/public/cours/voir/$cours_id");
             exit;
@@ -143,17 +139,17 @@ class CoursController extends Controller
         // Vérifier que le cours existe
         $coursModel = $this->model('Cours');
         $cours = $coursModel->getById($cours_id);
-        
+
         if (!$cours) {
             echo "Cours introuvable.";
             exit;
         }
 
-        // Vérifier que l'étudiant a terminé le cours à 100%
+        // Vérifier que l'étudiant a terminé le cours 
         $chapitreModel = $this->model('Chapitre');
         $chapitres = $chapitreModel->getByCoursId($cours_id);
         $chapitres_vus = $chapitreModel->getVusParUser($etudiant_id);
-        
+
         $chapitres_total = count($chapitres);
         $chapitres_termine = 0;
         foreach ($chapitres as $chap) {
@@ -162,29 +158,31 @@ class CoursController extends Controller
             }
         }
         $progression_chapitres = $chapitres_total > 0 ? ($chapitres_termine / $chapitres_total) * 100 : 0;
-        
+
         // Vérifier les quiz
         $quizModel = $this->model('Quiz');
         $quizzes = $quizModel->getByCoursId($cours_id);
         $quiz_total = count($quizzes);
         $quiz_parfait = 0;
-        
+
         if ($quiz_total > 0) {
             $tentativeModel = $this->model('QuizTentative');
             foreach ($quizzes as $quiz) {
                 $meilleureTentative = $tentativeModel->getMeilleureTentative($etudiant_id, $quiz['id']);
-                if ($meilleureTentative && 
-                    isset($meilleureTentative['score']) && 
-                    isset($meilleureTentative['score_max']) && 
-                    $meilleureTentative['score'] == $meilleureTentative['score_max']) {
+                if (
+                    $meilleureTentative &&
+                    isset($meilleureTentative['score']) &&
+                    isset($meilleureTentative['score_max']) &&
+                    $meilleureTentative['score'] == $meilleureTentative['score_max']
+                ) {
                     $quiz_parfait++;
                 }
             }
         }
         $progression_quiz = $quiz_total > 0 ? ($quiz_parfait / $quiz_total) * 100 : 100;
-        
+
         $cours_complet = ($progression_chapitres == 100) && ($progression_quiz == 100);
-        
+
         if (!$cours_complet) {
             $_SESSION['error_message'] = "Vous devez terminer le cours à 100% pour pouvoir donner votre avis.";
             header("Location: /e-learning-role-final/public/cours/voir/$cours_id");

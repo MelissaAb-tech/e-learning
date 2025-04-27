@@ -76,7 +76,7 @@ class QuizController extends Controller
     // Modifier un quiz existant
     public function edit($id)
     {
-        // Vérifier que l'utilisateur est admin
+
         if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
             header('Location: /e-learning-role-final/public/login');
             exit;
@@ -127,7 +127,6 @@ class QuizController extends Controller
     // Supprimer un quiz
     public function delete($id)
     {
-        // Vérifier que l'utilisateur est admin
         if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
             header('Location: /e-learning-role-final/public/login');
             exit;
@@ -190,7 +189,6 @@ class QuizController extends Controller
     // Ajouter une question à un quiz
     public function addQuestion($quiz_id)
     {
-        // Vérifier que l'utilisateur est admin
         if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
             header('Location: /e-learning-role-final/public/login');
             exit;
@@ -241,7 +239,7 @@ class QuizController extends Controller
                 return;
             }
 
-            // Si type unique, s'assurer qu'une seule réponse est correcte
+            // assurer qu'une seule réponse est correcte
             if ($type === 'unique' && count($correctes) > 1) {
                 $this->view('admin/quiz/add_question', [
                     'quiz' => $quiz,
@@ -251,7 +249,7 @@ class QuizController extends Controller
                 return;
             }
 
-            // Obtenir l'ordre le plus élevé actuel pour incrémenter
+            // Obtenir l'ordre le plus élevé pour incrémenter
             $questionModel = $this->model('Question');
             $ordre = $questionModel->getHighestOrder($quiz_id) + 1;
 
@@ -364,7 +362,7 @@ class QuizController extends Controller
                 return;
             }
 
-            // Si type unique, s'assurer qu'une seule réponse est correcte
+            // une seule réponse est correcte
             if ($type === 'unique' && count($correctes) > 1) {
                 $this->view('admin/quiz/edit_question', [
                     'question' => $question,
@@ -498,7 +496,7 @@ class QuizController extends Controller
         $questionModel = $this->model('Question');
         $questions = $questionModel->getByQuizId($quiz_id);
 
-        // Pour chaque question, récupérer ses options
+        // Pour chaque question récupérer ses options
         $optionModel = $this->model('Option');
         foreach ($questions as &$question) {
             $question['options'] = $optionModel->getByQuestionId($question['id']);
@@ -555,28 +553,27 @@ class QuizController extends Controller
         foreach ($questions as $question) {
             $question_id = $question['id'];
             $options = $optionModel->getByQuestionId($question_id);
-            
-            // Les réponses sélectionnées par l'étudiant pour cette question
+
+            // Les réponses sélectionnées pour cette question
             $reponses_etudiant = isset($reponses[$question_id]) ? (array)$reponses[$question_id] : [];
-            
-            // Les options correctes pour cette question
-            $options_correctes = array_filter($options, function($option) {
+
+            // Les options correctes 
+            $options_correctes = array_filter($options, function ($option) {
                 return $option['est_correcte'] == 1;
             });
             $ids_options_correctes = array_column($options_correctes, 'id');
-            
+
             // Pour les questions à choix unique
             if ($question['type'] === 'unique') {
-                // Si l'étudiant a sélectionné une option correcte
                 if (count($reponses_etudiant) === 1 && in_array($reponses_etudiant[0], $ids_options_correctes)) {
                     $score++;
                 }
-            } 
+            }
             // Pour les questions à choix multiple
             else {
-                // Vérifier que toutes les bonnes réponses ont été sélectionnées et aucune mauvaise réponse
+                // Vérifier que toutes les bonnes réponses ont été sélectionnées
                 $correct = true;
-                
+
                 // Vérifier que l'étudiant a sélectionné toutes les options correctes
                 foreach ($ids_options_correctes as $option_id) {
                     if (!in_array($option_id, $reponses_etudiant)) {
@@ -584,7 +581,7 @@ class QuizController extends Controller
                         break;
                     }
                 }
-                
+
                 // Vérifier qu'il n'a pas sélectionné d'options incorrectes
                 foreach ($reponses_etudiant as $option_id) {
                     if (!in_array($option_id, $ids_options_correctes)) {
@@ -592,7 +589,7 @@ class QuizController extends Controller
                         break;
                     }
                 }
-                
+
                 if ($correct) {
                     $score++;
                 }
@@ -632,7 +629,7 @@ class QuizController extends Controller
             exit;
         }
 
-        // Vérifier que l'utilisateur est propriétaire de cette tentative ou un admin
+        // Vérifier que l'utilisateur est propriétaire un admin
         if ($tentative['user_id'] != $_SESSION['user']['id'] && $_SESSION['user']['role'] !== 'admin') {
             header('Location: /e-learning-role-final/public/etudiant/dashboard');
             exit;
@@ -648,7 +645,7 @@ class QuizController extends Controller
         $questionModel = $this->model('Question');
         $questions = $questionModel->getByQuizId($tentative['quiz_id']);
 
-        // Pour chaque question, récupérer ses options et les réponses de l'étudiant
+        // récupérer les options et les réponses 
         $optionModel = $this->model('Option');
         foreach ($questions as &$question) {
             $question['options'] = $optionModel->getByQuestionId($question['id']);

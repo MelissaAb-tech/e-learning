@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     searchInput.addEventListener('input', function () {
         const searchTerm = this.value.toLowerCase().trim();
 
-        // Parcourir chaque carte de cours et vérifier si elle correspond à la recherche
+        // vérifier si elle correspond à la recherche
         coursCards.forEach(function (card) {
             const title = card.querySelector('h3').textContent.toLowerCase();
             const professor = card.querySelector('.prof').textContent.toLowerCase();
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Empêcher la soumission du formulaire si l'utilisateur appuie sur Entrée
+    // Empêcher la soumission du formulaire
     searchInput.addEventListener('keydown', function (e) {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -81,7 +81,7 @@ document.querySelectorAll('.btn-unsubscribe').forEach(button => {
     });
 });
 
-// Fonction pour fermer le modal
+//fermer le modal
 function closeUnsubscribeModal() {
     document.getElementById('confirmUnsubscribeModal').style.display = 'none';
 }

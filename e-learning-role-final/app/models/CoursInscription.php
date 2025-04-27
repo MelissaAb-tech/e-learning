@@ -6,13 +6,12 @@ class CoursInscription
     public function __construct()
     {
         $this->db = Database::connect();
-        // Créer la table si elle n'existe pas
         $this->creerTableSiNecessaire();
     }
 
     private function creerTableSiNecessaire()
     {
-        // Vérifier si la table cours_inscriptions existe
+        // Vérifier si la table existe
         $result = $this->db->query("SHOW TABLES LIKE 'cours_inscriptions'");
         if ($result->rowCount() === 0) {
             // Créer la table

@@ -27,7 +27,7 @@
 </div>
 <div style="margin:0px 100px">
     <?php
-    // Récupérer le feedback de l'étudiant pour ce cours (s'il existe)
+    // Récupérer le feedback de l'étudiant pour le cours
     $feedbackModel = $this->model('CoursFeedback');
     $feedback_existant = $feedbackModel->getByEtudiantAndCours($_SESSION['user']['id'], $cours['id']);
     $a_deja_donne_feedback = !empty($feedback_existant);
@@ -96,7 +96,7 @@
     $cours_complet = $chapitres_complets && $quiz_complets;
     ?>
 
-    <!-- Section de progression globale placée avant les chapitres -->
+    <!-- progression globale placée avant les chapitres -->
     <div class="progress-container">
         <div class="progress-header">
             <?php if ($cours_complet): ?>
@@ -233,7 +233,7 @@
         </div>
     <?php endforeach; ?>
 
-    <!-- Section des quiz avec style renforcé -->
+    <!-- quiz-->
     <h3 style="margin-left: 30px;">Quiz du cours :</h3>
 
     <div>
@@ -242,11 +242,8 @@
         <?php else: ?>
             <?php foreach ($quizzes as $quiz): ?>
                 <div class="quiz-card-fixed">
-                    <!-- Titre et description -->
                     <h4 class="quiz-title-fixed"><?= htmlspecialchars($quiz['titre']) ?></h4>
                     <p class="quiz-description-fixed"><?= nl2br(htmlspecialchars($quiz['description'])) ?></p>
-
-                    <!-- Score précédent si disponible avec vérifications supplémentaires -->
                     <?php if (isset($quiz['meilleure_tentative']) && $quiz['meilleure_tentative'] !== null): ?>
                         <?php
                         $scoreParfait = (isset($quiz['meilleure_tentative']['score']) &&
@@ -275,12 +272,12 @@
                             </div>
                         <?php endif; ?>
 
-                        <!-- Bouton "Refaire le quiz" quand il y a eu une tentative -->
+                        <!-- "Refaire le quiz" -->
                         <a href="/e-learning-role-final/public/quiz/etudiant/tenter/<?= $quiz['id'] ?>" class="btn-quiz-fixed">
                             🔄 Refaire le quiz
                         </a>
                     <?php else: ?>
-                        <!-- Bouton "Commencer le quiz" quand il n'y a jamais eu de tentative -->
+                        <!-- "Commencer le quiz" -->
                         <a href="/e-learning-role-final/public/quiz/etudiant/tenter/<?= $quiz['id'] ?>" class="btn-quiz-fixed">
                             ▶️ Commencer le quiz
                         </a>
@@ -290,7 +287,7 @@
         <?php endif; ?>
     </div>
 </div>
-<!-- Modal de confirmation pour la réinitialisation -->
+<!-- confirmation pour la réinitialisation -->
 <div id="resetModal" class="modal">
     <div class="modal-content">
         <div class="modal-title">Réinitialiser le cours</div>
@@ -317,7 +314,7 @@
         </div>
     </div>
 </div>
-<!-- Modal de confirmation pour la déconnexion -->
+<!-- confirmation pour la déconnexion -->
 <div id="logoutModal" class="modal">
     <div class="modal-content">
         <div class="modal-title">Déconnexion</div>
@@ -336,7 +333,7 @@
     </div>
 </div>
 
-<!-- Modal de feedback pour le cours -->
+<!-- feedback pour le cours -->
 <div id="feedbackModal" class="modal">
     <div class="modal-content feedback-modal-content">
         <div class="modal-title">

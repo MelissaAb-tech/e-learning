@@ -49,7 +49,7 @@
 <link rel="stylesheet" href="/e-learning-role-final/public/style/edit-question.css">
 
 <script>
-    // Initialiser le compteur d'options en fonction du nombre d'options existantes
+    // Initialiser le compteur d'options 
     let optionCount = <?= count($options) ?>;
 
     function addOption() {
@@ -83,7 +83,7 @@
         deleteBtn.style.backgroundColor = '#f44336';
         deleteBtn.style.color = 'white';
 
-        // Utiliser une meilleure méthode pour associer l'événement de clic
+        // associer l'événement de clic
         deleteBtn.onclick = function() {
             deleteOption(currentIndex);
         };
@@ -108,7 +108,7 @@
         }
     }
 
-    // Fonction pour mettre à jour les numéros des options
+    // mettre à jour les numéros des options
     function updateOptionNumbers() {
         const optionRows = document.querySelectorAll('.option-row');
 
@@ -122,11 +122,11 @@
     }
 
     function updateDeleteButtons() {
-        // Compter combien d'options sont actuellement affichées
+        // Compter combien d'options sont affichées
         const options = document.querySelectorAll('.option-row');
         const count = options.length;
 
-        // Si nous avons plus de 2 options, activer les boutons de suppression, sinon les désactiver
+        // Si nous avons plus de 2 options activer les boutons de suppression
         const deleteButtons = document.querySelectorAll('.delete-option-btn');
         deleteButtons.forEach(btn => {
             if (count > 2) {
@@ -146,7 +146,7 @@
             if (type === 'unique') {
                 input.type = 'radio';
                 input.className = 'correct-radio';
-                // Si c'est une question à choix unique, au moins une réponse doit être correcte
+                // au moins une réponse doit être correcte
                 if (input.value === '0' && document.getElementById('option0')) {
                     document.getElementById('option0').required = true;
                 }

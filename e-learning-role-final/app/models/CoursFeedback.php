@@ -12,7 +12,7 @@ class CoursFeedback
 
     private function creerTableSiNecessaire()
     {
-        // Vérifier si la table feedbacks_cours existe
+        // Vérifier si la table existe
         $result = $this->db->query("SHOW TABLES LIKE 'feedbacks_cours'");
         if ($result->rowCount() === 0) {
             // Créer la table
@@ -80,7 +80,7 @@ class CoursFeedback
         $stmt = $this->db->prepare("SELECT AVG(note) as moyenne_notes FROM feedbacks_cours WHERE cours_id = ?");
         $stmt->execute([$cours_id]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result['moyenne_notes'] ?: 0; // Retourne 0 s'il n'y a pas de notes
+        return $result['moyenne_notes'] ?: 0; // s'il n'y a pas de notes
     }
 
     // Compter le nombre de feedbacks pour un cours

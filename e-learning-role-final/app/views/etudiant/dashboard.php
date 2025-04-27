@@ -20,14 +20,14 @@
     </div>
 </div>
 
-<!-- Affichage du message de succès s'il existe -->
+<!-- Affichage du message de succès-->
 <?php if (isset($_SESSION['feedback_success'])): ?>
     <div class="feedback-success">
         <i class="fas fa-check-circle"></i>
         <?= $_SESSION['feedback_success'] ?>
     </div>
     <?php
-    // Suppression du message après affichage pour qu'il ne s'affiche qu'une fois
+    // Suppression du message après affichage 
     unset($_SESSION['feedback_success']);
     ?>
 <?php endif; ?>
@@ -49,7 +49,6 @@
                 <p class="desc"><?= nl2br($c['contenu']) ?></p>
 
                 <?php if (isset($coursInscrits) && isset($coursInscrits[$c['id']]) && $coursInscrits[$c['id']]): ?>
-                    <!-- L'étudiant est inscrit -->
                     <div class="course-actions">
                         <a href="/e-learning-role-final/public/cours/voir/<?= $c['id'] ?>" class="btn-access">
                             <i class="fas fa-book-open"></i> Accéder

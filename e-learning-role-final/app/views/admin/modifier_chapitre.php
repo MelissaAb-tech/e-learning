@@ -14,7 +14,7 @@
             <textarea name="description" id="description" required><?= htmlspecialchars($chapitre['description']) ?></textarea>
         </div>
 
-        <!-- Section pour les fichiers PDF existants -->
+        <!-- es fichiers PDF existants -->
         <?php if (!empty($chapitre['pdfs'])): ?>
             <div class="multi-files-section">
                 <div class="section-title">
@@ -38,7 +38,6 @@
                                     <button type="button" class="file-delete-btn" onclick="confirmDelete('pdf', <?= $pdf['id'] ?>)">
                                         <i class="fas fa-trash"></i>
                                     </button>
-                                    <!-- Champ caché qui sera mis à jour par JS -->
                                     <input type="hidden" name="pdf_to_keep[<?= $pdf['id'] ?>]" id="keep-pdf-<?= $pdf['id'] ?>" value="1">
                                 </div>
                             </div>
@@ -48,14 +47,13 @@
             </div>
         <?php endif; ?>
 
-        <!-- Section pour ajouter de nouveaux PDFs -->
+        <!-- ajouter de nouveaux PDFs -->
         <div class="multi-files-section">
             <div class="section-title">
                 <h3><i class="fas fa-file-pdf"></i> Ajouter des PDFs</h3>
             </div>
 
             <div id="pdf-container">
-                <!-- Les éléments seront ajoutés ici dynamiquement -->
             </div>
 
             <button type="button" class="add-file-btn" onclick="addPdfField()">
@@ -63,7 +61,7 @@
             </button>
         </div>
 
-        <!-- Section pour les liens YouTube existants -->
+        <!-- les liens YouTube existants -->
         <?php
         $youtubeLinks = array_filter($chapitre['videos'], function ($v) {
             return $v['est_youtube'] == 1;
@@ -102,14 +100,13 @@
             </div>
         <?php endif; ?>
 
-        <!-- Section pour ajouter de nouveaux liens YouTube -->
+        <!-- ajouter de nouveaux liens YouTube -->
         <div class="multi-files-section">
             <div class="section-title">
                 <h3><i class="fab fa-youtube"></i> Ajouter des liens YouTube</h3>
             </div>
 
             <div id="youtube-container">
-                <!-- Les éléments seront ajoutés ici dynamiquement -->
             </div>
 
             <button type="button" class="add-file-btn yt-btn" onclick="addYoutubeField()">
@@ -117,7 +114,7 @@
             </button>
         </div>
 
-        <!-- Section pour les fichiers vidéo MP4 existants -->
+        <!-- les fichiers vidéo MP4 existants -->
         <?php
         $mp4Files = array_filter($chapitre['videos'], function ($v) {
             return $v['est_youtube'] == 0;
@@ -143,7 +140,6 @@
                                     <button type="button" class="file-delete-btn" onclick="confirmDelete('video', <?= $video['id'] ?>)">
                                         <i class="fas fa-trash"></i>
                                     </button>
-                                    <!-- Champ caché qui sera mis à jour par JS -->
                                     <input type="hidden" name="video_to_keep[<?= $video['id'] ?>]" id="keep-video-<?= $video['id'] ?>" value="1">
                                 </div>
                             </div>
@@ -153,7 +149,7 @@
             </div>
         <?php endif; ?>
 
-        <!-- Section pour ajouter de nouveaux fichiers vidéo MP4 -->
+        <!-- ajouter de nouveaux fichiers vidéo MP4 -->
         <div class="multi-files-section">
             <div class="section-title">
                 <h3><i class="fas fa-video"></i> Ajouter des fichiers vidéo MP4</h3>
@@ -167,7 +163,7 @@
             </button>
         </div>
 
-        <!-- Modal de confirmation pour la suppression -->
+        <!-- confirmation pour la suppression -->
         <div id="delete-modal" class="delete-modal">
             <div class="delete-modal-content">
                 <h3>Confirmer la suppression</h3>

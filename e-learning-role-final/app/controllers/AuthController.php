@@ -18,7 +18,7 @@ class AuthController extends Controller
         $user = $this->model('User')->findByEmail($email);
 
         if ($user && password_verify($password, $user['password'])) {
-            // ne pas stocker tout $user (ex : password hash)
+            // ne pas stocker tout 
             $_SESSION['user'] = [
                 'id' => $user['id'],
                 'nom' => $user['nom'],
@@ -58,12 +58,12 @@ class AuthController extends Controller
             $imageTmpPath = $_FILES['photo_profil']['tmp_name'];
             $imageName = time() . '_' . basename($_FILES['photo_profil']['name']);
             $uploadDir = __DIR__ . '/../../public/images/';
-            
+
             // Vérifier si le dossier existe, sinon le créer
             if (!file_exists($uploadDir)) {
                 mkdir($uploadDir, 0777, true);
             }
-            
+
             if (move_uploaded_file($imageTmpPath, $uploadDir . $imageName)) {
                 $photo_profil = $imageName;
             }

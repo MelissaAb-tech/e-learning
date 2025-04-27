@@ -11,13 +11,13 @@
         <h2>Quiz : <?= htmlspecialchars($quiz['titre']) ?></h2>
         <p><?= nl2br(htmlspecialchars($quiz['description'])) ?></p>
     </div>
-    
-    <?php 
+
+    <?php
     $scorePercent = ($tentative['score'] / $tentative['score_max']) * 100;
     $isPassed = $scorePercent >= 70; // 70% pour réussir
     $isPerfect = $scorePercent == 100; // 100% pour un score parfait
     ?>
-    
+
     <div class="results-score <?= $isPassed ? 'pass' : 'fail' ?>">
         <h3>Votre score : <?= $tentative['score'] ?>/<?= $tentative['score_max'] ?> (<?= round($scorePercent) ?>%)</h3>
         <p>
@@ -30,27 +30,27 @@
             <?php endif; ?>
         </p>
     </div>
-    
+
     <h3>Détail des réponses :</h3>
-    
+
     <?php foreach ($questions as $index => $question): ?>
         <div class="results-question">
             <h3>Question <?= $index + 1 ?> : <?= htmlspecialchars($question['texte']) ?></h3>
             <p class="question-type">
                 Question à choix <?= $question['type'] === 'unique' ? 'unique' : 'multiples' ?>
             </p>
-            
+
             <div class="results-options">
-                <?php 
-                // Les réponses sélectionnées par l'étudiant
+                <?php
+                // Les réponses sélectionnées 
                 $selectedOptions = $question['reponses_etudiant'];
-                
+
                 // Afficher toutes les options
-                foreach ($question['options'] as $option): 
+                foreach ($question['options'] as $option):
                     // Déterminer la classe CSS pour cette option
                     $optionClass = 'neutral';
                     $iconHtml = '';
-                    
+
                     // Si l'option a été sélectionnée par l'étudiant
                     if (in_array($option['id'], $selectedOptions)) {
                         if ($option['est_correcte']) {
@@ -70,7 +70,7 @@
             </div>
         </div>
     <?php endforeach; ?>
-    
+
     <div class="results-actions">
         <a href="/e-learning-role-final/public/quiz/etudiant/tenter/<?= $quiz['id'] ?>" class="results-button">Retenter le quiz</a>
         <a href="/e-learning-role-final/public/cours/voir/<?= $cours['id'] ?>" class="results-button">Retour au cours</a>

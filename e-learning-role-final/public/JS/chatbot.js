@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Récupérer automatiquement le role
     const chatbotWrapper = document.getElementById('chatbot-wrapper');
-    const role = chatbotWrapper.getAttribute('data-role') || 'etudiant'; // valeur par défaut
+    const role = chatbotWrapper.getAttribute('data-role') || 'etudiant';
 
     // Choisir quel fichier JSON charger selon le role
     let jsonFile = role === 'admin'

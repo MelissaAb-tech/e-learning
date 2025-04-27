@@ -171,7 +171,6 @@ class ForumController extends Controller
 
     public function supprimer_reponse($reponse_id)
     {
-        // Vérifier que l'utilisateur est connecté
         if (!isset($_SESSION['user'])) {
             header('Location: /e-learning-role-final/public/login');
             exit;

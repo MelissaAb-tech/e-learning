@@ -47,14 +47,14 @@
             </div>
         </div>
 
-        <!-- Bouton pour lire les feedbacks, aligné sous les statistiques -->
+        <!-- lire les feedbacks-->
         <a href="/e-learning-role-final/public/admin/feedbacks" class="btn-feedbacks">
             <i class="fas fa-comments"></i> Lire les feedbacks
         </a>
     </div>
 
     <div class="admin-content">
-        <!-- Barre de recherche-->
+        <!-- barre de recherche-->
         <div class="search-container">
             <div class="search-tabs">
                 <div class="search-tab active" id="search-tab-all">Tout</div>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="/e-learning-role-final/public/style/forum-extra.css">
 </head>
+
 <body>
     <div class="forum-header">
         <h1><?= htmlspecialchars($topic['titre']) ?></h1>
@@ -15,7 +17,6 @@
     </div>
 
     <div class="forum-container">
-        <!-- Message du topic -->
         <div class="topic-message">
             <div class="message-header">
                 <div class="message-author">Par <?= htmlspecialchars($topic['auteur_nom']) ?></div>
@@ -36,7 +37,7 @@
         <!-- Réponses -->
         <div class="responses-section">
             <h2><?= count($reponses) ?> Réponse(s)</h2>
-            
+
             <?php if (empty($reponses)): ?>
                 <div class="no-responses">
                     <p>Aucune réponse pour le moment. Soyez le premier à répondre !</p>
@@ -68,16 +69,16 @@
         <!-- Formulaire de réponse -->
         <div class="reply-form">
             <h2>Répondre</h2>
-            
+
             <?php if (isset($error)): ?>
                 <div class="error-message"><?= $error ?></div>
             <?php endif; ?>
-            
+
             <form method="POST" action="/e-learning-role-final/public/forum/repondre/<?= $topic['id'] ?>">
                 <div class="form-group">
                     <textarea id="contenu" name="contenu" rows="5" required></textarea>
                 </div>
-                
+
                 <div class="form-actions">
                     <button type="submit" class="btn-submit">Envoyer la réponse</button>
                 </div>
@@ -85,4 +86,5 @@
         </div>
     </div>
 </body>
+
 </html>

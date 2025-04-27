@@ -45,7 +45,7 @@ class Chapitre
 
     public function delete($id)
     {
-        // Les tables associées seront automatiquement nettoyées grâce à ON DELETE CASCADE
+        // nettoyées grâce à ON DELETE CASCADE
         $stmt = $this->db->prepare("DELETE FROM chapitres WHERE id = ?");
         return $stmt->execute([$id]);
     }

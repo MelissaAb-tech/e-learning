@@ -6,16 +6,15 @@ class QuizTentative
     public function __construct()
     {
         $this->db = Database::connect();
-        // Créer la table si elle n'existe pas
         $this->creerTableSiNecessaire();
     }
 
     private function creerTableSiNecessaire()
     {
-        // Vérifier si la table tentatives_quiz existe
+        // Vérifier si la table existe
         $result = $this->db->query("SHOW TABLES LIKE 'tentatives_quiz'");
         if ($result->rowCount() === 0) {
-            // Créer la table tentatives_quiz
+            // Créer la table 
             $this->db->exec("CREATE TABLE `tentatives_quiz` (
                 `id` int(11) NOT NULL AUTO_INCREMENT,
                 `user_id` int(11) NOT NULL,
@@ -114,37 +113,37 @@ class QuizTentative
         $stmt->execute([$user_id, $quiz_id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    
+
     public function getMeilleureTentative($user_id, $quiz_id)
     {
         $stmt = $this->db->prepare("SELECT * FROM tentatives_quiz WHERE user_id = ? AND quiz_id = ? ORDER BY score DESC LIMIT 1");
         $stmt->execute([$user_id, $quiz_id]);
         $tentative = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        // Si aucune tentative n'est trouvée, retourner null au lieu d'un tableau vide
+
+        // retourner null au lieu d'un tableau vide
         return $tentative ? $tentative : null;
     }
-    
+
     public function deleteTentativesByUserAndQuiz($user_id, $quiz_id)
     {
-        // D'abord récupérer toutes les tentatives de l'utilisateur pour ce quiz
+        // récupérer toutes les tentatives pour ce quiz
         $stmt = $this->db->prepare("SELECT id FROM tentatives_quiz WHERE user_id = ? AND quiz_id = ?");
         $stmt->execute([$user_id, $quiz_id]);
         $tentatives = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
         if (empty($tentatives)) {
             return true; // Rien à supprimer
         }
-        
-        // Pour chaque tentative, supprimer les réponses associées
+
+        // supprimer les réponses associées
         $tentative_ids = array_column($tentatives, 'id');
-        
-        // Supprimer toutes les réponses en une seule requête
+
+        // Supprimer toutes les réponses 
         $placeholders = implode(',', array_fill(0, count($tentative_ids), '?'));
         $stmt = $this->db->prepare("DELETE FROM reponses_etudiant WHERE tentative_id IN ($placeholders)");
         $stmt->execute($tentative_ids);
-        
-        // Supprimer toutes les tentatives en une seule requête
+
+        // Supprimer toutes les tentatives 
         $stmt = $this->db->prepare("DELETE FROM tentatives_quiz WHERE id IN ($placeholders)");
         return $stmt->execute($tentative_ids);
     }

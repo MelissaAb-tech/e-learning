@@ -3,7 +3,7 @@ function toggleChapitre(index) {
     content.style.display = content.style.display === "block" ? "none" : "block";
 }
 
-// Fonctions pour gérer le modal de réinitialisation
+// Gérer le modal de réinitialisation
 function openResetModal() {
     document.getElementById('resetModal').style.display = 'flex';
 }
@@ -12,7 +12,7 @@ function closeResetModal() {
     document.getElementById('resetModal').style.display = 'none';
 }
 
-// Fonctions pour gérer le modal de feedback
+// gérer le modal de feedback
 function openFeedbackModal() {
     document.getElementById('feedbackModal').style.display = 'flex';
 }

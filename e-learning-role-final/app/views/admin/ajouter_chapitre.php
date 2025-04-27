@@ -15,14 +15,13 @@
             <textarea name="description" id="description" required></textarea>
         </div>
 
-        <!-- Section pour les fichiers PDF -->
+        <!-- les fichiers PDF -->
         <div class="multi-files-section">
             <div class="section-title">
                 <h3><i class="fas fa-file-pdf"></i> Fichiers PDF</h3>
             </div>
 
             <div id="pdf-container">
-                <!-- Les éléments seront ajoutés ici dynamiquement -->
             </div>
 
             <button type="button" class="add-file-btn" onclick="addPdfField()">
@@ -30,14 +29,13 @@
             </button>
         </div>
 
-        <!-- Section pour les liens YouTube -->
+        <!-- les liens YouTube -->
         <div class="multi-files-section">
             <div class="section-title">
                 <h3><i class="fab fa-youtube"></i> Liens YouTube</h3>
             </div>
 
             <div id="youtube-container">
-                <!-- Les éléments seront ajoutés ici dynamiquement -->
             </div>
 
             <button type="button" class="add-file-btn yt-btn" onclick="addYoutubeField()">
@@ -45,7 +43,7 @@
             </button>
         </div>
 
-        <!-- Section pour les fichiers vidéo MP4 -->
+        <!-- les fichiers vidéo MP4 -->
         <div class="multi-files-section">
             <div class="section-title">
                 <h3><i class="fas fa-video"></i> Fichiers Vidéo MP4</h3>

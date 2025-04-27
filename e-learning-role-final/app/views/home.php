@@ -10,7 +10,6 @@
 </head>
 
 <body>
-    <!-- Header with navigation -->
     <header>
         <div class="container header-content">
             <div class="logo">E-<span>Learning</span></div>
@@ -21,7 +20,6 @@
         </div>
     </header>
 
-    <!-- Hero section -->
     <section class="hero">
         <div class="container">
             <h1>Développez vos compétences en ligne</h1>
@@ -30,7 +28,6 @@
         </div>
     </section>
 
-    <!-- Features section -->
     <section class="features">
         <div class="container">
             <h2>Pourquoi choisir notre plateforme ?</h2>
@@ -53,8 +50,6 @@
             </div>
         </div>
     </section>
-
-    <!-- Popular courses section -->
     <section class="popular-courses">
         <div class="container">
             <h2>Nos cours les plus populaires</h2>
@@ -98,7 +93,7 @@
             </div>
         </div>
     </section>
-    <!-- Section "Comment ça marche ?" -->
+
     <section class="how-it-works">
         <div class="container">
             <h2>Comment ça marche ?</h2>
@@ -121,9 +116,6 @@
             </div>
         </div>
     </section>
-
-
-    <!-- Section "Avis d'étudiants" -->
     <section class="student-reviews">
         <div class="container">
             <h2>Avis d'étudiants</h2>
@@ -162,8 +154,6 @@
         </div>
     </section>
 
-
-    <!-- Section "FAQ" -->
     <section class="faq">
         <div class="container">
             <h2>Questions fréquentes</h2>

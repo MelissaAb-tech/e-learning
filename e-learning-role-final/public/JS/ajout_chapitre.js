@@ -25,7 +25,7 @@ function addPdfField() {
     card.appendChild(removeBtn);
     container.appendChild(card);
 
-    // Mettre à jour la visibilité des boutons après ajout
+    // Mettre à jour la visibilité des boutons 
     updateRemoveButtonsVisibility(container);
 }
 
@@ -50,7 +50,7 @@ function addYoutubeField() {
     card.appendChild(removeBtn);
     container.appendChild(card);
 
-    // Mettre à jour la visibilité des boutons après ajout
+    // Mettre à jour la visibilité des boutons
     updateRemoveButtonsVisibility(container);
 }
 
@@ -73,8 +73,6 @@ function addVideoField() {
     card.appendChild(input);
     card.appendChild(removeBtn);
     container.appendChild(card);
-
-    // Mettre à jour la visibilité des boutons après ajout
     updateRemoveButtonsVisibility(container);
 }
 
@@ -85,8 +83,6 @@ function removeCard(button) {
     // Ne pas supprimer 
     if (container.children.length > 1) {
         container.removeChild(card);
-
-        // Mettre à jour la visibilité des boutons après suppression
         updateRemoveButtonsVisibility(container);
     }
 }

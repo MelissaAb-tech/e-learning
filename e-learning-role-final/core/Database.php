@@ -7,14 +7,13 @@ class Database
     {
         if (!self::$pdo) {
             try {
-                // D'abord, tenter de se connecter à MySQL sans spécifier de base de données
                 $tempPdo = new PDO('mysql:host=localhost', 'root', '');
                 $tempPdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
                 // Vérifier si la base de données existe
                 $result = $tempPdo->query("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'elearning'");
 
-                // Si la base de données n'existe pas, la créer
+                // La créer
                 if ($result->rowCount() === 0) {
                     $tempPdo->exec("CREATE DATABASE elearning CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
                     $needInit = true;
@@ -25,12 +24,9 @@ class Database
                 // Se connecter à la base de données
                 self::$pdo = new PDO('mysql:host=localhost;dbname=elearning', 'root', '');
                 self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-                // Initialiser les tables si nécessaire
                 if ($needInit) {
                     self::initDatabase();
                 }
-
                 // Vérifier si les tables pour fichiers multiples existent déjà
                 self::createMultiFilesTables();
             } catch (PDOException $e) {
@@ -90,7 +86,7 @@ class Database
     private static function initDatabase()
     {
         try {
-            // Créer toutes les tables nécessaires
+            // Créer toutes les tables 
             self::createTables();
 
             // Insérer des données de démonstration
@@ -317,10 +313,10 @@ class Database
 
             // ID 3: Deuxième étudiant
             ['Martin', 'etudiant2@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'etudiant', 'Sophie', 25, '8 Avenue des Lilas', '0698765432', 'martin.jpg', 'Étudiant'],
-            
+
             // ID 4: Troisième étudiant
             ['Dubois', 'etudiant3@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'etudiant', 'Julien', 28, '12 Rue du Commerce', '0712345678', 'olivier.jpg', 'Entrepreneur'],
-            
+
             // ID 5: Quatrième étudiant
             ['Lefebvre', 'etudiant4@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'etudiant', 'Marie', 32, '24 Boulevard Saint-Michel', '0645678912', 'sarah.jpg', 'Professionnel']
         ];
@@ -413,8 +409,8 @@ class Database
         // Marquage des chapitres comme vus pour l'étudiant 1 (Jean Dupont)
         $progression_etudiant1 = [
             [2, 1], // Etudiant 1 (ID: 2) a vu le chapitre 1 (Introduction à l'IA)
-            [2, 2], // Etudiant 1 (ID: 2) a vu le chapitre 2 (Machine Learning)
-            [2, 3]  // Etudiant 1 (ID: 2) a vu le chapitre 3 (Deep Learning)
+            [2, 2],
+            [2, 3]
         ];
 
         $stmt = self::$pdo->prepare("INSERT INTO `chapitre_progression` (user_id, chapitre_id) VALUES (?, ?)");
@@ -425,10 +421,10 @@ class Database
         // Inscription des étudiants aux cours
         $inscriptions = [
             [2, 1], // Etudiant 1 (Jean Dupont, ID: 2) s'inscrit au cours 1 (IA)
-            [2, 2], // Etudiant 1 (Jean Dupont, ID: 2) s'inscrit au cours 2 (Web)
-            [2, 3], // Etudiant 1 (Jean Dupont, ID: 2) s'inscrit au cours 3 (Admin Système)
-            [3, 1], // Etudiant 2 (Sophie Martin, ID: 3) s'inscrit au cours 1 (IA)
-            [3, 3]  // Etudiant 2 (Sophie Martin, ID: 3) s'inscrit au cours 3 (Admin Système)
+            [2, 2],
+            [2, 3],
+            [3, 1],
+            [3, 3]
         ];
 
         $stmt = self::$pdo->prepare("INSERT INTO `cours_inscriptions` (user_id, cours_id) VALUES (?, ?)");
@@ -555,9 +551,9 @@ class Database
         // Enregistrer les réponses de l'étudiant
         $stmt = self::$pdo->prepare("INSERT INTO `reponses_etudiant` (tentative_id, question_id, option_id) VALUES (?, ?, ?)");
         $stmt->execute([$tentative_id, 1, 1]); // Bonne réponse à la question 1
-        $stmt->execute([$tentative_id, 2, 5]); // Première bonne réponse à la question 2
-        $stmt->execute([$tentative_id, 2, 6]); // Deuxième bonne réponse à la question 2
-        $stmt->execute([$tentative_id, 2, 7]); // Troisième bonne réponse à la question 2
+        $stmt->execute([$tentative_id, 2, 5]);
+        $stmt->execute([$tentative_id, 2, 6]);
+        $stmt->execute([$tentative_id, 2, 7]);
         // Ajouter un quiz pour le cours d'Administration Système
         $stmt = self::$pdo->prepare("INSERT INTO `quizzes` (cours_id, titre, description) VALUES (?, ?, ?)");
         $stmt->execute([3, 'Quiz Administration Système', 'Testez vos connaissances sur l\'administration système']);

@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Mode de recherche (all, courses, students)
     let searchMode = 'all';
 
-    // Fonction pour changer le mode de recherche
+    // changer le mode de recherche
     function changeSearchMode(mode) {
         searchMode = mode;
 
@@ -39,7 +39,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Filtrer les éléments selon le terme de recherche
     function filterItems(searchTerm) {
-        // Compter le nombre d'éléments visibles pour chaque section
         let visibleCourses = 0;
         let visibleStudents = 0;
 
@@ -128,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
         changeSearchMode('students');
     });
 
-    // Empecher la soumission du formulaire si l'utilisateur appuie sur Entrée
+    // Empecher la soumission du formulaire 
     searchInput.addEventListener('keydown', function (e) {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -154,7 +153,6 @@ window.onclick = function (event) {
     }
 }
 // suppression de cours avec confirmation
-
 document.querySelectorAll('.btn-supprimer-cours').forEach(button => {
     button.addEventListener('click', function (e) {
         e.preventDefault(); // Bloquer l'action normale
@@ -187,14 +185,14 @@ window.addEventListener('click', function (event) {
         closeDeleteCourseModal();
     }
 });
-// Gestion de la suppression des étudiants avec confirmation (modale)
+// Gestion de la suppression des étudiants 
 document.querySelectorAll('.btn-supprimer-etudiant').forEach(button => {
     button.addEventListener('click', function (e) {
         e.preventDefault(); // Empêche le lien de s'ouvrir directement
 
         const etudiantId = this.getAttribute('data-id');
 
-        // Mettre à jour dynamiquement le lien "Supprimer" dans le modal
+        // Mettre à jour le lien "Supprimer"
         const confirmBtn = document.getElementById('confirmDeleteLink');
         confirmBtn.href = `/e-learning-role-final/public/admin/etudiant/supprimer/${etudiantId}`;
 
@@ -203,7 +201,7 @@ document.querySelectorAll('.btn-supprimer-etudiant').forEach(button => {
     });
 });
 
-// Fonction pour fermer la modale de suppression étudiant
+//fermer la modale de suppression étudiant
 function closeDeleteModal() {
     document.getElementById('confirmDeleteModal').style.display = 'none';
 }
