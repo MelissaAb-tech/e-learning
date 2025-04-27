@@ -129,34 +129,34 @@ class AdminController extends Controller
             $adresse = $_POST['adresse'];
             $fonction = $_POST['fonction'];
             $telephone = $_POST['telephone'];
-
+    
             $photo_profil = null;
             if (!empty($_FILES['photo_profil']['name'])) {
-                // Définir le répertoire de destination
-                $targetDir = "../../public/images/";
-                $photo_profil = time() . '_' . $_FILES['photo_profil']['name'];  // Nouveau nom unique 
-                $targetFile = $targetDir . $photo_profil;
-
+                // Définir le répertoire de destination avec un chemin absolu
+                $uploadDir = __DIR__ . '/../../public/images/';
+                
+                // Nouveau nom unique pour éviter les collisions
+                $photo_profil = time() . '_' . basename($_FILES['photo_profil']['name']);
+                
                 // Vérifier si le répertoire existe sinon le créer
-                if (!file_exists($targetDir)) {
-                    mkdir($targetDir, 0777, true);  // Créer le répertoire
+                if (!file_exists($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
                 }
-
-                // Déplacer l'image téléchargée dans le répertoire de destination
-                move_uploaded_file($_FILES['photo_profil']['tmp_name'], $targetFile);
+                
+                // Déplacer l'image téléchargée
+                move_uploaded_file($_FILES['photo_profil']['tmp_name'], $uploadDir . $photo_profil);
             }
-
+    
             // Appeler la méthode pour créer l'étudiant dans la bd
             $this->model('User')->createEtudiant($prenom, $nom, $email, $password, $age, $adresse, $fonction, $telephone, $photo_profil);
-
+    
             // Rediriger l'admin vers le tableau de bord après ajout de l'étudiant
             header('Location: /e-learning-role-final/public/admin/dashboard');
             exit;
         }
-
+    
         $this->view('admin/etudiant_ajouter');
     }
-
 
     public function etudiantSupprimer($id)
     {
